@@ -11,6 +11,7 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+
 public class Solution {
     public TreeNode invertTree(TreeNode root) {
         if (root == null){
