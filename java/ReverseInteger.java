@@ -4,6 +4,7 @@
  * Example2: x = -123, return -321
  */
 
+
 public class Solution {
     public int reverse(int x) {
 	   int input = x;
