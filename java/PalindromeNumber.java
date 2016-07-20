@@ -2,6 +2,7 @@
  * Determine whether an integer is a palindrome. 
  */
 
+
 public class Solution {
     public boolean isPalindrome(int x) {
         if (x < 0) {
