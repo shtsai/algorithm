@@ -2,6 +2,7 @@
  * Count the number of prime numbers less than a non-negative number, n.
  */
 
+
 public class Solution {
     public int countPrimes(int n) {
         boolean[] isPrime = new boolean[n];
