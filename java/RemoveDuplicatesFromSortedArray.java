@@ -9,6 +9,25 @@
 
 public class Solution {
     public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        
+        int available = 1;  // the first number is always valid, so second number is a possible available position
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i-1]) {  // find a different number, swap it to the available position
+                nums[available] = nums[i];
+                available++;    // next index becomes available position
+            }
+        }
+        
+        return available;   // all numbers to the left of avaiable are distinct
+    }
+}
+
+/*
+public class Solution {
+    public int removeDuplicates(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
         
         int distinct = 0;     // a pointer that keeps track of the distinct number
@@ -22,3 +41,4 @@ public class Solution {
         
     }
 }
+*/
