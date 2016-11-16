@@ -4,6 +4,19 @@
  * so the function should return 3.
  */
 
+// use for loop
+public class Solution {
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+            result += 1 & (n >>> i);   // unsigned right shift
+        }
+        return result;
+    }
+}
+
+/*  // use while loop
 public class Solution {
     // you need to treat n as an unsigned value
     public int hammingWeight(int n) {
@@ -18,3 +31,4 @@ public class Solution {
         return count;
     }
 }
+*/ 
