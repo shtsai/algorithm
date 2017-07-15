@@ -11,8 +11,7 @@
  * Return the board when no more squares will be revealed.
  */
 
-// Unsolved
-// Stack overflow
+// DFS
 public class Solution {
     public char[][] updateBoard(char[][] board, int[] click) {
         // click poisition is a mine
@@ -33,21 +32,23 @@ public class Solution {
         int count = 0;
         for (int i = click[0] - 1; i <= click[0] + 1; i++) {        // check adjacent row
             for (int j = click[1] - 1; j <= click[1] + 1; j++) {    // check adjacent col
-                if (i < 0 || i >= board.length || j < 0 || j >= board[0].length) {
+                if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || (i == click[0] && j == click[1])) {
                     continue;
                 }
-                if (board[i][j] == 'M') {
+                if (board[i][j] == 'M') {   // count # of mines
                     count++;
                 }
             }
         }
-        if (count != 0) {
+        if (count != 0) {   // fill the block with the count, and stop searching
             board[click[0]][click[1]] = Character.forDigit(count, 10);
         } else {
             board[click[0]][click[1]] = 'B';
             for (int i = click[0] - 1; i <= click[0] + 1; i++) {        // check adjacent row
                 for (int j = click[1] - 1; j <= click[1] + 1; j++) {    // check adjacent col
-                    reveal(board, new int[]{i, j});
+                    // add several conditions to avoid repeated searching
+                    if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || (i == click[0] && j == click[1]) || (board[i][j] != 'M' && board[i][j] != 'E')) continue;
+                    else reveal(board, new int[]{i, j});
                 }
             }
         }
