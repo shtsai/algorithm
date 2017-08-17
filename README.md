@@ -1,2 +1,2 @@
-# My LeetCode Solutions
-This repository consists of my LeetCode solutions.
+# My solutions to algorithm problems
+This repository consists of my solutions to various coding interview problems, including questions from LeetCode and Lintcode.
