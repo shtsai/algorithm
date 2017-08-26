@@ -14,6 +14,18 @@
  */
 
 // use recursion to break the problem into smaller pieces
+// version 2:
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) return false;
+        if (root.val == sum && root.left == null && root.right == null) return true;
+        if (hasPathSum(root.left, sum - root.val)) return true;
+        if (hasPathSum(root.right, sum - root.val)) return true;
+        return false;
+    }
+}
+
+// version 1:
 public class Solution {
     public boolean hasPathSum(TreeNode root, int sum) {
         if (root == null) {
