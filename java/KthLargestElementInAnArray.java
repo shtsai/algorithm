@@ -4,6 +4,21 @@
  * For example,
  * Given [3,2,1,5,6,4] and k = 2, return 5.
  */
+// improved version of solution 1:
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> q = new PriorityQueue<>();
+        for (int i = 0; i < nums.length; i++) {
+            q.offer(nums[i]);
+            if (q.size() > k) {
+                q.poll();
+            }
+        }
+        return q.peek();
+    }
+}
+// Solution 1:
+// use a priority queue of size k to keep the largest k numbers
 public class Solution {
     public int findKthLargest(int[] nums, int k) {
         PriorityQueue<Integer> pq = new PriorityQueue<>();
