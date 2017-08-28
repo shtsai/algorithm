@@ -25,7 +25,8 @@
  */
 
 // Dynamic programming
-// recursively solve smaller subproblems, and store results in an memoized arrays
+// Do DFS on every cell and maintain a global maximum
+// recursively solve smaller subproblems, and cache results in an memoized arrays
 public class Solution {
     int max = 0;
     public int longestIncreasingPath(int[][] matrix) {
