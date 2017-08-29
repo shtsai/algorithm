@@ -2,6 +2,33 @@
  * Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
  */
 
+// Solution 1 version 2:
+// use HashMap
+class Solution {
+    public boolean isValid(String s) {
+        if (s == null || s.length() == 0) return true;
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put('(', ')');
+        map.put('[', ']');
+        map.put('{', '}');
+        
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(' || c == '[' || c == '{') {     // left brackets
+                stack.push(c);
+            } else {        // right brackets
+                if (stack.isEmpty() || map.get(stack.pop()) != c) return false;  // left and right doesn't match
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+
+
+// Solution 1:
+// use stack to store the left parentheses that we have seen
+// when see a right parentheses, pop the last left parenthese off the stack to see if it matches the right one
 public class Solution {
     public boolean isValid(String s) {
         Stack<Character> stack = new Stack<>();
