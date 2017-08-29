@@ -4,6 +4,37 @@
  * Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
  */
 
+// Solution 3:
+// elegent solution from: https://discuss.leetcode.com/topic/18839/elegant-java-solution
+public int strStr(String haystack, String needle) {
+    for (int i = 0; ; i++) {
+        for (int j = 0; ; j++) {
+        if (j == needle.length()) return i;
+        if (i + j == haystack.length()) return -1;
+        if (needle.charAt(j) != haystack.charAt(i + j)) break;
+        }
+    }
+}
+
+// Solution 2:
+// use substring approach, much faster
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int hLen = haystack.length(), nLen = needle.length();
+        if (nLen == 0) return 0;
+        if (hLen < nLen) return -1;
+        
+        for (int i = 0; i < hLen-nLen+1; i++) {        // pointer on haystack
+            if (haystack.substring(i, i+nLen).equals(needle)) {       // find first char
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+// Solution 1:
+// brute force solution
 public class Solution {
     public int strStr(String haystack, String needle) {
         if (haystack.length() < needle.length()) return -1;     // needle must be longer than haystack
@@ -22,8 +53,28 @@ public class Solution {
                 }
                 if (result != -1) return result;
             }
-        }
+        }        
+        return -1;
+    }
+}
+
+// Solution 1 version 2:
+// brute force solution
+class Solution {
+    public int strStr(String haystack, String needle) {
+        int hLen = haystack.length(), nLen = needle.length();
+        if (nLen == 0) return 0;
+        if (hLen < nLen) return -1;
         
+        for (int i = 0; i < hLen-nLen+1; i++) {        // pointer on haystack (use hLen-nLen+1 to save some cycles)
+            if (haystack.charAt(i) == needle.charAt(0)) {       // find first char
+                int j = 1;   // <-- pointer on needle, j can start from 1 
+                while (j < nLen && (i+j < hLen) && haystack.charAt(i+j) == needle.charAt(j)) {  // continue check for remaining chars
+                    j++;
+                }
+                if (j == nLen) return i;        // find all chars in needle, return the start of the needle
+            }
+        }
         return -1;
     }
 }
