@@ -4,6 +4,35 @@
  * You may assume all four edges of the grid are all surrounded by water.
  */
 
+// Solution 1: improved version
+// much more concise
+class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+        int island = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {    // find island
+                    island++;
+                    visit(grid, i, j);
+                }
+            }
+        }
+        return island;
+    }
+    
+    /* a helper function that marks the connecting islands to 0  */
+    private void visit(char[][] grid, int i, int j) {
+        if (grid[i][j] == '0') return;  // no island here
+        grid[i][j] = '0';   // change island to 0, indicating that we have visited before
+        if (i - 1 >= 0) visit(grid, i-1, j);
+        if (i + 1 < grid.length) visit(grid, i+1, j);
+        if (j - 1 >= 0) visit(grid, i, j-1);
+        if (j + 1 < grid[0].length) visit(grid, i, j+1);
+    }
+}
+
+// Solution 1: version 1
 public class Solution {
     public int numIslands(char[][] grid) {
 
