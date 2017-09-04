@@ -1,20 +1,21 @@
 /*
- * Given a string, find the first non-repeating character in it and return it's index. 
+ * Given a string, find the first non-repeating character in it and return it's index.
  * If it doesn't exist, return -1.
  *
  * Examples:
- * 
+ *
  * s = "leetcode"
  * return 0.
- * 
+ *
  * s = "loveleetcode",
  * return 2.
  * Note: You may assume the string contain only lowercase letters.
  */
 
-
+// Solution 2:
 // count the frequency of each char
 // return the first char with frequency of 1
+// time: O(n), space O(1)-constant space
 public class Solution {
     public int firstUniqChar(String s) {
         int[] frequency = new int[26];
@@ -23,16 +24,17 @@ public class Solution {
         }
         for (int i = 0; i < s.length(); i++) {
             if (frequency[s.charAt(i) - 'a'] == 1) {
-               return i; 
+               return i;
             }
         }
         return -1;
     }
 }
 
-/*
+// Solution 1:
 // use two sets
 // one for duplicate char, the other for good char
+// time: O(n), space: O(n)
 public class Solution {
     public int firstUniqChar(String s) {
         HashSet<Character> set = new HashSet<>();
@@ -46,7 +48,7 @@ public class Solution {
                 set.add(c);
             }
         }
-        
+
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if (OKset.contains(c)) {
@@ -56,4 +58,3 @@ public class Solution {
         return -1;
     }
 }
-*/
