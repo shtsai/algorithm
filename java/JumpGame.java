@@ -11,11 +11,30 @@
  * A = [3,2,1,0,4], return false.
  */
 
-// greedy
+// Solution 1: version 2
+// more consice
+// farest stands for the farest distance reachable
+class Solution {
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length <= 1) return true;
+        int farest = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (farest >= i) {
+                farest = Math.max(farest, nums[i] + i);
+            } else {
+                return false;
+            }
+        }
+        return farest >= nums.length-1;
+    }
+}
+
+// Solution 1: greedy
+// verison 1:
 // use a variable reach to keep track of the max position reachable
 public class Solution {
     public boolean canJump(int[] nums) {
-        if (nums == null || nums.length == 0) return false;
+        if (nums == null || nums.length <= 1) return true;
         
         int reach = nums[0];
         for (int i = 1; i < nums.length-1 && reach >= i; i++) {   // need reach >= i, otherwise cannot reach i
