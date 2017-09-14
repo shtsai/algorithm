@@ -5,7 +5,7 @@
 
 import java.util.*;
 
-class WindowSum {
+class WindowSumArray {
     public static void main(String[] args) {
 	int[] nums1 = {1,2,3,4,5,6,7,8,9};
 	int[] nums2 = {4,2,73,11,-5};
