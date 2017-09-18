@@ -21,16 +21,65 @@
  * }
  */
 
+// Solution 2 version 2:
+// Use a dummy node to hold the result list
+// add nodes to the result list while computing.
+// Save one pass
+// Time: O(n), Space: O(n)
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Stack<Integer> s1 = new Stack<>();
+        Stack<Integer> s2 = new Stack<>();
+        ListNode p = l1;
+        while (p != null) {
+            s1.push(p.val);
+            p = p.next;
+        }
+        p = l2;
+        while (p != null) {
+            s2.push(p.val);
+            p = p.next;
+        }
+        int carry = 0;
+        ListNode dummy = new ListNode(-1);
+        while (!s1.isEmpty() && !s2.isEmpty()) {
+            int n1 = s1.pop();
+            int n2 = s2.pop();
+            ListNode newNode = new ListNode((n1+n2+carry)%10);
+            carry = (n1+n2+carry) / 10;
+            newNode.next = dummy.next;
+            dummy.next = newNode;
+        }
+        while (!s1.isEmpty()) {
+            int n1 = s1.pop();
+            ListNode newNode = new ListNode((n1+carry)%10);
+            carry = (n1+carry) / 10;
+            newNode.next = dummy.next;
+            dummy.next = newNode;
+        } 
+        while (!s2.isEmpty()) {
+            int n2 = s2.pop();
+            ListNode newNode = new ListNode((n2+carry)%10);
+            carry = (n2+carry) / 10;
+            newNode.next = dummy.next;
+            dummy.next = newNode;
+        }
+        if (carry != 0) {
+            ListNode newNode = new ListNode(carry);
+            newNode.next = dummy.next;
+            dummy.next = newNode;
+        }
+        return dummy.next;
+    }
+}
+
+
 // solution 2: using stack 
+// Push two lists onto two stacks, so we can get LIFO order
+// Compute sum digit by digit, push result onto sum stack.
+// Build result list from the sum stack.
 // O(n) time, O(n) space
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode(int x) { val = x; }
- * }
- */
+
 public class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         Stack<ListNode> num1 = new Stack<>();
