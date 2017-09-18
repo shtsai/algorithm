@@ -4,6 +4,10 @@
  * design an algorithm to find the maximum profit.
  */
 
+// Solution 3: Dynamic Programming
+// Compare cummulative daily differences, reset to 0 when difference is negative
+// Use a variable max to keep track of max difference
+// Time: O(n), Space: O(1)
 public class Solution {
     public int maxProfit(int[] prices) {
         // dynamic programming
@@ -15,8 +19,31 @@ public class Solution {
         }
         return max;
 
-        /*
-        // brute force
+
+    }
+}
+
+// Solution 2: Find min buy price at each day
+// Time: O(n), Space: O(n)
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+        int[] lowest = new int[prices.length];
+        int res = 0;
+        lowest[0] = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            lowest[i] = Math.min(lowest[i-1], prices[i]);
+            res = Math.max(prices[i]-lowest[i], res);
+        }
+        return res;
+    }
+}
+
+// Solution 1: Brute force
+// Check every valid buy and sell
+// Time: O(n^2), Space: O(1)
+public class Solution {
+    public int maxProfit(int[] prices) {
         int max = 0;
         for (int i = 0; i < prices.length; i++) {
             for (int j = i + 1; j < prices.length; j++) {
@@ -27,6 +54,5 @@ public class Solution {
             }
         }
         return max;
-        */
     }
 }
