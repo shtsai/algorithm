@@ -5,6 +5,9 @@
  * However, you may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
  */
 
+// Solution 1:
+// One pass, sum up all price increases
+// Time: O(n), Space: O(1)
 public class Solution {
     public int maxProfit(int[] prices) {
 
@@ -19,5 +22,25 @@ public class Solution {
             }
         }
         return profit;
+    }
+}
+
+// Solution 2:
+// Find all local minimum and local maximum
+// and sum up the differences
+// Time: O(n), Space: O(1)
+// reference: https://discuss.leetcode.com/topic/7436/java-o-n-solution-if-we-re-not-greedy
+class Solution {
+    public int maxProfit(int[] prices) {
+        int sum = 0, i = 0;
+        while (i < prices.length) {
+            while (i < prices.length-1 && prices[i] >= prices[i+1]) i++;
+            int min = prices[i];    // local minimum
+            i++;
+            while (i < prices.length-1 && prices[i] < prices[i+1]) i++;
+            sum += i >= prices.length ? 0 : prices[i] - min;
+            i++;
+        }
+        return sum;
     }
 }
