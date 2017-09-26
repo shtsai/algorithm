@@ -2,6 +2,31 @@
  * Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
  */
 
+
+// Solution 1 version 3:
+// More generic, only need to modify map to add or remove new type of parenthesis
+// 09/25/2017
+class Solution {
+    public boolean isValid(String s) {
+        HashMap<Character, Character> map = new HashMap<>();
+        map.put(')', '(');
+        map.put(']', '[');
+        map.put('}', '{');
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (map.containsKey(c)) {   // right parenthesis
+                if (stack.isEmpty() || stack.pop() != map.get(c)) {
+                    return false;
+                }
+            } else {    // left parenthesis
+                stack.push(c);
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+
 // Solution 1 version 2:
 // use HashMap
 class Solution {
