@@ -7,6 +7,33 @@
  * It doesn't matter what you leave beyond the new length.
  */
 
+
+// Solution 1:
+// Two pointers, distinct points at the distinct number,
+// cur scans through the array.
+// When nums[distinct] == nums[cur], we continue to skip duplicates
+// When nums[distinct] != nums[cur], we encounter a new distinct number
+// So we increment distinct pointer, and store the new number there.
+// Time: O(n) - one pass
+// Space: O(1)
+// 10/01/2017
+public class Solution {
+    public int removeDuplicates(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        
+        int distinct = 0;     // a pointer that keeps track of the distinct number
+        for (int cur = 1; cur < nums.length; cur++) { 
+            if (nums[cur] != nums[cur-1]) {  // skip the duplicates, and put next distinct number after the previous one
+                distinct++;
+                nums[distinct] = nums[cur];
+            }
+        }
+        return distinct + 1; 
+        
+    }
+}
+
+// Solution 1: version 2
 public class Solution {
     public int removeDuplicates(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -24,21 +51,3 @@ public class Solution {
         return available;   // all numbers to the left of avaiable are distinct
     }
 }
-
-/*
-public class Solution {
-    public int removeDuplicates(int[] nums) {
-        if (nums == null || nums.length == 0) return 0;
-        
-        int distinct = 0;     // a pointer that keeps track of the distinct number
-        for (int cur = 1; cur < nums.length; cur++) { 
-            if (nums[cur] != nums[cur-1]) {  // skip the duplicates, and put next distinct number after the previous one
-                distinct++;
-                nums[distinct] = nums[cur];
-            }
-        }
-        return distinct + 1; 
-        
-    }
-}
-*/
