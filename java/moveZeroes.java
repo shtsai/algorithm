@@ -8,6 +8,54 @@
  * Minimize the total number of operations.
  */
 
+// Solution 3:
+// Optimal, one pass solution
+// Use a pointer points at the first zero element, then swap non zero element
+// to there.
+// Time: O(n) - one pass
+// Space: O(1)
+// reference: https://leetcode.com/articles/move-zeroes/
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int zero = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                int temp = nums[zero];
+                nums[zero] = nums[i];
+                nums[i] = temp;
+                zero++;
+            }
+        }
+    }
+}
+
+// Solution 2:
+// Two pointers, one points at zero value, the other points at nonzero value.
+// Scan through the array, swap zero value with nonzero values
+// Time: O(n^2) worst case, slower than solution 1
+// Space: O(1)
+// 10/01/2017
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int zero = 0, nonzero = 0;
+        while (zero < nums.length) {
+            while (zero < nums.length && nums[zero] != 0) zero++;
+            nonzero = zero;
+            while (nonzero < nums.length && nums[nonzero] == 0) nonzero++;
+            if (zero >= nums.length || nonzero >= nums.length) break;
+            int temp = nums[zero];
+            nums[zero] = nums[nonzero];
+            nums[nonzero] = temp;
+        }
+    }
+}
+
+// Solution 1 version 2:
+// Two pointer, one scans through the array,
+// the other points to the insert position.
+// Move all non-zero numbers to the front, then fill the rest with 0s.
+// Time: O(n) - two passes
+// Space: O(1)
 public class Solution {
     public void moveZeroes(int[] nums) {
         if (nums == null || nums.length == 0) return;
@@ -26,7 +74,7 @@ public class Solution {
     }
 }
 
-/*
+// Solution 1:
 public class Solution {
     public void moveZeroes(int[] nums) {
         int zero = -1;
@@ -55,4 +103,3 @@ public class Solution {
         return;
     }
 }
-*/
