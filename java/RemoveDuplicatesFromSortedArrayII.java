@@ -9,6 +9,14 @@
  * It doesn't matter what you leave beyond the new length.
  */
 
+// Solution 1: Two pointers
+// Use a pointer to point at the new starting index,
+// use the other to scan through the array.
+// Only add numbers in the result that haven't been included twice
+// Time: O(n)
+// Space: O(1)
+// Reference: https://discuss.leetcode.com/topic/17180/3-6-easy-lines-c-java-python-ruby
+// 10/01/2017
 public class Solution {
     public int removeDuplicates(int[] nums) {
         int i = 0;   // i is the index of a duplicate
