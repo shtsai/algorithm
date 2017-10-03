@@ -3,6 +3,15 @@
  * Find all unique quadruplets in the array which gives the sum of target.
  */
 
+// Solution 1: Four pointers
+// Sort the array in ascending order
+// Use two pointers to point at first and second number.
+// The remaining two pointers do two sum operations to find target.
+// Need to handle duplicate numbers.
+// Time: O(n^3) - two outer loop, and one O(n) two sum search
+// Space: O(1)
+// 10/03/2017
+
 public class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
         ArrayList<List<Integer>> result = new ArrayList<>();
