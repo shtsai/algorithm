@@ -15,6 +15,41 @@
  * }
  */
 
+// Solution 2:
+// Use a dummy head to hold the result list
+// Scan through two lists concurrently, compute value of sum and carry
+// When a list reaches the end and the other hasn't, assign value 0 to the null node
+// Repeat until both lists reach the their ends.
+// Finally, check if carry is zero, if not, append a new node with value carry.
+// Time: O(max(m,n))
+// Space: O(1)
+// 10/04/2017
+
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(-1), p = dummy;
+        int carry = 0;
+        while (l1 != null || l2!= null) {
+            int num1 = l1 == null ? 0 : l1.val;
+            int num2 = l2 == null ? 0 : l2.val;
+            int sum = (num1 + num2 + carry) % 10;
+            carry = (num1 + num2 + carry) / 10;
+            p.next = new ListNode(sum);
+            p = p.next;
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        if (carry > 0) {
+            p.next = new ListNode(carry);
+        }
+        return dummy.next;
+    }
+}
+
+// Solution 1:
+// Use a flag to indicate carry
+// When a list reaches the end, append it with nodes of '0' values
+// ??/??/2016
 public class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         
