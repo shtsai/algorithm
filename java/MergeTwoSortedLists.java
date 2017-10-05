@@ -12,6 +12,29 @@
  * }
  */
 
+// Solution 2: Iterative solution
+// Time: O(m+n)
+// Space: O(1)
+// 10/05/2017
+
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode (-1);
+        ListNode x = dummy;
+        while (l1 != null && l2 != null) {
+            ListNode p = l1.val < l2.val ? l1 : l2;
+            if (p == l1) l1 = l1.next;
+            if (p == l2) l2 = l2.next;
+            x.next = p;
+            x = x.next;
+        }
+        if (l1 != null) x.next = l1;
+        if (l2 != null) x.next = l2;
+        return dummy.next;
+    }
+}
+
+// Solution 1: recursive solution
 public class Solution {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         
