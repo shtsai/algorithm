@@ -14,7 +14,77 @@
  * You may assume that all operations are valid (for example, no pop or top operations will be called on an empty stack).
  */
 
-// Solution 1: use one queue, rotate the queue whenever adding a new element
+// reference: https://leetcode.com/articles/implement-stack-using-queues/
+
+// Solution 2: Use two Queues
+// One queue is used for storing elements, 
+// the other queue is used for performing pop().
+// pop() is done by moving (n-1) elements to another queue,
+// and the remaining one element is what are going to pop.
+// Time: O(1) push, O(n) pop
+// Space: O(n) - two queues
+// 10/14/2017
+
+class MyStack {
+    Queue<Integer> inqueue;
+    Queue<Integer> outqueue;
+    Integer peek;
+    
+    /** Initialize your data structure here. */
+    public MyStack() {
+        inqueue = new LinkedList<>();
+        outqueue = new LinkedList<>();
+        peek = null;
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        inqueue.offer(x);
+        peek = x;
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        peek = null;
+        return getLast();
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        if (peek != null) {
+            return peek;
+        }
+        peek = getLast();
+        inqueue.offer(peek);
+        return peek;
+    }
+    
+    /** This function returns the last element of the stack */
+    private int getLast() {
+        int size = inqueue.size();
+        for (int i = 1; i < size; i++) {
+            outqueue.offer(inqueue.poll());
+        }
+        int res = inqueue.poll();
+        inqueue = outqueue;     // restore inqueue
+        outqueue = new LinkedList<>();       // clear outqueue
+        return res;
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return inqueue.isEmpty();
+    }
+}
+
+// Solution 1: Use one queue 
+// Rotate the queue by (n-1) after adding a new element,
+// so that the last element will be shifted to the end and
+// the all elements are in reversed insert order.
+// Time: O(n) push, O(1) pop
+// Space: O(n) - one queue
+// 10/14/2017
+
 public class MyStack {
     
     private Queue<Integer> q;
