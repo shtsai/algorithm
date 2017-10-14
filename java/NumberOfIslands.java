@@ -4,6 +4,76 @@
  * You may assume all four edges of the grid are all surrounded by water.
  */
 
+// Solution 2: 
+// If modification of the input array is not allow, we can use a 
+// boolean array to indicate whether or not we have visited a cell.
+// Time: O(mn)
+// Space: O(mn)
+// 10/13/2017
+
+class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+        
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1' && !visited[i][j]) {
+                    res++;
+                    search(grid, i, j, visited);
+                }
+            }
+        }
+        return res;
+    }
+    
+    private void search(char[][] grid, int i, int j, boolean[][] visited) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) return;
+        if (grid[i][j] != '1' || visited[i][j]) return;
+        
+        visited[i][j] = true;
+        search(grid, i-1, j, visited);
+        search(grid, i+1, j, visited);
+        search(grid, i, j-1, visited);
+        search(grid, i, j+1, visited);
+    }
+}
+
+// Solution 1: improved version 2
+// Assuming we are allowed to modify the input array
+// Time: O(mn) 
+// Space: O(1)
+// 10/13/2017
+class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0 || grid[0].length == 0) return 0;
+        
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == '1') {
+                    res++;
+                    search(grid, i, j);
+                }
+            }
+        }
+        return res;
+    }
+    
+    private void search(char[][] grid, int i, int j) {
+        if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length) return;
+        if (grid[i][j] != '1') return;
+        
+        grid[i][j] = '0';
+        search(grid, i-1, j);
+        search(grid, i+1, j);
+        search(grid, i, j-1);
+        search(grid, i, j+1);
+    }
+}
+
 // Solution 1: improved version
 // much more concise
 class Solution {
