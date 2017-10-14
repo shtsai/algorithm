@@ -8,7 +8,19 @@
  * You may assume no duplicate exists in the array.
  */
 
-// binary search
+// Solution 1: binary search
+// Check the middle element, if it is the target, return its index.
+// If not, find the sorted half:
+//      - If the left half is sorted, check if target is that that range.
+//        If so, continue searching on that half, otherwise on the other half
+//      - Else, right half is sorted, check if target is that that range.
+//
+// Note, need to be careful with "=", because left and mid could be pointing at the same number.
+// 
+// Time: O(log n)
+// Space: O(1)
+// 10/13/2017
+
 public class Solution {
     public int search(int[] nums, int target) {
         if (nums == null || nums.length == 0) return -1;
