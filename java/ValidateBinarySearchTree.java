@@ -5,7 +5,6 @@
  * Both the left and right subtrees must also be binary search trees.
  */
 
-
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -15,6 +14,14 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+
+// Solution 1:
+// check if every node is within its correct range.
+// Recursively check children nodes in narrower ranges.
+// Time: O(n) - n is the number of nodes
+// Space: O(1)
+// 10/14/2017
+
 public class Solution {
     public boolean isValidBST(TreeNode root) {
         // min and max are null initially
@@ -22,20 +29,11 @@ public class Solution {
     }
     
     public boolean isValid(TreeNode root, Integer min, Integer max) {
-        if (root == null) {
-            return true;
-        }
-        
-        // return false if value is less than min
-        if (min != null && root.val <= min) {
-            return false;
-        }
-        
-        // return false if value is greater than max
-        if (max != null && root.val >= max) {
-            return false;
-        }
-        
+        if (root == null) return true;
+
+        if (min != null && root.val <= min) return false;
+        if (max != null && root.val >= max) return false;
+    
         // recursively test left and right subtree, with the respective range
         // min   <---- left subtree ----->  root.val  <---- right subtree ----->  max
         return isValid(root.left, min, root.val) && isValid(root.right, root.val,max);
