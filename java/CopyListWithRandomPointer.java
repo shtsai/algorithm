@@ -13,6 +13,40 @@
  * };
  */
 
+// Solution 2 version 2:
+// 10/14/2017
+
+public class Solution {
+    public RandomListNode copyRandomList(RandomListNode head) {
+        if (head == null) return null;
+        RandomListNode p = head;
+        while (p != null) {
+            RandomListNode copy = new RandomListNode(p.label);
+            copy.next = p.next;
+            p.next = copy;
+            p = copy.next;
+        }
+        
+        p = head;
+        while (p != null && p.next != null) {
+            RandomListNode copy = p.next;
+            copy.random = p.random == null ? null : p.random.next; // random could point to null
+            p = copy.next;
+        }
+        
+        p = head;
+        RandomListNode headCopy = head.next;
+        while (p != null && p.next != null) {
+            RandomListNode copy = p.next;
+            p.next = copy.next;
+            copy.next = p.next == null ? null : p.next.next;  // be careful with tail
+            p = p.next;
+            copy = copy.next;
+        }
+        return headCopy;
+    }
+}
+
 // Solution 2:
 // faster
 // time: O(n), space: O(1)
