@@ -2,9 +2,32 @@
  *  Given two sorted integer arrays nums1 and nums2, merge nums2 into nums1 as one sorted array.
  */
 
+// Solution 2 version 2:
+// merge from right to left
+// Time: O(m+n)
+// Space: O(1)
+// 10/14/2017
+
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i = m - 1, j = n - 1, k = m + n - 1;
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] > nums2[j]) {
+                nums1[k--] = nums1[i--];
+            } else {
+                nums1[k--] = nums2[j--];
+            }
+        }
+        
+        while (j >= 0) {
+            nums1[k--] = nums2[j--];
+        }
+    }
+}
+
+// Solution 2: right to left approach
 public class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {
-        // right to left approach
         int length = m + n - 1;
         int i = m - 1;
         int j = n - 1;
@@ -18,10 +41,15 @@ public class Solution {
         while (j > -1) {
             nums1[length--] = nums2[j--];
         }
+    }
+}
 
-
-        /*
-        // left to right approach
+// Solution 1: left to right approach
+// Create a temp array for nums1, then merge.
+// Time: O(m+n)
+// Space: O(m) - create a temporary array
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
         // first copy and then merge, waste space O(m)
         int[] temp1 = new int[m];
         for (int i = 0; i < m; i++) {
@@ -49,6 +77,5 @@ public class Solution {
                 nums1[i+j] = temp1[i];   
             }
         }
-        */
     }
 }
