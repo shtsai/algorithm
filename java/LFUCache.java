@@ -9,7 +9,7 @@
  * 
  * Example:
  * 
- * LFUCache cache = new LFUCache( 2 /* capacity */ );
+ * LFUCache cache = new LFUCache( 2  // capacity  );
  * 
  * cache.put(1, 1);
  * cache.put(2, 2);
@@ -23,6 +23,7 @@
  * cache.get(4);       // returns 4
  * 
  */
+
 
 
 // Use two HashMaps, one for key value pairs, 
@@ -147,9 +148,120 @@ class LFUCache {
     }
 }
 
-/**
- * Your LFUCache object will be instantiated and called as such:
- * LFUCache obj = new LFUCache(capacity);
- * int param_1 = obj.get(key);
- * obj.put(key,value);
- */
+// Solution 1 version 2:
+// Use Node to store Key value pairs, levelNode to store each nodes at each level
+// use HashMap for quick look up
+// 10/16/2017
+
+class LFUCache {
+    private class Node {
+        int key;
+        int value;
+        public Node (int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    
+    private class LevelNode {
+        int level;
+        LinkedList<Node> list;
+        LevelNode pre;
+        LevelNode next;
+        public LevelNode (int level) {
+            this.level = level;
+            list = new LinkedList<>();
+        }
+    }
+    
+    HashMap<Integer, Node> nodeMap;     // map key to node
+    HashMap<Node, LevelNode> levelMap;  // map node to its current level
+    int size, capacity;
+    LevelNode head, tail;
+    
+    public LFUCache(int capacity) {
+        nodeMap = new HashMap<>();
+        levelMap = new HashMap<>();
+        size = 0;
+        this.capacity = capacity;
+        head = new LevelNode(0);
+        tail = new LevelNode(-1);
+        head.next = tail;
+        tail.pre = head;
+    }
+
+    private void moveToNextLevel(Node node) {
+        LevelNode level = levelMap.get(node);
+        level.list.remove(node);
+        LevelNode nextLevel = getNextLevel(level);
+        nextLevel.list.add(node);
+        levelMap.put(node, nextLevel);
+        
+        if (level.list.size() == 0) {
+            removeLevel(level);
+        }
+    }
+    
+    private LevelNode getNextLevel(LevelNode level) {
+        if (level.next.level == level.level + 1) {
+            return level.next;
+        } else  {    // next levelNode is not level + 1
+            LevelNode newLevel = new LevelNode(level.level + 1);
+            newLevel.pre = level;
+            newLevel.next = level.next;
+            newLevel.pre.next = newLevel;
+            newLevel.next.pre = newLevel;
+            return newLevel;
+        }
+    }
+    
+    private void removeLevel(LevelNode level) {
+        level.pre.next = level.next;
+        level.next.pre = level.pre;
+        level.next = null;
+        level.pre = null;
+    }
+    
+    private void addToLevel1(Node newNode) {
+        LevelNode level1 = getNextLevel(head);  // head is level 0
+        level1.list.add(newNode);
+        levelMap.put(newNode, level1);
+    }
+    
+    private void evict() {
+        LevelNode LFlevel = head.next;
+        if (LFlevel == tail) return;
+        Node toEvict = LFlevel.list.poll();
+        nodeMap.remove(toEvict.key);
+        size--;
+        if (LFlevel.list.size() == 0) {
+            removeLevel(LFlevel);
+        }
+    }
+    
+    public int get(int key) {
+        if (!nodeMap.containsKey(key)) return -1;
+        Node p = nodeMap.get(key);
+        moveToNextLevel(p);
+        return p.value;
+    }
+    
+    public void put(int key, int value) {
+        Node p = nodeMap.get(key);
+        if (p != null) {
+            p.value = value;
+            moveToNextLevel(p);
+            return;
+        } else {
+            if (size >= capacity) {
+                evict();
+            }
+            if (size < capacity) {
+                Node newNode = new Node (key, value);
+                nodeMap.put(key, newNode);
+                addToLevel1(newNode);
+                size++;
+            }
+        }
+    }
+}
