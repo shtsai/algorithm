@@ -6,6 +6,35 @@
  * Please optimize your algorithm to use less time and space. The input size may be as large as 5,000,000. 
  */
 
+// Solution 2: DFS
+// Observe the pattern, essentially we are add 0-9 to every number recursively
+// until the number exceeds n.
+// So we can use DFS to implement this.
+// Time: O(n) will scan through all n numbers
+// Space: O(logn) call stack
+// reference: https://discuss.leetcode.com/topic/55377/simple-java-dfs-solution
+// 10/17/2017
+
+class Solution {
+    public List<Integer> lexicalOrder(int n) {
+        List<Integer> res = new ArrayList<>();
+        for (int i = 1; i < 10; i++) {
+            DFS(i, res, n);
+        }
+        return res;
+    }
+    
+    private void DFS(int n, List<Integer> list, int max) {
+        if (n > max) return;
+        list.add(n);
+        for (int i = 0; i < 10; i++) {
+            int newN = n * 10 + i;
+            if (newN > max) return;
+            DFS(newN, list, max);
+        }
+    }
+}
+
 // Solution 1:
 // First go up to highest level possible: 1 -> 10 -> 100
 // Then increase by one at every step: 100 -> 101 -> 102 ... -> 109
