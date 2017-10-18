@@ -15,9 +15,40 @@
  * Given target = 3, return true.
  */
 
+// Solution 3: search from upper right corner
+// Start searching from upper right corner.
+// If the number equals to the target, return true.
+// If the number is less than the target, go down to next row for larger numbers.
+// If the number is greater than the target, go left to find smaller numbers.
+// Time: O(m+n) - worst case at buttom-left corner
+// Space: O(1)
+// 10/17/2017
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return false;
+        int m = matrix.length, n = matrix[0].length;
+        int i = 0, j = n-1;
+        while (i < m && j >= 0) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] > target) {
+                j--;
+            } else {
+                i++;
+            }
+        }
+        return false;
+    }
+}
+
 // Solution 2:
 // treat the whole matrix as one sorted list
 // use / and % to locate each cell
+// Time: O(log(mn))
+//       if m == n, O(log(n^2)) = O(n)
+// Space: O(1)
+
 public class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return false;
@@ -42,6 +73,7 @@ public class Solution {
 
 // Solution 1:
 // 2D binary search
+// First find correct row, then do binary search in that row.
 public class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
         // target is out of range
