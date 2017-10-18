@@ -8,10 +8,44 @@
  * Note: If there are several possible values for h, the maximum one is taken as the h-index. 
  */
 
+// reference: https://leetcode.com/articles/h-index/
+
+// Solution 3: Sorting
+// First sort the array to acsending order.
+// Scan from right to left:
+//      if count == citation, return count
+//      if count < citation, increase count (not enough count)
+//      if count > citation, previous count is the result
+// Time: O(nlogn) - sorting
+// Space: O(1)
+// 10/18/2017
+
+class Solution {
+    public int hIndex(int[] citations) {
+        if (citations == null || citations.length == 0) return 0;
+        Arrays.sort(citations);
+        int len = citations.length;
+        int count = 1;
+        while (count <= len) {
+            if (count == citations[len-count]) {
+                return count;
+            } else if (count < citations[len-count]) {
+                count++;
+            } else {
+                return count-1;
+            }
+        }
+        return count-1;
+    }
+}
+
 // Solution 2:
 // first get the distribution of the citations
 // then find the correct H-Index
 // reference: https://discuss.leetcode.com/topic/28276/java-o-n-time-with-easy-explanation
+// Time: O(n) - two pass
+// Space: O(n) - extra array
+
 class Solution {
     public int hIndex(int[] citations) {
         int len = citations.length;
