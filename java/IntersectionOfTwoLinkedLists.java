@@ -31,6 +31,75 @@
  *     }
  * }
  */
+
+// Solution 3: two pointers
+// e.g. 
+//      list A = 1, 3, 5, 7, 9, 11
+//               \        /  \   /
+//             (a unique #)  (n intersected #)
+//
+//      list B = 2, 4, 9, 11
+//               \  /   \  /
+//       (b unique #)  (n intersected #)
+// 
+// If we combine the two number, we will get:
+//      list A' =  1, 3, 5, 7, 9, 11, 2, 4, 9, 11
+//                \                       /
+//                        a + n + b
+//
+//      list B' =  2, 4, 9, 11, 1, 3, 5, 7, 9, 11
+//                \                       /
+//                        b + n + a
+//
+// Therefore, the intersection will be find after we scan 
+// through the first (a + n + b) numbers.
+// So we can use two pointers to scan through the two lists simultaneously.
+// When we reaches the end of a list for the first time,
+// we continue scanning the other list, until we find the 
+// intersection or there is no more nodes to scan.
+//
+// Time: O(m + n)
+// Space: O(1)
+// 10/20/2017
+
+public class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) return null;
+        ListNode p = headA, q = headB;
+        boolean firstA = true, firstB = true;
+        
+        while (p != q) {
+            if (p.next != null) {
+                p = p.next;
+            } else if (firstA) {   // finish scanning list a, 
+                p = headB;         // continue with list b
+                firstA = false;
+            } else {
+                return null;  // no intersection
+            }
+            
+            if (q.next != null) {
+                q = q.next;
+            } else if (firstB) {
+                q = headA;
+                firstB = false;
+            } else {
+                return null;
+            }
+        }
+        
+        return p;
+    }
+}
+
+
+// Solution 2: Detect cycle
+// Convert the problem to detecting cycle in linkedlist.
+// Assuming we are allowed to modify input lists.
+// Use fast and slow pointer to find starting node of the cycle.
+// Time: O(m + n)
+// Space: O(1)
+
 public class Solution {
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
@@ -68,5 +137,34 @@ public class Solution {
         tailA.next = null;
         
         return intersection;
+    }
+}
+
+
+// Solution 1: hashset
+// First travere list A and add all nodes to a hashset
+// Then traverse list B. If the node is the set, we find intersection.
+// Time: O(m + n) - m: len(listA), n: len(listB)
+// Space: O(m)
+// 10/20/2017
+
+class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        HashSet<ListNode> set = new HashSet<>();
+        ListNode p = headA;
+        while (p != null) {
+            set.add(p);
+            p = p.next;
+        }
+        
+        p = headB;
+        while (p != null) {
+            if (set.contains(p)) {
+                return p;
+            }
+            p = p.next;
+        }
+        
+        return null;
     }
 }
