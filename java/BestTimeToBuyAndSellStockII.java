@@ -5,6 +5,36 @@
  * However, you may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
  */
 
+// Solution 3: Dynamic Programming
+// For each day, there are two possible states:
+//      1: sell (wait with 0 stock or sell the current stock)
+//      2: buy (hold the current stock or buy a new stock)
+// We can use two variables to hold these two states.
+//
+// At each day, we consider all options and keep track of the max values.
+//      sell:   1. wait (previous sell value)
+//              2. sell (sell the stock we bought on i-1 day + price)
+//      buy:    1. hold (previous buy value)
+//              2. buy (buy ith stock using the money we earns from i-1 day)
+//
+// Time: O(n)
+// Space: O(1)
+// 10/24/2017
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int buy = Integer.MIN_VALUE, sell = 0;
+        
+        for (int price : prices) {
+            int presell = sell;
+            sell = Math.max(sell, buy + price); // wait or sell
+            buy = Math.max(buy, presell - price);
+        }
+        
+        return sell;
+    }
+}
+
 // Solution 1:
 // One pass, sum up all price increases
 // Time: O(n), Space: O(1)
