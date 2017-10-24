@@ -23,6 +23,25 @@ public class Solution {
     }
 }
 
+// Solution 2 improved version 2:
+// We only need to use two variables to keep track of the max profit and min price.
+// Time: O(n)
+// Space: O(1)
+// 10/24/2017
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int buy = Integer.MAX_VALUE, sell = 0;
+        
+        for (int price : prices) {
+            sell = Math.max(sell, price-buy);  // determine sell or not
+            buy = Math.min(buy, price);    // find lowest prices
+        }
+        
+        return sell;
+    }
+}
+
 // Solution 2: Find min buy price at each day
 // Time: O(n), Space: O(n)
 class Solution {
