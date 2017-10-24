@@ -7,6 +7,87 @@
  * You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
  */
 
+// Solution 5: Generalized solution for Buy and sell stocks
+// Use two DP arrays of size n * k, where n indicates number of days
+// and k indicates the number of allowed transaction.
+// One array buy represents the best achievable profit with a stock on hand.
+// sell represents the best achievable profit with no stock on hand.
+// 
+// Also include a quicker solver for large k. 
+// Given n days, # of transaction can be at most n/2.
+// If k is larger than n/2, can transform problem to buy and sell stock II,
+// which is a O(n) problem.
+//
+// version 1: DP arrays
+// Time: O(nk)
+// Space: O(nk)
+// 10/24/2017
+
+class Solution {
+    public int maxProfit(int k, int[] prices) {
+        // quick solver when k is large
+        if (k > prices.length / 2) {
+            int buy = Integer.MIN_VALUE, sell = 0;
+            for (int price : prices) {
+                int presell = sell;
+                sell = Math.max(sell, buy + price);
+                buy = Math.max(buy, presell - price);
+            }
+            return sell;
+        }
+        
+        int n = prices.length;
+        int[][] buy = new int[n][k+1];
+        int[][] sell = new int[n][k+1];
+        for (int i = 0; i <= k; i++) {
+            buy[0][i] = -prices[0];
+        }
+        
+        for (int i = 1; i < n; i++) {
+            for (int j = k; j > 0; j--) {
+                sell[i][j] = Math.max(sell[i-1][j], buy[i-1][j] + prices[i]);
+                buy[i][j] = Math.max(buy[i-1][j], sell[i-1][j-1] - prices[i]);
+            }
+        }
+        
+        return sell[n-1][k];
+    }
+}
+
+// version 2: two 1D DP array
+// Time: O(nk)
+// Space: O(n)
+// 10/24/2017
+
+class Solution {
+    public int maxProfit(int k, int[] prices) {
+        if (k > prices.length / 2) {
+            int buy = Integer.MIN_VALUE, sell = 0;
+            for (int price : prices) {
+                int presell = sell;
+                sell = Math.max(sell, buy + price);
+                buy = Math.max(buy, presell - price);
+            }
+            return sell;
+        }
+        
+        int[] buy = new int[k+1];
+        int[] sell = new int[k+1];
+        for (int i = 0; i <= k; i++) {
+            buy[i] = -prices[0];
+        }
+        
+        for (int i = 1; i < prices.length; i++) {
+            for (int j = k; j > 0; j--) {
+                sell[j] = Math.max(sell[j], buy[j] + prices[i]);
+                buy[j] = Math.max(buy[j], sell[j-1] - prices[i]);
+            }
+        }
+        
+        return sell[k];
+    }
+}
+
 // Solution 4:
 // Add a quick solver for corner cases on leetcode.
 // When k is greater than prices.length/2, we have enough number
