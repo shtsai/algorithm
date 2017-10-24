@@ -22,22 +22,55 @@
 // Time: O(n) - one pass
 // Space: O(1)
 // reference: https://discuss.leetcode.com/topic/39751/my-explanation-for-o-n-solution
+
+// version 1: DP array
+// Use two 2D array to keep track of all states
+// Time: O(n)
+// Space: O(n)
+// 10/24/2017
+
 class Solution {
     public int maxProfit(int[] prices) {
-        if (prices == null || prices.length == 0) {
-            return 0;
+        if (prices == null || prices.length == 0) return 0;
+        int n = prices.length;
+        int[][] buy = new int[n][2];
+        int[][] sell = new int[n][2];
+        buy[0][0] = -prices[0];  // buy[i][0] = first buy
+        buy[0][1] = -prices[0];  // buy[i][1] = second buy
+        
+        for (int i = 1; i < n; i++) {
+            sell[i][1] = Math.max(sell[i-1][1], buy[i-1][1] + prices[i]);
+            buy[i][1] = Math.max(buy[i-1][1], sell[i-1][0] - prices[i]);
+            sell[i][0] = Math.max(sell[i-1][0], buy[i-1][0] + prices[i]);
+            buy[i][0] = Math.max(buy[i-1][0], -prices[i]);
         }
         
-        int buy1 = Integer.MIN_VALUE, sell1 = 0, buy2 = Integer.MIN_VALUE, sell2 = 0;
-        for (int i = 0; i < prices.length; i++) {
-            buy1 = Math.max(buy1, -prices[i]);
-            sell1 = Math.max(sell1, buy1 + prices[i]);
-            buy2 = Math.max(buy2, sell1-prices[i]);
-            sell2 = Math.max(sell2, buy2 + prices[i]);
+        return sell[n-1][1];
+    }
+}
+
+// version 2: DP variables
+// Use two variables to keep track of all states
+// Time: O(n)
+// Space: O(1)
+// 10/24/2017
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int buy1 = Integer.MIN_VALUE, buy2 = Integer.MIN_VALUE;
+        int sell1 = 0, sell2 = 0;
+        
+        for (int price : prices) {
+            sell2 = Math.max(sell2, buy2 + price);
+            buy2 = Math.max(buy2, sell1 - price);
+            sell1 = Math.max(sell1, buy1 + price);
+            buy1 = Math.max(buy1, -price);
         }
+        
         return sell2;
     }
 }
+
 
 // Solution 1: Dynamic programming
 // Similiar to BestTimeToBuyAndSellStock I
