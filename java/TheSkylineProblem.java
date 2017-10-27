@@ -17,6 +17,66 @@
  * There must be no consecutive horizontal lines of equal height in the output skyline. For instance, [...[2 3], [4 5], [7 5], [11 5], [12 7]...] is not acceptable; the three lines of height 5 should be merged into one in the final output as such: [...[2 3], [4 5], [12 7], ...]
  */
 
+// Solution 1 version 2:
+// Create a Point class
+// Time: O(n) - n = length of buildings
+// Space: O(n)
+// 10/26/2017
+
+class Solution {
+    private class Point implements Comparable<Point> {
+        int x, y;
+        
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }     
+        /* sort in increasing order of x, decreasing order of y */
+        public int compareTo (Point other) {
+            if (this.x == other.x) {
+                return other.y - this.y;
+            } else {
+                return this.x - other.x;
+            }
+        }        
+        public String toString() {
+            return x + " " + y;
+        }
+    }
+
+    public List<int[]> getSkyline(int[][] buildings) {
+        List<int[]> res = new ArrayList<>();
+        if (buildings == null || buildings.length == 0) return res;
+        
+        PriorityQueue<Point> pq = new PriorityQueue<>();
+        for (int[] b : buildings) {
+            pq.offer(new Point(b[0], b[2]));
+            pq.offer(new Point(b[1], -b[2]));
+        }
+        
+        PriorityQueue<Integer> height = new PriorityQueue<>(pq.size(), Collections.reverseOrder());
+        height.offer(0);
+        
+        while (!pq.isEmpty()) {
+            Point cur = pq.poll();
+            
+            if (cur.y > 0) {
+                if (cur.y > height.peek()) {
+                    res.add(new int[]{cur.x, cur.y});
+                }
+                height.offer(cur.y);
+            } else { // end a building
+                int preH = height.peek();
+                height.remove(-cur.y);
+                if (preH != height.peek()) {
+                    res.add(new int[]{cur.x, height.peek()});
+                }
+            }
+        }       
+        return res;
+    }
+}
+
 // Solution 1:
 // First get all critical points and sort them in accending order
 // then iterate through these critical points and use a priority queue
