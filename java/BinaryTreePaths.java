@@ -12,6 +12,12 @@
  * }
  */
 
+// Solution 1 version 2: DFS
+// add "->" right after each value, except for the leaf
+// Much cleaner
+// Time: O(n)
+// Space: O(logn) - call stack
+
 public class Solution {
     public List<String> binaryTreePaths(TreeNode root) {
         List<String> result = new ArrayList<>();
@@ -34,42 +40,35 @@ public class Solution {
     }
 }
 
-/*
-// use StringBuilder
-public class Solution {
+// Solution 1: DFS and StringBuilder
+// 10/31/2017
+class Solution {
     public List<String> binaryTreePaths(TreeNode root) {
-        List<String> result = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+        if (root == null) return res;
+        
         StringBuilder sb = new StringBuilder();
-        helper(result, sb, root);
-        return result;
+        dfs(root, sb, res, true);        
+        return res;
     }
     
-    public void helper(List<String> result, StringBuilder sb, TreeNode root) {
-        if (root == null) {
-            return;   
+    private void dfs(TreeNode node, StringBuilder sb, List<String> res, boolean isRoot) {
+        int preLen = sb.length();
+        if (isRoot) {
+            sb.append(node.val);
+        } else {
+            sb.append("->" + node.val);
         }
-        if (root.left == null && root.right == null) {
-            int len = sb.length();
-            if (len != 0) sb.append("->"+root.val);
-            else sb.append(root.val);
-            result.add(sb.toString());
-            sb.delete(len, sb.length());
-            return;
+        
+        if (node.left == null && node.right == null) {  // find a leaf
+            res.add(new String(sb));
         }
-        if (root.left != null) {
-            int len = sb.length();
-            if (len != 0) sb.append("->"+root.val);
-            else sb.append(root.val);
-            helper(result, sb, root.left);
-            sb.delete(len, sb.length());
+        if (node.left != null) {
+            dfs(node.left, sb, res, false);
         }
-        if (root.right != null) {
-            int len = sb.length();
-            if (len != 0) sb.append("->"+root.val);
-            else sb.append(root.val);
-            helper(result, sb, root.right);
-            sb.delete(len, sb.length());
+        if (node.right != null) {
+            dfs(node.right, sb, res, false);
         }
+        sb.delete(preLen, sb.length());
     }
 }
-*/
