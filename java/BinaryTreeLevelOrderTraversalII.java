@@ -1,6 +1,19 @@
 /*
- * Given a binary tree, return the bottom-up level order traversal of its nodes' values. 
- * (ie, from left to right, level by level from leaf to root).
+        Given a binary tree, return the bottom-up level order traversal of its nodes' values. (ie, from left to right, level by level from leaf to root).
+
+        For example:
+        Given binary tree [3,9,20,null,null,15,7],
+            3
+           / \
+          9  20
+            /  \
+           15   7
+        return its bottom-up level order traversal as:
+        [
+          [15,7],
+          [9,20],
+          [3]
+        ]
  */
 
 /**
@@ -13,73 +26,68 @@
  * }
  */
 
-// recursive solution
-public class Solution {
+// Solution 2: DFS
+// Same as Binary Tree Level Order Traversal I
+// except adding the lists in reverse order.
+// Time: O(n)
+// Space: O(logn) - call stack
+// 10/31/2017
+
+class Solution {
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        List<List<Integer>> result = new ArrayList<>();
-        if (root == null) return result;
-        traverse(result, root, 0); // recursively build the list
-        return result;
+        List<List<Integer>> res = new LinkedList<>();
+        if (root == null) return res;
+        dfs(root, res, 0);
+        return res;
     }
     
-    public void traverse(List<List<Integer>> result, TreeNode node, int level) {
-        if (node == null) return;   // base case
-        if (level >= result.size()) {  // if the level does not exist, add it to the result list
-            result.add(0, new ArrayList<>());
+    private void dfs(TreeNode node, List<List<Integer>> res, int level) {
+        if (node == null) return;
+        if (level >= res.size()) {
+            res.add(0, new LinkedList<>());
         }
-        traverse(result, node.left, level+1);   // recursive call on left child
-        traverse(result, node.right, level+1);  // recursive call on right child
-        result.get(result.size()-level-1).add(node.val);    // add the node to its level
+        res.get(res.size()-1-level).add(node.val);
+        dfs(node.left, res, level+1);
+        dfs(node.right, res, level+1);
     }
 }
 
-/*
-// first do level order traversal, then reverse the list
-public class Solution {
+// Solution 1: BFS
+// Same as Binary Tree Level Order Traversal I
+// except adding the lists in reverse order.
+// Time: O(n)
+// Space: O(n)
+// 10/31/2017
+
+class Solution {
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        Queue<TreeNode> queue = new LinkedList<TreeNode>();
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> res = new LinkedList<>();
+        if (root == null) return res;
         
-        if (root == null) return result;
-        
-        // first do regular level order traversal
-        queue.offer(root);
-        List<Integer> level = new ArrayList<>();
-        
-        int preCount = 1;  // number of nodes in previous level
-        int count = 0;     // number of nodes in current level
-        
-        while (queue.size() != 0) {
-            TreeNode cur = queue.poll();
-            preCount--;   
-            level.add(cur.val);
-            
-            if (cur.left != null) {
-                queue.offer(cur.left);
-                count++;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        int count = 1, next = 0;
+        List<Integer> list = new LinkedList<>();
+        while (!q.isEmpty()) {
+            TreeNode p = q.poll();
+            if (p.left != null) {
+                q.offer(p.left);
+                next++;
+            }
+            if (p.right != null) {
+                q.offer(p.right);
+                next++;
             }
             
-            if (cur.right != null) {
-                queue.offer(cur.right);
-                count++;
-            }
-            
-            if (preCount == 0) {    // we have checked all nodes in previous level
-                result.add(level);  // add the current level to the result
-                level = new ArrayList<>();
-                preCount = count;   // move on to next level
-                count = 0;
+            list.add(p.val);
+            count--;
+            if (count == 0) {
+                res.add(0, list);
+                count = next;
+                next = 0;
+                list = new LinkedList<>();
             }
         }
-        
-        // Reverse the result list
-        List<List<Integer>> res = new ArrayList<>();
-        
-        for(int i = result.size()-1; i >= 0; i--) {
-            res.add(result.remove(i));
-        }
-    
         return res;
     }
 }
-*/
