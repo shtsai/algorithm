@@ -23,7 +23,16 @@
  */
 
 // Solution 1:
-// recursive solution:
+// Recursive solution, top down approach
+// Each call to helper function will compute the max path sum
+// that goes through the current node, and update max accordingly.
+// Node that node value can be negative. If that is the case,
+// we don't include negative values.
+// After updating max, the function returns a sided path that goes
+// through the current node, so that its parent node can do its calculation.
+//
+// Time: O(n) - call helper function on each node exactly once
+// Space: O(1)
 
 class Solution {
     int max;
