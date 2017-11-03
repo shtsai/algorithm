@@ -41,6 +41,55 @@
     Can you do it in time complexity O(k log mn), where k is the length of the positions?
  */
 
+// Solution 1 version 2:
+// 11/03/2017
+class Solution {
+    public List<Integer> numIslands2(int m, int n, int[][] positions) {
+        List<Integer> res = new ArrayList<>();
+        int count = 0;
+        int[] root = new int[m * n];
+        Arrays.fill(root, -1);
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        
+        for (int[] p : positions) {
+            int i = p[0], j = p[1];
+            root[i * n + j] = i * n + j;    // create a new node
+            count++;
+            for (int[] d : dirs) {
+                int r = i+d[0], c = j+d[1];
+                if (r >= 0 && r < m && c >= 0 && c < n) {   // index is valid
+                    if (root[r * n + c] != -1) {  // there exists a node
+                        if (union(root, i * n + j, r * n + c)) {
+                            count--;
+                        }
+                    }
+                }
+            }
+            res.add(count);
+        }
+        return res;
+    }
+    
+    /* returns true when union the two component */
+    private boolean union(int[] root, int i, int j) {
+        int ir = find(root, i);
+        int jr = find(root, j);
+        if (ir != jr) {
+            root[ir] = jr;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private int find(int[] root, int i) {
+        while (root[i] != i) {
+            i = root[i];
+        }
+        return i;
+    }
+}
+
 // Solution 1: Union Find
 // Store each island into sets, where sets are originized into trees.
 // When adding a new island, check if there are other island connected to it.
