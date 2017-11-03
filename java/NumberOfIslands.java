@@ -4,6 +4,67 @@
  * You may assume all four edges of the grid are all surrounded by water.
  */
 
+// Solution 3: Union Find
+// Initially assign the parent of each node to be itself.
+// Then we scan the grid. When we find a edge connecting 
+// two nodes, we find their (root) parent nodes. If their
+// root parent nodes are the same, they are in the same group.
+// Otherwise, union them together.
+// Lastly, check how many root nodes we have, which is the 
+// number of islands in the grid.
+// Time: O(mn)
+// Space: O(mn)
+// 11/03/2017
+
+class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        
+        int row = grid.length, col = grid[0].length;
+        int[] parent = new int[row * col];
+        for (int i = 0; i < row * col; i++) {
+            parent[i] = i;   // initialze parent node to each node itself
+        }
+        
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == '1') {
+                    if (i - 1 >= 0 && grid[i-1][j] == '1') {
+                        union(parent, i * col + j, (i-1) * col + j);
+                    }
+                    if (j - 1 >= 0 && grid[i][j-1] == '1') {
+                        union(parent, i * col + j, i * col + j - 1);
+                    }
+                }
+            }
+        }
+        
+        int res = 0;
+        for (int i = 0; i < row * col; i++) {
+            if (grid[i/col][i%col] == '1' && parent[i] == i) {
+                res++;
+            }
+        }
+        return res;
+    }
+    
+    private void union(int[] parent, int i, int j) {
+        int ip = find(parent, i);
+        int jp = find(parent, j);
+        if (ip != jp) {
+            parent[ip] = jp;    // connect to disjoint component
+        }
+    }
+    
+    private int find(int[] parent, int i) {
+        while (parent[i] != i) {
+            parent[i] = parent[parent[i]];  // path compression
+            i = parent[i];
+        }
+        return i;
+    }
+}
+
 // Solution 2: 
 // If modification of the input array is not allow, we can use a 
 // boolean array to indicate whether or not we have visited a cell.
