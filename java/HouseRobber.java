@@ -9,7 +9,15 @@
  * determine the maximum amount of money you can rob tonight without alerting the police.
  */
 
-//Dynamic programming
+// Solution 1: Dynamic programming
+// Each cell i in DP array respresents the maximum result ending with a robbery in houese i.
+// Therefore, at each house i, we have two choices:
+//      1. To rob i, and get best result from dp[i-2]
+//      2. Not to rob i, and we get same result from dp[i-1]
+//
+// Time: O(n) - one-pass
+// Space: O(1)
+
 public class Solution {
     public int rob(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
