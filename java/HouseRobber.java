@@ -9,6 +9,31 @@
  * determine the maximum amount of money you can rob tonight without alerting the police.
  */
 
+// Solution 1 version 2:
+// Since we only need to refer to the previous two days, 
+// there is no need to maintain a long array of size N.
+// We can just use two variables to keep track of the two
+// previous states.
+// Time: O(n)
+// Space: O(1)
+// 11/04/2017
+
+class Solution {
+    public int rob(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+        int two = nums[0];
+        int one = Math.max(nums[0], nums[1]);
+        
+        for (int i = 2; i < nums.length; i++) {
+            int max = Math.max(one, two + nums[i]);
+            two = one;
+            one = max;
+        }
+        return one;
+    }
+}
+
 // Solution 1: Dynamic programming
 // Each cell i in DP array respresents the maximum result ending with a robbery in houese i.
 // Therefore, at each house i, we have two choices:
