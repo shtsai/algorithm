@@ -13,11 +13,48 @@
  * The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes. 
  */
 
-// Solution 3:
-// DFS + DP
+// https://leetcode.com/problems/word-break-ii/solution/
+
+// Solution 3: DFS + Memoization
 // Use a map to memoize the result for smaller problems.
 // Build the result buttom-up.
 // reference: https://discuss.leetcode.com/topic/27855/my-concise-java-solution-based-on-memorized-dfs
+
+// version 2:
+// Instead of creating substrings, use a integer to indicate start index.
+// Can also be used as key to the hashMap
+// 11/07/2017
+class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> dict = new HashSet<>(wordDict);
+        HashMap<Integer, List<String>> map = new HashMap<>();
+        return breaker(s, dict, map, 0);
+    }
+    
+    private List<String> breaker(String s, Set<String> dict, HashMap<Integer, List<String>> map, int start) {
+        List<String> res = new LinkedList<>();
+        if (map.containsKey(start)) {  // already exist
+            return map.get(start);
+        }
+        if (start == s.length()) {  // base case
+            res.add("");
+            return res;
+        }
+        for (int i = start + 1; i <= s.length(); i++) {
+            if (dict.contains(s.substring(start, i))) {
+                List<String> sublist = breaker(s, dict, map, i);
+                for (int j = 0; j < sublist.size(); j++) { // insert this word to the front
+                    String space = sublist.get(j).length() == 0 ? "" : " ";
+                    res.add(new String (s.substring(start, i) + space + sublist.get(j)));
+                }
+            }
+        }
+        map.put(start, res);
+        return res;
+    }
+}
+
+// version 1
 class Solution {
     public List<String> wordBreak(String s, List<String> wordDict) {
         Set<String> dict = new HashSet<>(wordDict);
