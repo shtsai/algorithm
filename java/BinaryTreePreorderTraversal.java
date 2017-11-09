@@ -21,7 +21,9 @@
  * }
  */
 
-// recursive solution
+// Solution 1: Recursive solution
+// Time: O(n) - n is the number of nodes
+// Space: O(logn) - height of call stacks
 public class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> list = new ArrayList<Integer>();
@@ -38,8 +40,32 @@ public class Solution {
     }
 }
 
-/*
-// iterative solution
+
+// Solution 2: Iterative solution with stack
+// Version 2:
+// 11/09/2017
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if (root == null) return res;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        
+        while (!stack.isEmpty()){
+            TreeNode p = stack.pop();
+            res.add(p.val);
+            if (p.right != null) {
+                stack.push(p.right);
+            }
+            if (p.left != null) {
+                stack.push(p.left);
+            }
+        }
+        return res;
+    }
+}
+
+// Version 1:
 public class Solution {
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> list = new ArrayList<Integer>();
@@ -60,4 +86,3 @@ public class Solution {
         return list;
     }
 }
-*/
