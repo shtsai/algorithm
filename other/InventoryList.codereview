@@ -1,0 +1,26 @@
+/*
+	PocketGem Code Reviews
+
+	Given an implementation of Game Items. 
+		public List<Item> items;
+		public List<Item> normalItems;
+		public List<Item> questItems;
+	Provide some feedback on the code.
+ */
+
+1. Using List to store items is not very efficient. I am not sure what kind of List is used here. If it is a ArrayList, then inserting and accessing a item is fast, but removing an item is expensive because it requires us to shift all elements around. If it is a LinkedList, then inserts and removes are fast, but searches will require a linear scan, which is slow. Therefore, List is not really the data structure we want to use here.
+
+2. Using List to store items also creates redundancy. The quantity of each item is not well represented. Here, I am assuming that all items of the same type is identical, and there is no unique "item id" for each instance of the same item. Under this assumption, I think we should group the same item together.
+
+Based on issue 1 and 2, I think a HashMap will be a better data structure to use here. HashMap provides O(1) insert, find, and delete, which is very fast. In addition, we can use the Item as the key of the map, and use the quantity as the value. Therefore, finding, adding, and removing an item are very fast and convenient. 
+
+3. Having three data structures to store items seems a little bit redundant here. There are two options. The first option is to keep only one HashMap for containing all items. If we need to return only normal items, we can scan through the hashMap, and return items that are normal items. This option only uses one data structure, but we need additional checks when retrieve normal or request items. The second option is to keep two HashMaps for normal items and quest items separately. This option is better when we need to frequently retrieve normal or request items. If we need to return all items, we can just combine the result of the two HashMaps.
+
+Assume in this case, it is important to distinguish normal and quest items, we can have the following data structure.
+
+public HashMap<Item, Integer> normalItems;
+
+public HashMap<Item, Integer> questItems;
+
+
+
