@@ -6,6 +6,12 @@
  * Note that 1 is typically treated as an ugly number.
  */
 
+// Solution 1:
+// repeatedly divide num by 2, 3, 5 as long as num is divisable.
+// Finally, check if the final result is 1.
+// Time: O(logn) - however, max int in java is 2^31, so worst case it is O(30) = Q(1)
+// Space: O(1)
+// version 2: general version
 public class Solution {
     public boolean isUgly(int num) {
         int[] primes = {2,3,5};   // store all primes
@@ -16,5 +22,22 @@ public class Solution {
         }
 
         return num == 1;  // eventually, a ugly number will become 1
+    }
+}
+
+// version 1:
+// 11/13/2017
+class Solution {
+    public boolean isUgly(int num) {
+        while (num != 0 && num % 5 == 0) {
+            num /= 5;
+        }
+        while (num != 0 && num % 3 == 0) {
+            num /= 3;
+        }
+        while (num != 0 && num % 2 == 0) {
+            num /= 2;
+        }
+        return num == 1;
     }
 }
