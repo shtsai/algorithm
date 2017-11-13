@@ -12,6 +12,43 @@
  * Note: You may assume the string contain only lowercase letters.
  */
 
+// Solution 3: slow and fast pointers
+// Use a slow point to point at the a candidate.
+// Use a fast point to scan through the string and update frequency.
+// When candidate becomes invalid, we move slow pointer to find next candidate.
+// Note that slow pointer might go beyond fast pointer, if that is the case,
+// we will need to update frequency along the way, and reset fast
+// to slow+1 at the end.
+//
+// Time: O(n) - worst case two passes
+// Space: O(1) - frequency map, constant space
+// 11/13/2017
+
+class Solution {
+    public int firstUniqChar(String s) {
+        if (s == null || s.length() == 0) return -1;
+        int[] freq = new int[256];
+        int slow = 0, fast = 0;
+        char[] chars = s.toCharArray();
+        while (fast < chars.length) {
+            freq[chars[fast]]++;
+            while (slow < chars.length && freq[chars[slow]] > 1) {
+                slow++;
+                if (slow >= chars.length) return -1;
+                if (slow > fast) {
+                    freq[chars[slow]]++;
+                }
+            }
+            if (slow > fast) {
+                fast = slow + 1;
+            } else {
+                fast++;
+            }
+        }
+        return slow;
+    }
+}
+
 // Solution 2:
 // count the frequency of each char
 // return the first char with frequency of 1
