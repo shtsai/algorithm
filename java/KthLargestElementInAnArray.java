@@ -13,8 +13,45 @@
 //       Can use randomization to get good average runtime
 // Space: O(1)
 // reference: https://discuss.leetcode.com/topic/14597/solution-explained
-// 09/22/2017
+// version 2: make partition() a little more concise
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        k = nums.length - k;
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int index = partition(nums, left, right);
+            if (k == index) {
+                return nums[k];
+            } else if (index > k) {
+                right = index - 1;
+            } else {
+                left = index + 1;
+            }
+        }
+        return nums[k];
+    }
+    public int partition(int[] nums, int left, int right) {
+        int pivot = left, value = nums[pivot];
+        int l = left + 1, r = right;
+        while (l <= right && r > left) {
+            while (l <= right && nums[l] <= value) l++;
+            while (r > left && nums[r] > value) r--;
+            if (l > r) break;
+            swap(nums, l, r);
+        }
+        swap(nums, pivot, r);
+        return r;
+    }
+    public void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+}
 
+
+// version 1:
+// 09/22/2017
 class Solution {
     public int findKthLargest(int[] nums, int k) {
         k = nums.length - k;
