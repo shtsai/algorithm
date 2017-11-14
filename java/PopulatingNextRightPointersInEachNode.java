@@ -39,9 +39,39 @@
  */
 
 // Solution 2:
-// use pointers to connect left child and right child
+// Since we have perfect binary tree as input, we only
+// need to keep track of the first node of every level.
+// Then we can use a point to scan through the parent node,
+// and connect children on the next level.
+// After we are done, going to the children level, and repeat.
 // run the algorithm on an example to understand visually
-// constant space, faster
+//
+// Time: O(n) - n is the number of nodes
+// Space: O(1)
+
+// version 2: better variable names
+// 11/13/2017
+
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) return;
+        TreeLinkNode parent = root;
+        TreeLinkNode parentNext;
+        while (parent.left != null) {
+            parentNext =  parent.left;
+            while (parent != null) {
+                parent.left.next = parent.right;
+                if (parent.next != null) {
+                    parent.right.next = parent.next.left;
+                }
+                parent = parent.next;
+            }
+            parent = parentNext;
+        }    
+    }
+}
+
+// version 1:
 public class Solution {
     public void connect(TreeLinkNode root) {
         if (root == null) return;
