@@ -6,44 +6,46 @@
  * such that the container contains the most water.
  */
 
-public class Solution {
-    public int maxArea(int[] height) {
 
-        // use two pointers O(n)
-        // compare the heights of left and right
-        // move the pointer that has smaller height because 
-        // that is the only possible way to get a larger value
+// Solution 2: Two pointers
+// Start with a left and right pointer, and calculate the area.
+// Compare the heights of left and right,
+// move the pointer that has smaller height because 
+// that is the only possible way to get a larger value.
+// Update max area accordingly.
+//
+// Time: O(n) - one pass
+// Space: O(1)
+// 11/14/2017
+class Solution {
+    public int maxArea(int[] height) {
         int max = 0;
-        int current;
-        int left = 0;
-        int right = height.length - 1;
-        
+        int left = 0, right = height.length-1;
         while (left < right) {
-            current = (right - left) * Math.min(height[left], height[right]);
-            max = Math.max(max, current);
-            
+            max = Math.max(max, (right-left) * Math.min(height[left], height[right]));
             if (height[left] < height[right]) {
                 left++;
             } else {
                 right--;
             }
         }
-        
         return max;
+    }
+}
 
 
-        /*
-        // brute force O(n^2)
+// Solution 1: Brute force solution
+// Try all n^2 combinations
+// Time: O(n^2)
+// Space: O(1)
+class Solution {
+    public int maxArea(int[] height) {
         int max = 0;
-        int current;
-        
         for (int i = 0; i < height.length; i++) {
-            for (int j = i+1; j < height.length; j++) {
-                current = (j - i) * Math.min(height[i], height[j]);
-                max = Math.max(max, current);
+            for (int j = i + 1; j < height.length; j++) {
+                max = Math.max(max, (j-i) * Math.min(height[i], height[j]));
             }
         }
         return max;
-        */
     }
 }
