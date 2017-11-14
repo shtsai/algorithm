@@ -30,14 +30,61 @@
  * }
  */
 
-// use three pointers:
+// Solution 1: use pointers
+// version 2: better naming
+// Same idea as version 1
+// Use four pointers:
+//      - parent: points at the parent node
+//      - parentHead: points at the next parent (in next iteration)
+//      - child: points at the current child node, this is where we append to
+//      - childHead: points at the head of child in next interation
+// We then scan through the parent level, if we find a child, we append
+// it to the child. Meanwhile, if next child head is not found, see if
+// the child node has any grandchild.
+// After we are done with the current level, move to next level and repeat.
+//
+// Time: O(n) - n is the number of nodes
+// Space: O(1)
+// 11/13/2017
+
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) return;
+        TreeLinkNode parentHead = root, parent = root;
+        TreeLinkNode childHead = root.left != null ? root.left : root.right;
+        while (childHead != null) {
+            TreeLinkNode child = childHead;
+            parent = parentHead;
+            parentHead = childHead;
+            childHead = null;
+            while (parent != null) {
+                if (parent.left != null && parent.left != child) {
+                    child.next = parent.left;
+                    child = child.next;
+                }
+                if (childHead == null) {
+                    childHead = child.left != null ? child.left : child.right;
+                }
+                if (parent.right != null && parent.right != child) {
+                    child.next = parent.right;
+                    child = child.next;
+                }
+                if (childHead == null) {
+                    childHead = child.left != null ? child.left : child.right;
+                }
+                parent = parent.next;
+            }
+        }
+    }
+}
+
+// version 1:
 // cur: points to the node we are currently processing
 // head: points to the head of the list on next level, which is where to start after finishing current level
 // tail: points to the tail of the list on next level, so that we can append to it
 public class Solution {
     public void connect(TreeLinkNode root) {
         if (root == null) return;
-        
         TreeLinkNode cur = root, head = null, tail = null;
         while (cur != null) {
             while (cur != null) {
@@ -49,8 +96,7 @@ public class Solution {
                         tail.next = cur.left;  // append left child to the tail
                         tail = tail.next;
                     }
-                }
-                
+                }   
                 if (cur.right != null) {
                     if (head == null) {
                         head = cur.right;
@@ -62,13 +108,11 @@ public class Solution {
                 }
                 cur = cur.next;     // handle next node at the current level
             }
-            
             // finish all nodes at the current level, move on to next
             cur = head;
             head = null;
             tail = null;
         }
-        
         return;
     }
 }
