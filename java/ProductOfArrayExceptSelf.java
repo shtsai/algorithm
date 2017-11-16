@@ -9,8 +9,7 @@
  *
  */
 
-
-/*
+/* Solution 1:
     Trick: contruct the array in the following way
     Example of a four-element array: 
     
@@ -19,8 +18,35 @@
 
     reference:
     http://stackoverflow.com/questions/2680548/given-an-array-of-numbers-return-array-of-products-of-all-other-numbers-no-div
-*/
 
+    Time: O(n)
+    Space: O(n)
+ */
+
+// version 2: 
+// use two arrays and three passes, easier to write
+// 11/16/2017
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int[] left = new int[nums.length];
+        int[] right = new int[nums.length];
+        left[0] = 1;
+        for (int i = 1; i < nums.length; i++) {
+            left[i] = left[i-1] * nums[i-1];
+        }
+        right[nums.length-1] = 1;
+        for (int i = nums.length-2; i >= 0; i--) {
+            right[i] = right[i+1] * nums[i+1];
+        }
+        for (int i = 0; i < nums.length; i++) {
+            right[i] *= left[i];
+        }
+        return right;
+    }
+}
+
+// version 1:
+// Use only one array and two passes
 public class Solution {
     public int[] productExceptSelf(int[] nums) {
         int[] result = new int[nums.length];
