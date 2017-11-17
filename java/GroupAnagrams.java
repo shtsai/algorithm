@@ -12,9 +12,11 @@
  * Note: All inputs will be in lower-case.
  */
 
-// Solution 2:
+// Solution 2: sort strings by character
 // convert string to char[], then sort char[] and convert it back to string form
 // all anagrams will be the same
+// Time: O(nklogk) - n iterations, sort each string is klogk
+// Space: O(n * k) - HashMap
 public class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
         HashMap<String, List<String>> map = new HashMap<>();
@@ -37,6 +39,10 @@ public class Solution {
 
 // Solution 1:
 // use int[] to get character frequency
+// Then convert int array into a string, which uniquely identify
+// a set of anagrams.
+// Time: O(nk) - n is the number of strings, k is the length of string
+// Space: O(nk) - HashMap
 public class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
         HashMap<String, List<String>> map = new HashMap<>();
