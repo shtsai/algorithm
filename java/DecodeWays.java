@@ -14,6 +14,16 @@
  */
 
 // Solution 2: Dynamic programming
+// Each DP[i] represents # of decode ways from index 0 to index i.
+// Recurence relation:
+//     1. if s[i] is a valid integer, 
+//        we can append it to previous result of dp[i-1]
+//     2. if s[i-1: i] is a valid integer,
+//        we can append it to the second previous result dp[i-2]
+//
+// Time: O(n) - one pass
+// Space: O(n) - dp array
+// version 3: cleaner
 public class Solution {
     public int numDecodings(String s) {
         if (s == null || s.length() == 0) return 0;
@@ -28,6 +38,52 @@ public class Solution {
             if (10 <= two && two <= 26) dp[i] += dp[i-2];
         }
         return dp[len];
+    }
+}
+
+// version 2: Recursive approach
+// 11/18/2017
+class Solution {
+    public int numDecodings(String s) {
+        if (s.length() == 0) return 0;
+        int[] dp = new int[s.length()+1];
+        Arrays.fill(dp, -1);
+        dp[0] = 1;
+        dp[1] = s.charAt(0) == '0' ? 0 : 1;
+        return decode(s, dp, s.length());
+    }
+    public int decode(String s, int[] dp, int i) {
+        if (dp[i] != -1) return dp[i];
+        int one = Integer.parseInt(s.substring(i-1, i));
+        int two = Integer.parseInt(s.substring(i-2, i));
+        int res = 0;
+        if (one > 0 && one <= 9) res += decode(s, dp, i-1);
+        if (two >= 10 && two <= 26) res += decode(s, dp, i-2);
+        dp[i] = res;
+        return res;
+    }
+}
+
+// version 1:
+// 11/18/2017
+class Solution {
+    public int numDecodings(String s) {
+        if (s.length() == 0) return 0;
+        int[] dp = new int[s.length()];
+        if (s.charAt(0) != '0') dp[0] = 1;
+        for (int i = 1; i < s.length(); i++) {
+            if (s.charAt(i) != '0') {
+                dp[i] = dp[i-1];
+            }
+            if (s.charAt(i-1) != '0') {
+                int two = Integer.parseInt(s.substring(i-1, i+1));
+                if (two > 0 && two <= 26) {
+                    int preTwo = i-2 >= 0 ? dp[i-2] : 1;
+                    dp[i] += preTwo;
+                }       
+            }
+        }
+        return dp[s.length()-1];
     }
 }
 
