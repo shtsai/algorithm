@@ -4,6 +4,24 @@
  * Given two integers x and y, calculate the Hamming distance.
  */
 
+// Solution 2: Compare bit by bits
+// version 2:
+// Time: O(1) - at most 32 bits, O(31) = O(1)
+// Space: O(1)
+// 11/16/2017
+class Solution {
+    public int hammingDistance(int x, int y) {
+        int count = 0;
+        while (!(x == 0 && y == 0)) {
+            count += (x & 1) ^ (y & 1);
+            x = x >> 1;
+            y = y >> 1;
+        }
+        return count;
+    }
+}
+
+// version 1:
 public class Solution {
     public int hammingDistance(int x, int y) {
         int result = 0;
@@ -18,7 +36,7 @@ public class Solution {
     }
 }
 
-/*
+// Solution 1:
 // use XOR, then count number of 1-bit
 public class Solution {
     public int hammingDistance(int x, int y) {
@@ -31,4 +49,3 @@ public class Solution {
         return count;
     }
 }
-*/

@@ -21,6 +21,37 @@
  * }
  */
 
+// Solution 2 version 3: much more concise
+// 11/14/2017
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Stack<Integer> s1 = new Stack<>();
+        Stack<Integer> s2 = new Stack<>();
+        ListNode p = l1;
+        while (p != null) {
+            s1.push(p.val);
+            p = p.next;
+        }
+        p = l2;
+        while (p != null) {
+            s2.push(p.val);
+            p = p.next;
+        }
+        int carry = 0;
+        ListNode dummy = new ListNode(-1), node = null;
+        while (!(s1.isEmpty() && s2.isEmpty() && carry == 0)) {
+            int n1 = s1.isEmpty() ? 0 : s1.pop();
+            int n2 = s2.isEmpty() ? 0 : s2.pop();
+            ListNode newNode = new ListNode((n1 + n2 + carry) % 10);
+            newNode.next = node;    // insert after dummy
+            dummy.next = newNode;
+            node = newNode;
+            carry = (n1 + n2 + carry) / 10;
+        }
+        return dummy.next;
+    }
+}
+
 // Solution 2 version 2:
 // Use a dummy node to hold the result list
 // add nodes to the result list while computing.

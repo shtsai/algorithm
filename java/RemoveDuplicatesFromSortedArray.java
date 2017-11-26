@@ -7,8 +7,26 @@
  * It doesn't matter what you leave beyond the new length.
  */
 
+// Solution 1:
+// version 3:
+// Use left and right pointers to locate windows of duplicate numbers.
+// After finding each window, write to the write index.
+// 11/16/2017
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int l = 0, r = 0, write = 0;
+        while (r < nums.length) {
+            while (r < nums.length && nums[l] == nums[r]) r++; // skip duplicates
+            nums[write] = nums[l];
+            write++;
+            l = r;
+        }
+        return write;
+    }
+}
 
 // Solution 1:
+// version 2:
 // Two pointers, distinct points at the distinct number,
 // cur scans through the array.
 // When nums[distinct] == nums[cur], we continue to skip duplicates
@@ -33,7 +51,7 @@ public class Solution {
     }
 }
 
-// Solution 1: version 2
+// Solution 1: version 1
 public class Solution {
     public int removeDuplicates(int[] nums) {
         if (nums == null || nums.length == 0) {

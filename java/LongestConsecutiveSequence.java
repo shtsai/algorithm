@@ -8,9 +8,42 @@
  * Your algorithm should run in O(n) complexity.
  */
 
-// dynamic programming
+// Solution 3: HashSet
+// add all numbers into a HashSet for O(1) look up
+// Then scan through the array.
+// For each number i, if i-1 is not in the HashSet,
+// that means i can be a start number of a consecutive sequence.
+// Use HashSet to quickly find the length of consecutive sequence.
+// Finally, return the max.
+//
+// Time: O(n)
+// Space: O(n)
+// 11/17/2017
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        HashSet<Integer> set = new HashSet<>();
+        int max = 0;
+        for (int n : nums) {
+            set.add(n);
+        }
+        for (int n : nums) {
+            if (!set.contains(n-1)) {
+                int count = 1;
+                while (set.contains(n+1)) {
+                    count++;
+                    n++;
+                }
+                max = Math.max(max, count);
+            }
+        }
+        return max;
+    }
+}
+
+// Solution 2: dynamic programming
 // use hashmap to do O(1) search, memoize the result in the map
-// time: O(n)
+// Time: O(n)
+// Space: O(n) - HashMap
 class Solution {
     public int longestConsecutive(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
@@ -32,7 +65,8 @@ class Solution {
 }
 
 // Solution 1: sort and then count
-// time: O(nlgn)
+// Time: O(nlgn)
+// Space: O(1)
 class Solution {
     public int longestConsecutive(int[] nums) {
         if (nums == null || nums.length == 0) return 0;
