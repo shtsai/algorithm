@@ -32,6 +32,33 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+
+// Solution 1: Recursion
+// Observe that the flatten list is in pre-order traversal order.
+// We can flatten the left subtree and right subtree first,
+// then append left the root, and then append right.
+// Time: O(n) - visit each node at most once
+// Space: O(logn) - call stack
+// version 2:
+// 11/15/2017
+class Solution {
+    public void flatten(TreeNode root) {
+        if (root == null) return;
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        flatten(left);
+        flatten(right);
+        root.right = left;
+        root.left = null;
+        TreeNode p = root;
+        while (p.right != null) {
+            p = p.right;
+        }
+        p.right = right;
+    }
+}
+
+// version 1:
 public class Solution {
     public void flatten(TreeNode root) {
         helper(root);

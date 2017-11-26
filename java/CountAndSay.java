@@ -10,6 +10,31 @@
  * Note: The sequence of integers will be represented as a string.
  */
 
+// Solution 1:
+// Do n - 1 iterations to generate the string.
+// 11/16/2017
+class Solution {
+    public String countAndSay(int n) {
+        String s = "1";
+        for (int i = 0; i < n - 1; i++) {
+            StringBuilder sb = new StringBuilder();
+            int l = 0, r = 0;
+            while (r <= s.length()) {
+                if (r == s.length() || s.charAt(r) != s.charAt(l)) {
+                    int len = r - l;
+                    sb.append((len));
+                    sb.append(s.charAt(l));
+                    l = r;
+                }
+                r++;
+            }
+            s = sb.toString();
+        }
+        return s;
+    }
+}
+
+// version 1:
 public class Solution {
     public String countAndSay(int n) {
         StringBuilder prev;

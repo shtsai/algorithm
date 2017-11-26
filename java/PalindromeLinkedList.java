@@ -20,7 +20,7 @@
  * }
  */
 
-// Solution 2 version 2:
+// Solution 3 version 2:
 // Break list into two parts, easier for the reverse
 // 09/26/2017
 class Solution {
@@ -42,7 +42,7 @@ class Solution {
             p = next;
         }
         
-        ListNode q = head;       
+        ListNode q = head;                  // second half has same # nodes or 1 less
         while (pre != null && q != null) {  // compare node by node
             if (pre.val != q.val) {
                 return false;
@@ -55,7 +55,7 @@ class Solution {
     }
 }
 
-// Solution 2:
+// Solution 3:
 // fast and slow pointer, find the middle of the list,
 // reverse the second half, and check if it matches the first half
 // Time: O(n)
@@ -92,6 +92,38 @@ public class Solution {
         
         return true;
         
+    }
+}
+
+// Solution 2: Use stack
+// First use fast and slow pointers to find the middle of the list.
+// Then push the first half of the list onto a stack so that the 
+// order is reversed. Then compare the second half with the numbers
+// on the stack.
+// Time: O(n)
+// Space: O(n)
+// 11/14/2017
+class Solution {
+    public boolean isPalindrome(ListNode head) {
+        if (head == null) return true;
+        ListNode slow = head, fast = head;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        Stack<Integer> stack = new Stack<>();
+        ListNode p = head;
+        while (p != slow) {
+            stack.push(p.val);
+            p = p.next;
+        }
+        if (fast.next != null) stack.push(slow.val);
+        p = slow.next;
+        while (!stack.isEmpty() && p != null) {
+            if (stack.pop() != p.val) return false;
+            p = p.next;
+        }
+        return stack.isEmpty();
     }
 }
 
