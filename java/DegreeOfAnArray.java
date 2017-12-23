@@ -20,6 +20,47 @@
     nums[i] will be an integer between 0 and 49,999.
  */
 
+// Solution 2: 
+// Use three HashMaps.
+// One for keeping track of the count of each number.
+// One for keeping track of the left most occurrence.
+// And the last one for keeping tack of the right most occurrence.
+// Find the numbers with max counts, and find the min
+// among their (right - left).
+// Time: O(n)
+// Space: O(n)
+// 12/23/2017
+    
+class Solution {
+    public int findShortestSubArray(int[] nums) {
+        int res = nums.length, len = 0;
+        HashMap<Integer, Integer> left = new HashMap<>();
+        HashMap<Integer, Integer> right = new HashMap<>();
+        HashMap<Integer, Integer> count = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (!count.containsKey(nums[i])) {
+                count.put(nums[i], 1);
+            } else {
+                count.put(nums[i], count.get(nums[i]) + 1);
+            }
+            len = Math.max(len, count.get(nums[i]));
+            if (!left.containsKey(nums[i])) {
+                left.put(nums[i], i);
+            } else {
+                right.put(nums[i], i);
+            }
+        }
+        if (len == 1) return 1;     // only one number, no right
+        
+        for (Integer k : count.keySet()) {
+            if (count.get(k) == len) {
+                res = Math.min(res, right.get(k) - left.get(k) + 1);
+            }
+        }
+        return res;
+    }
+}    
+
 // Solution 1: brute force
 // Use a hashmap to count the frequency of each numbers, and find the max degree.
 // Then, check all numbers that have the max degree, can compute their length.
