@@ -7,8 +7,8 @@
     Given n = 2, return ["11","69","88","96"].
  */
 
-// Solution 2: Recursive solution
-// Use helper functions to recursively solve.
+// Solution 2: Recursive solution (by length)
+// Use helper functions to recursively solve the same problem with smaller length.
 // Base cases:
 //      0: emtpy string
 //      1: 0, 1, 8
@@ -16,8 +16,8 @@
 // expand the string to longer strobogrammatic numbers.
 // Need to check if n == max, if so, we are
 // at the top level of the function call, and we cannot add "00".
-// Time: O(n)
-// Space: O(n)
+// Time: O(5^n)
+// Space: O(n) - smaller call stack
 // 10/07/2017
 
 class Solution {
@@ -53,6 +53,44 @@ class Solution {
     }
 }
 
+// Solution 2: Recursively find each number
+// Can cause more function call than Solution 3
+// Time: O(5^n) - n level in total, 5 branches at each level
+// Space: O(5^n)
+// 12/26/2017
+class Solution {
+    final String[] center = {"0", "1", "8"};
+    final String[][] pairs = {{"1", "1"},
+                             {"6", "9"},
+                             {"8", "8"},
+                             {"9", "6"}};
+    
+    public List<String> findStrobogrammatic(int n) {
+        List<String> res = new ArrayList<>();
+        find(res, n, "");
+        return res;
+    }
+    
+    public void find(List<String> res, int len, String cur) {
+        if (cur.length() == len) {
+            res.add(cur);
+            return;
+        }
+        if (cur.length() == 0 && (len % 2 == 1)) {
+            for (String c : center) {
+                find(res, len, c);
+            }
+            return;
+        }
+        for (String[] p : pairs) {
+            find(res, len, p[0] + cur + p[1]);
+        }
+        if (len - cur.length() != 2) {
+            find(res, len, "0" + cur + "0");
+        }
+    }
+}
+
 // Solution 1: iterative solution
 // Initialize list for base cases (0, 1, 2).
 // Odd and even n have difference results, need to handle that.
@@ -60,8 +98,8 @@ class Solution {
 // to the two sides of strings.
 // Need to handle "00" specially, because cannot start a number with 0.
 // Only add "00" when n > 2.
-// Time: O(n)
-// Space: O(n)
+// Time: O(5^n)
+// Space: O(5^n)
 // 10/07/2017
 
 class Solution {
