@@ -6,7 +6,7 @@
     For example, the numbers "69", "88", and "818" are all strobogrammatic.
  */
 
-// Solution 2:
+// Solution 3:
 // Store all possible pattern in a string,
 // Use two pointers to scan from left and right,
 // see if left and right element corresponds to a pattern in the string.
@@ -21,7 +21,7 @@ public boolean isStrobogrammatic(String num) {
     return true;
 }
 
-// Solution 1:
+// Solution 2:
 // Store all valid mappings in a hashmap.
 // Scan through the array using two pointers from left and right,
 // check if each corresponding position matches.
@@ -51,5 +51,35 @@ class Solution {
             return c == '0' || c == '1' || c == '8';
         }
         return true;
+    }
+}
+
+// Solution 1: Recursion
+// Check the if the leftmost and rightmost char matches.
+// If so, recursively check the inner substring.
+// Need be handle cases that contains leading 0s.
+// Time: O(n) - worst case check every pair of chars
+// Space: O(n) - n/2 level call stack
+// 12/26/2017
+
+class Solution {
+    public boolean isStrobogrammatic(String num) {
+        if (num == null || num.length() == 0) return true;
+        if (num.length() == 1) {
+            if (num.equals("0") || num.equals("1") || num.equals("8")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        char first = num.charAt(0);
+        char last = num.charAt(num.length()-1);
+        if ((first == '0' && last == '0') || (first == '1' && last == '1') 
+            || (first == '6' &&  last == '9') || (first == '9' && last == '6') 
+            || (first == '8' && last == '8')) {
+            return isStrobogrammatic(num.substring(1, num.length()-1));
+        } else {
+            return false;
+        }
     }
 }
