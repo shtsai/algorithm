@@ -10,7 +10,7 @@
     Because the range might be a large number, the low and high numbers are represented as string.
  */
 
-// Solution 1:
+// Solution 1 version 2:
 // Based on Strobogrammatic Number II
 // Generate all strobogrammatic Number with length between
 // low.length() and high.length(), then count the number of 
@@ -63,5 +63,75 @@ class Solution {
             }
         }
         return res;
+    }
+}
+
+// Solution 1:
+// Only check strobogrammatic numbers whose length is the same 
+// as low or high.
+// 12/26/2017
+
+class Solution {
+    public int strobogrammaticInRange(String low, String high) {
+        if (low.length() > high.length()) return 0;
+        int count = 0;
+        if (low.length() == high.length()) {
+            if (low.compareTo(high) > 0) return 0;
+            List<String> ls = strobogrammaticGenerate(low.length());
+            for (String lss : ls) {
+                if (low.compareTo(lss) <= 0 && high.compareTo(lss) >= 0) {
+                    count++;
+                }
+            }
+            return count;
+        }
+        List<String> ls = strobogrammaticGenerate(low.length());
+        for (String lss : ls) {
+            if (low.compareTo(lss) <= 0) {
+                count++;
+            }
+        }
+        List<String> hs = strobogrammaticGenerate(high.length());
+        for (String hss : hs) {
+            if (high.compareTo(hss) >= 0) {
+                count++;
+            }
+        }
+        for (int i = low.length() + 1; i < high.length(); i++) {
+            List<String> s = strobogrammaticGenerate(i);
+            count += s.size();
+        }
+        return count;
+    }
+    
+    final String[] center = {"0", "1", "8"};
+    final String[][] pairs = {{"1", "1"},
+                             {"6", "9"},
+                             {"8", "8"},
+                             {"9", "6"}};
+    
+    public List<String> strobogrammaticGenerate(int n) {
+        List<String> res = new ArrayList<>();
+        find(res, n, "");
+        return res;
+    }
+    
+    public void find(List<String> res, int len, String cur) {
+        if (cur.length() == len) {
+            res.add(cur);
+            return;
+        }
+        if (cur.length() == 0 && (len % 2 == 1)) {
+            for (String c : center) {
+                find(res, len, c);
+            }
+            return;
+        }
+        for (String[] p : pairs) {
+            find(res, len, p[0] + cur + p[1]);
+        }
+        if (len - cur.length() != 2) {
+            find(res, len, "0" + cur + "0");
+        }
     }
 }
