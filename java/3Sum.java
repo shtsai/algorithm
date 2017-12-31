@@ -3,7 +3,41 @@
  	Find all unique triplets in the array which gives the sum of zero.
  */
 
-// Solution 1: convert it to two sum, two pointer search
+// Solution 3: convert to two sum, hashset approach
+// Sort the array in acsending order
+// Use a pointer to scan through the array, the value it points at is the target
+// Use hashset approach to search for 2Sum for that value in the remaining array.
+// add all sorted intermediate result to a hashset to handle duplicates.
+//
+// Time: O(n^2) - can be less efficient b/c we didn't skip duplicates
+// Space: O(n) - HashSet
+
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        HashSet<List<Integer>> res = new HashSet<>();
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            HashSet<Integer> set = new HashSet<>();
+            for (int j = i + 1; j < nums.length; j++) {
+                if (set.contains(-nums[i] - nums[j])) {
+                    List<Integer> l = new ArrayList<>();
+                    l.add(nums[i]);
+                    l.add(nums[j]);
+                    l.add(-nums[i]-nums[j]);
+                    Collections.sort(l);
+                    res.add(l);
+                } else {
+                    set.add(nums[j]);
+                }
+            }
+        }
+        List<List<Integer>> reslist = new ArrayList<>();
+        reslist.addAll(res);
+        return reslist;
+    }
+}
+
+// Solution 2: convert it to two sum, two pointer search
 // Sort the array in acsending order
 // Use a pointer to scan through the array, the value it points at is the target
 // Use another two pointers to search for 2Sum for that value in the remaining array.
@@ -11,6 +45,40 @@
 //
 // Time: O(n^2) - two nested loops
 // Space: O(1)
+
+// version 2
+// 12/30/2017
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < nums.length-2; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) continue;
+            int j = i+1, k = nums.length-1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) {
+                    List<Integer> l = new ArrayList<>();
+                    l.add(nums[i]);
+                    l.add(nums[j]);
+                    l.add(nums[k]);
+                    res.add(l);
+                    while (j < k && nums[j+1] == nums[j]) j++;
+                    while (j < k && nums[k-1] == nums[k]) k--;
+                    j++;
+                    k--;
+                } else if (sum < 0) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+        }
+        return res;
+    }
+}
+
+// Version 1
 // 10/02/2017
 public class Solution {
 	public List<List<Integer>> threeSum(int[] nums) {		
