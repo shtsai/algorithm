@@ -19,6 +19,39 @@
 // Solution 1: sort by start time, then merge
 // Time: O(nlogn) - sorting + one passes
 // Space: O(1)
+
+// Version 3:
+// 01/05/2018
+class Solution {
+    public List<Interval> merge(List<Interval> intervals) {
+        Collections.sort(intervals, new Comparator<Interval>() {
+            @Override
+            public int compare (Interval a, Interval b) {
+                if (a.start == b.start) {
+                    return a.end - b.end;
+                } else {
+                    return a.start - b.start;
+                }
+            }
+        });
+        List<Interval> res = new ArrayList<>();
+        Interval cur = null;
+        for (Interval i : intervals) {
+            if (cur == null) {
+                cur = i;
+                continue;
+            } else if (i.start <= cur.end) {
+                cur.end = Math.max(cur.end, i.end);
+            } else {
+                res.add(cur);
+                cur = i;
+            }
+        }
+        if (cur != null) res.add(cur);
+        return res;
+    }
+}
+
 // version 2: use anonymous class
 // 11/17/2017
 class Solution {
