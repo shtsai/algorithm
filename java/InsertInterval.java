@@ -22,11 +22,73 @@
  * }
  */
 
+// Solution 3: 
+// First add all non-overlapping intervals.
+// Then merge all overlapping intervals and add to result.
+// Finally, add remaining intervals.
+// Time: O(n)
+// Space: O(1)
+// 01/05/2018
+class Solution {
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        List<Interval> res = new ArrayList<>();
+        int i = 0;
+        while (i < intervals.size() && intervals.get(i).end < newInterval.start) {
+            res.add(intervals.get(i));
+            i++;
+        }
+        while (i < intervals.size() && intervals.get(i).start <= newInterval.end) {
+            newInterval.start = Math.min(newInterval.start, intervals.get(i).start);
+            newInterval.end = Math.max(newInterval.end, intervals.get(i).end);
+            i++;
+        }
+        res.add(newInterval);
+        while (i < intervals.size()) {
+            res.add(intervals.get(i));
+            i++;
+        }
+        return res;
+    }
+}
+
 // Solution 2:
 // iterative merge
 // look for a gap where the new interval can be inserted
 // when encounter a overlapped interval, delete it from the list, and update the new interval (by merging the two)
 // when the interval is still not inserted after a round of searching, it must be added to the end of the list
+// Time: O(n)
+// Space: O(1)
+
+// version 2: add to a new list
+// 01/05/2018
+class Solution {
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        List<Interval> res = new ArrayList<>();
+        boolean added = false;
+        for (Interval i : intervals) {
+            if (!added) {
+                if (i.end < newInterval.start) {
+                    res.add(i);
+                } else if (i.start > newInterval.end) {
+                    res.add(newInterval);
+                    res.add(i);
+                    added = true;
+                } else {
+                    newInterval.start = Math.min(newInterval.start, i.start);
+                    newInterval.end = Math.max(newInterval.end, i.end);
+                } 
+            } else {
+                res.add(i);
+            }
+        }
+        if (!added) {
+            res.add(newInterval);
+        }
+        return res;
+    }
+}
+
+// version 1:
 class Solution {
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         boolean inserted = false;  
