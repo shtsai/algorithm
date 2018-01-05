@@ -18,7 +18,35 @@
  */
 
 // Solution 1:
-// backtracking
+// Recursion and backtracking
+// Time: O(2^n)
+// Space: O(n) - call stack
+
+// version 2:
+// 01/05/2018
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        search(candidates, target, 0, 0, new ArrayList<>(), res);
+        return res;
+    }
+    
+    private void search(int[] candidates, int target, int current, int index, List<Integer> list, List<List<Integer>> res) {
+        if (current > target) return;
+        if (current == target) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        for (int i = index; i < candidates.length; i++) {
+            list.add(candidates[i]);
+            search(candidates, target, current + candidates[i], i, list, res);
+            list.remove(list.size()-1);
+        }
+    }
+}
+
+// version 1:
 class Solution {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
