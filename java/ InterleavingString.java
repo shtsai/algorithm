@@ -10,9 +10,18 @@
  * When s3 = "aadbbbaccc", return false.
  */
 
-// Dynamic programming
+// Solution 2: Bottom-up DP
 // Put s1 and s2 as the vertical and horizontal axis.
+// At each state DP[i][j], there are three possibilities
+//      1. s1[i] == s3[i+j], result depends on dp[i-1][j]
+//      2. s2[j] == s3[i+j], result depends on dp[i][j-1]
+//      3. Otherwise, false
+//
 // reference: https://discuss.leetcode.com/topic/7728/dp-solution-in-java
+// Time: O(mn)
+// Space: O(mn) - dp arrays
+// 01/07/2018
+
 class Solution {
     public boolean isInterleave(String s1, String s2, String s3) {
         if (s1.length() + s2.length() != s3.length()) return false;
@@ -36,5 +45,32 @@ class Solution {
             }
         }
         return dp[s1.length()][s2.length()];
+    }
+}
+
+
+// Solution 1: Brute force
+// Generate all permutations and see if there is a match with s3
+// Time: O(2^(m+n)) - time limit exceeded
+// Space: O(m+n) - n level call stack
+// 01/06/2018
+class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1.length() + s2.length() != s3.length()) return false;
+        return search(s1, s2, 0, 0, "", s3);
+    }
+    
+    public boolean search(String s1, String s2, int index1, int index2, String cur, String s3) {
+        if (cur.equals(s3) && index1 == s1.length() && index2 == s2.length()) return true;     
+        if (index1 >= s1.length() || index2 >= s2.length()) return false;
+
+        if (search(s1, s2, i+1, index2, cur + s1.charAt(i), s3)) {
+            return true;
+        }
+
+        if (search(s1, s2, index1, i+1, cur + s2.charAt(i), s3)) {
+            return true;
+        }
+        return false;
     }
 }
