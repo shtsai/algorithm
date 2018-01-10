@@ -50,29 +50,39 @@ class Solution {
 
 
 // Solution 1:
-// sort two strings, and compare them character by Character
-// time: O(nlogn) - b/c of sorting
+// sort two strings, then compare
+// time: O(nlogn) - sorting
 // space: O(1)
+
+// version 2: convert to string and compare string
+// 01/10/2018
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        char[] sc = s.toCharArray();
+        char[] tc = t.toCharArray();
+        Arrays.sort(sc);
+        Arrays.sort(tc);
+        return new String(sc).equals(new String(tc));
+    }
+}
+
+// version 1: compare character by Character
 public class Solution {
     public boolean isAnagram(String s, String t) {
         if (s.length() != t.length()) {
             return false;
         }
-
         // convert two strings to char arrays
         char[] sArray = s.toCharArray();
         char[] tArray = t.toCharArray();
-
         // sort two arrays
         Arrays.sort(sArray);
         Arrays.sort(tArray);
-
         for (int i = 0; i < sArray.length; i++) {
             if (sArray[i] != tArray[i]) {
                 return false;
             }
         }
-
         return true;
     }
 }
