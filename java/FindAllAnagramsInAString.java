@@ -30,7 +30,7 @@
 	The substring with start index = 2 is "ab", which is an anagram of "ab".
  */
 
-// Solution 2: Two pointers
+// Solution 3: Two pointers
 // Very similar to minimum window substring
 // First use a hashmap to store character frequency
 // Then use pointers to create a window.
@@ -79,6 +79,44 @@ class Solution {
             }
             end++;
         }
+        return res;
+    }
+}
+
+// Solution 2:
+// First create a target frequency string.
+// Then maintain a window in s and create frequency string for current window.
+// Gradually move the window to the right and compare two strings.
+// Time: O(n + m) - n = len(s), m = len(p)
+// Space: O(1) - constant space
+// 01/10/2018
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        if (s.length() == 0 || p.length() == 0 || p.length() > s.length()) return res;
+        
+        int[] targetArray = new int[26];
+        for (char c : p.toCharArray()) {
+            targetArray[c-'a']++;
+        }
+        String target = Arrays.toString(targetArray);
+        
+        int left = 0;
+        int[] freq = new int[26];
+        for (int i = left; i < p.length() - 1; i++) {
+            freq[s.charAt(i) - 'a']++;
+        }
+        
+        for (int i = p.length() - 1; i < s.length(); i++) {
+            freq[s.charAt(i) - 'a']++;
+            String current = Arrays.toString(freq);
+            if (current.equals(target)) {
+                res.add(left);
+            }
+            freq[s.charAt(left) - 'a']--;
+            left++;
+        }
+        
         return res;
     }
 }
