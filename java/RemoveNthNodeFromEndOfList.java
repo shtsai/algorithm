@@ -21,6 +21,27 @@
 
 // Solution 2: one pass
 // use fast and slow pointers
+// Time: O(n) - one pass
+// Space: O(1)
+// version 2: use a dummy node to hold the head of the list
+// 01/15/2018
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1), fast = dummy, slow = dummy;
+        dummy.next = head;
+        for (int i = 0; i < n; i++) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}
+
+// version 1:
 public class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode fast = head, slow = head, pre = null;
@@ -40,6 +61,31 @@ public class Solution {
 }
 
 // Solution 1: two passes
+// First get the length of the linkedlist.
+// Then traverse to (len - n)th node, and remove the following node.
+// Time: O(n) - two pass
+// Space: O(1)
+
+// version 2: use a dummy node
+// 01/15/2018
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1), fast = dummy, slow = dummy;
+        dummy.next = head;
+        int len = 0;
+        while (fast.next != null) {     // get length
+            fast = fast.next;
+            len++;
+        }
+        for (int i = 0; i < len - n; i++) { 
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;      
+        return dummy.next;
+    }
+}
+
+// version 1:
 public class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
         int len = 0;
