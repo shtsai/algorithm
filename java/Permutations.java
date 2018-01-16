@@ -5,8 +5,32 @@
 // Solution 3:
 // iterative approach
 // add one integer at a time, and add it to all possible insert position
-// time: O(n!): n! permutations
-// space O(n * n!): n! permutations, each has length of n
+// reference: https://leetcode.com/problems/permutations/discuss/18237/
+// Time: O(n!): n! permutations
+// Space O(n * n!): n! permutations, each has length of n
+
+// version 2:
+// 01/15/2018
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        res.add(new ArrayList<Integer>());
+        for (int i = 0; i < nums.length; i++) {
+            List<List<Integer>> newRes = new ArrayList<>();
+            for (List<Integer> l : res) {
+                for (int j = 0; j <= l.size(); j++) {
+                    List<Integer> newL = new ArrayList<>(l);
+                    newL.add(j, nums[i]);
+                    newRes.add(newL);
+                }
+            }
+            res = newRes;
+        }
+        return res;
+    }
+}
+
+// version 1: need initialization
 public class Solution {
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
@@ -30,34 +54,43 @@ public class Solution {
 }
 
 
- // Solution 2:
- // first convert int[] to ArrayList so that we can add and remove easily
- // better performance than solution 1, yet use extra memory space
- class Solution {
-     public List<List<Integer>> permute(int[] nums) {
-         List<List<Integer>> res = new ArrayList<>();
-         if (nums == null || nums.length == 0) return res;
-         ArrayList<Integer> number = new ArrayList<>();      // convert int[] to arraylist so that we can add and remove
-         for (int n : nums) number.add(n);
-         helper(res, number, nums.length, new ArrayList<Integer>());
-         return res;
-     }
+// Solution 2:
+// first convert int[] to ArrayList so that we can add and remove easily
+// better performance than solution 1, yet use extra memory space
+// Time: O(n! * n) - n for removing and adding at each level
+// Space: O(n) - call stack
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length == 0) return res;
+        ArrayList<Integer> number = new ArrayList<>();      // convert int[] to arraylist so that we can add and remove
+        for (int n : nums) {
+            number.add(n);
+        }
+        helper(res, number, nums.length, new ArrayList<Integer>());
+        return res;
+    }
 
-     public void helper(List<List<Integer>> res, ArrayList<Integer> nums, int len, ArrayList<Integer> list) {
-         if (list.size() == len)  res.add(new ArrayList<Integer>(list));   // reach end
+    public void helper(List<List<Integer>> res, ArrayList<Integer> nums, int len, ArrayList<Integer> list) {
+        if (list.size() == len) {
+            res.add(new ArrayList<Integer>(list));   // reach end
+        }
 
-         for (int i = 0; i < nums.size(); i++) {     // try number at different position
-             int n = nums.get(i);
-             list.add(n);
-             nums.remove(i);  // remove this number so that we won't use it again later
-             helper(res, nums, len, list);   // recursively solve subproblems
-             nums.add(i, n);  // add it back so that we can use it in the next iteration
-             list.remove(list.size()-1);     // remove the last int we add to the list
-         }
-     }
- }
+        for (int i = 0; i < nums.size(); i++) {     // try number at different position
+            int n = nums.get(i);
+            list.add(n);
+            nums.remove(i);  // remove this number so that we won't use it again later
+            helper(res, nums, len, list);   // recursively solve subproblems
+            nums.add(i, n);  // add it back so that we can use it in the next iteration
+            list.remove(list.size()-1);     // remove the last int we add to the list
+        }
+    }
+}
 
 // Solution 1:
+// Time: O(n! * n) - n! permutation * O(n) contains() in each call
+// Space: O(n) - stack
+
 public class Solution {
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
