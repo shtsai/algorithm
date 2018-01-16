@@ -13,183 +13,67 @@
  * boolean param_3 = obj.startsWith(prefix);
  */
 
-// Improved solution 2:
-// remove unnecessary tests
+// reference: https://leetcode.com/articles/implement-trie-prefix-tree/
+
+// Solution 1: Standard implementation
+// Each node will have 26 edges pointing to the next node.
+// Each edge represents a character.
+// Each node has a boolean value that indicates whether it is the end of a word.
+// Time: Insert - O(n) - n is the length of word
+//       Search - O(n)
+//       StartsWith - O(n)
+// Space: O(m) - m is the total length of all words
+// 01/15/2018
+
 class Trie {
     class Node {
-        boolean isLeaf;
-        char c;
-        HashMap<Integer, Node> next;
-        public Node (char c) {
-            this.c = c;
-            this.next = new HashMap<>();    // contains pointers to 26 chars
-        }
-    }
-    
-    private Node root;
-    
-    /** Initialize your data structure here. */
-    public Trie() {
-        root = new Node('0');
-    }
-    
-    /** Inserts a word into the trie. */
-    public void insert(String word) {
-        Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            if (!p.next.containsKey(current-'a')) {
-                p.next.put(current-'a', new Node(current));
-            } 
-            p = p.next.get(current-'a');
-        }
-        // once we reach this point, p is the last node of the word
-        p.isLeaf = true;  // reach last char in the word
-    }
-    
-    /** Returns if the word is in the trie. */
-    public boolean search(String word) {
-        Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            if (!p.next.containsKey(current-'a')) return false;
-            p = p.next.get(current-'a');
-        }
-        // at this point, p must not be null, no need to test
-        return p.isLeaf;
-    }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    public boolean startsWith(String prefix) {
-        Node p = root;
-        for (int i = 0; i < prefix.length(); i++) {
-            char current = prefix.charAt(i);
-            if (!p.next.containsKey(current-'a')) return false;
-            p = p.next.get(current-'a');
-        }
-        // at this point, p must not be null, no need to test
-        return true;
-    }
-}
-
-
-// Solution 2:
-// use HashMap to store pointers to next character
-class Trie {
-    class Node {
-        boolean isLeaf;
-        char c;
-        HashMap<Integer, Node> next;
-        public Node (char c) {
-            this.c = c;
-            this.next = new HashMap<>();    // contains pointers to 26 chars
-        }
-    }
-    
-    private Node root;
-    
-    /** Initialize your data structure here. */
-    public Trie() {
-        root = new Node('0');
-    }
-    
-    /** Inserts a word into the trie. */
-    public void insert(String word) {
-        Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            if (!p.next.containsKey(current-'a')) {
-                p.next.put(current-'a', new Node(current));
-            } 
-            p = p.next.get(current-'a');
-            if (i == word.length()-1) p.isLeaf = true;  // reach last char in the word
-        }
-    }
-    
-    /** Returns if the word is in the trie. */
-    public boolean search(String word) {
-        Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            if (!p.next.containsKey(current-'a')) return false;
-            p = p.next.get(current-'a');
-        }
-        return (p != null && p.isLeaf);
-    }
-    
-    /** Returns if there is any word in the trie that starts with the given prefix. */
-    public boolean startsWith(String prefix) {
-        Node p = root;
-        for (int i = 0; i < prefix.length(); i++) {
-            char current = prefix.charAt(i);
-            if (!p.next.containsKey(current-'a')) return false;
-            p = p.next.get(current-'a');
-        }
-        return p != null;
-    }
-}
-
-
-// Solution 1:
-// use an array of pointers to next character
-class Trie {
-    class Node {
-        boolean isLeaf;
-        char c;
         Node[] next;
-        public Node (char c) {
-            this.c = c;
-            this.next = new Node[26];    // contains pointers to 26 chars
+        boolean isWord;
+        
+        public Node() {
+            next = new Node[26];
         }
     }
     
-    private Node root;
-    
+    Node root;
     /** Initialize your data structure here. */
     public Trie() {
-        root = new Node('0');
+        root = new Node();
     }
     
     /** Inserts a word into the trie. */
     public void insert(String word) {
         Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            Node next = p.next[current-'a'];
-            if (next == null) {
-                p.next[current-'a'] = new Node(current);
-                next = p.next[current-'a'];
-            } 
-            p = next;
-            if (i == word.length()-1) p.isLeaf = true;  // reach last char in the word
+        for (char c : word.toCharArray()) {
+            if (p.next[c - 'a'] == null) {
+                p.next[c - 'a'] = new Node();
+            }
+            p = p.next[c - 'a'];
         }
+        p.isWord = true;
     }
     
     /** Returns if the word is in the trie. */
     public boolean search(String word) {
-        Node p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char current = word.charAt(i);
-            Node next = p.next[current-'a'];
-            if (next == null) {
-                return false;
-            }
-            p = next;
-        }
-        return (p != null && p.isLeaf);
+        Node node = searchPrefix(word);
+        return node != null && node.isWord;
     }
     
     /** Returns if there is any word in the trie that starts with the given prefix. */
     public boolean startsWith(String prefix) {
+        Node node = searchPrefix(prefix);
+        return node != null;
+    }
+    
+    private Node searchPrefix(String prefix) {
         Node p = root;
-        for (int i = 0; i < prefix.length(); i++) {
-            char current = prefix.charAt(i);
-            Node next = p.next[current-'a'];
-            if (next == null) {
-                return false;
+        for (char c : prefix.toCharArray()) {
+            if (p.next[c - 'a'] == null) {
+                return null;
+            } else {
+                p = p.next[c - 'a'];
             }
-            p = next;
         }
-        return p != null;
+        return p;
     }
 }
