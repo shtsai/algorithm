@@ -2,14 +2,37 @@
  * Given numRows, generate the first numRows of Pascal's triangle.
  */
 
+// Solution 2:
+// A more concise solution.
+// Build up results level by level. Each level depends on previous level.
+// Time: O(n^2)
+// Space: O(1)
+// version 2:
+// 01/15/2018
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < numRows; i++) {
+            List<Integer> list = new ArrayList<>();
+            if (i == 0) {
+                list.add(1);
+            } else {
+                for (int j = 0; j <= i; j++) {
+                    int first = j - 1 >= 0 ? res.get(i-1).get(j-1) : 0;
+                    int second = j < i ? res.get(i-1).get(j) : 0;
+                    list.add(first + second);
+                }
+            }
+            res.add(list);
+        }
+        return res;
+    }
+}
+
+// version 1:
 public class Solution {
     public List<List<Integer>> generate(int numRows) {
-
-        // a more concise solution
         List<List<Integer>> result = new ArrayList<>();
-        if (numRows == 0) {     // special case 0
-            return result;
-        }
     
         for (int i = 0; i < numRows; i++) {     // i stands for row number
             List<Integer> list = new ArrayList<>();
@@ -24,9 +47,15 @@ public class Solution {
         }
         
         return result;
- 
+    }
+}
 
-        /*   older solution
+// Solution 1:
+// Handle special cases manually.
+// Time: O(n^2)
+// Space: O(1)
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
         List<List<Integer>> result = new ArrayList<>();
         if (numRows == 0) {     // special case 0
             return result;
@@ -59,6 +88,5 @@ public class Solution {
         }
         
         return result;
-        */
     }
 }
