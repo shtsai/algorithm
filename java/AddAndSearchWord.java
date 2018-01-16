@@ -17,6 +17,7 @@
  * Note:
  * You may assume that all words are consist of lowercase letters a-z.
  */
+
  /**
  * Your WordDictionary object will be instantiated and called as such:
  * WordDictionary obj = new WordDictionary();
@@ -24,52 +25,72 @@
  * boolean param_2 = obj.search(word);
  */
 
+// Solution 1: Trie
+// Implement trie to add and search word.
+// Solution: add() - O(n) n is the length of the word
+//           search() - O(26^n) worst case, all "."
+// 01/16/2018
 class WordDictionary {
-    private class TrieNode {
-        char val;
+    class Node {
+        Node[] next;
         boolean isWord;
-        TrieNode[] next;
-        public TrieNode(char val) {
-            this.val = val;
-            next = new TrieNode[26];
+        
+        public Node() {
+            next = new Node[26];
+        }
+        public void setWord() {
+            isWord = true;
+        }
+        public boolean isWord() {
+            return this.isWord;
         }
     }
     
-    private TrieNode root;
+    private Node root;
+    
     /** Initialize your data structure here. */
     public WordDictionary() {
-        root = new TrieNode('0');
+        root = new Node();
     }
     
     /** Adds a word into the data structure. */
     public void addWord(String word) {
-        TrieNode p = root;
-        for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            if (p.next[c-'a'] == null) p.next[c-'a'] = new TrieNode(c);
-            p = p.next[c-'a'];
+        Node p = root;
+        for (char c : word.toCharArray()) {
+            if (p.next[c - 'a'] == null) {
+                p.next[c - 'a'] = new Node();
+            }
+            p = p.next[c - 'a'];
         }
-        p.isWord = true;    // this node is the end of a word
+        p.setWord();
     }
     
     /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
     public boolean search(String word) {
-        return searchHelper(word, 0, root);
+        return searchHelper(word, root, 0);
     }
     
-    /** a helper function that checks whether current character is in the trie */
-    private boolean searchHelper(String word, int index, TrieNode node) {
-        if (index == word.length() && node.isWord) return true; // find the word
-        if (index < 0 || index >= word.length() || node == null) return false;
-        char c = word.charAt(index);
-        if (c == '.') {     // wildcard
-            for (int i = 0; i < node.next.length; i++) {
-                if (node.next[i] != null && searchHelper(word, index+1, node.next[i])) return true;
+    private boolean searchHelper(String word, Node node, int index) {
+        if (node == null || index < 0 || index > word.length()) {
+            return false;
+        } else if (index == word.length()) {
+            return node.isWord();
+        } else {
+            char c = word.charAt(index);
+            if (c != '.') {
+                if (node.next[c - 'a'] == null) {
+                    return false;
+                } else {
+                    return searchHelper(word, node.next[c - 'a'], index + 1);
+                }
+            } else {
+                for (int i = 0; i < 26; i++) {
+                    if (searchHelper(word, node.next[i], index + 1)) {
+                        return true;
+                    }
+                }
+                return false;
             }
-        } else if (node.next[c-'a'] != null) {  // find a matching character
-            return searchHelper(word, index+1, node.next[c-'a']);
         }
-        return false;
     }
 }
-
