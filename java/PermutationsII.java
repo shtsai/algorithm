@@ -10,9 +10,48 @@
  * ]
  */
 
+// Solution 2:
+// Use a boolean array to keep track of whether we used the number before.
+// To avoid duplicate, for the same number, we only allow them to go
+// from smaller index to larger index.
+// Time: O(n! * n) 
+// Space: O(n) - boolean array
+// 01/15/2018
+
+class Solution {
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        boolean[] used = new boolean[nums.length];
+        helper(res, nums, used, new ArrayList<>());
+        return res;
+    }
+    
+    public void helper(List<List<Integer>> res, int[] nums, boolean[] used, List<Integer> current) {
+        if (current.size() == nums.length) {
+            res.add(new ArrayList<>(current));
+        } else {
+            for (int i = 0; i < nums.length; i++) {
+                if (used[i] || i > 0 && nums[i] == nums[i-1] && !used[i-1]) {
+                    continue;
+                }
+                current.add(nums[i]);
+                used[i] = true;
+                helper(res, nums, used, current);
+                used[i] = false;
+                current.remove(current.size()-1);
+            }
+        }
+    }
+}
+
 // Solution 1:
-// first sort the array, and convert it to an arraylist so that insertion and deletion is easier
-// then use helper function to recursively build the Solution
+// first sort the array to avoid duplicates. 
+// Convert the array to an arraylist so that insertion and deletion is easier.
+// Then use helper function to recursively build the Solution
+// Time: O(n!)
+// Space: O(n) - call stack and number array
+
 class Solution {
     public List<List<Integer>> permuteUnique(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
