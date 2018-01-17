@@ -2,6 +2,34 @@
  * Implement pow(x, n).
  */
 
+// Solution 4: Tail recursion
+// All inputs are immutable.
+// Time: O(logn)
+// Space: O(logn)
+// 01/16/2018
+class Solution {
+    public double myPow(double x, int n) {
+        if (x == 0) return 0;
+        if (n < 0) {
+            return helper(1/x, n * -1, 1);
+        } else {
+            return helper(x, n, 1);
+        }
+    }
+    
+    private double helper(double x, int n, double res) {
+        if (n == 0) {
+            return res;
+        } else {
+            if (n % 2 == 0) {
+                return helper(x * x, n / 2, res);
+            } else {
+                return helper(x * x, n / 2, res * x);
+            }
+        }
+    }
+}
+
 // Solution 3: Recursion
 // Time: O(logn)
 // Space: O(logn)
