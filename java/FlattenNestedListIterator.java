@@ -38,6 +38,65 @@
  * while (i.hasNext()) v[f()] = i.next();
  */
 
+// Solution 2: Stack and iterator
+// Store the current integer in a varible.
+// next() returns the current integer.
+// hasNext() checks if the current integer is null.
+// If it is, call getNext() to get next integer.
+// Use stack to store the iterators of lists, from lower level to higher level.
+// Push iterator of sublists to the stack, and pop from stack when it reaches the end.
+// 01/17/2018
+
+public class NestedIterator implements Iterator<Integer> {
+
+    Integer current;
+    Stack<Iterator<NestedInteger>> stack;
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        current = null;
+        stack = new Stack<>();
+        stack.push(nestedList.iterator());
+    }
+
+    @Override
+    public Integer next() {
+        if (hasNext()) {
+            Integer res = current;
+            current = null;
+            return res;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean hasNext() {
+        if (current != null) {
+            return true;
+        } else {
+            return getNext();
+        }
+    }
+    
+    private boolean getNext() {
+        while (!stack.isEmpty()) {
+            Iterator<NestedInteger> it = stack.peek();
+            if (it.hasNext()) {
+                NestedInteger next = it.next();
+                if (next.isInteger()) {
+                    current = next.getInteger();
+                    return true;
+                } else {
+                    stack.push(next.getList().iterator());
+                }
+            } else {
+                stack.pop();
+            }
+        }
+        return false;
+    }
+}
+
 // Solution 1: Flatten list, then iterate
 // Recursively flatten smaller lists.
 // Time: O(n) - initialization
