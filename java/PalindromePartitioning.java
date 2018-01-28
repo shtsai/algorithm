@@ -12,6 +12,49 @@
  * ]
  */
 
+// Solution 1: Recursion + DFS
+// Time: O(n^2)
+// Space: O(n)
+// version 2:
+// 01/27/2018
+class Solution {
+    public List<List<String>> partition(String s) {
+        List<List<String>> res = new ArrayList<>();
+        helper(s, res, 0, new ArrayList<String>());
+        return res;
+    }
+    
+    public void helper(String s, List<List<String>> res, int index, List<String> current) {        
+        if (index == s.length()) {
+            res.add(new ArrayList<>(current));
+            return;
+        }
+        
+        for (int i = index+1; i <= s.length(); i++) {
+            String curString = s.substring(index, i);
+            if (isPalindrome(curString)) {
+                current.add(curString);
+                helper(s, res, i, current);
+                current.remove(current.size() - 1);
+            }
+        }
+    }
+    
+    public boolean isPalindrome(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+}
+
+
+// version 1:
 public class Solution {
     public List<List<String>> partition(String s) {
         List<List<String>> result = new ArrayList<>();
