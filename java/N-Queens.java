@@ -2,6 +2,71 @@
  *  The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
  */
 
+// Solution 1: DFS, backtracking
+// Time: O(n^n) - n choices at n levels
+// Space: O(n) - stack
+
+// version 2:
+// 01/31/2018
+class Solution {
+    public List<List<String>> solveNQueens(int n) {
+        List<List<Integer>> res = new ArrayList<>();
+        solver(new ArrayList<>(), res, 0, n);
+        return buildboard(res, n);
+    }
+    
+    public void solver(List<Integer> placement, List<List<Integer>> res, int index, int n) {
+        if (index == n) {
+            res.add(new ArrayList<>(placement));
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (isValid(placement, index, i)) {
+                placement.add(i);
+                solver(placement, res, index+1, n);
+                placement.remove(placement.size()-1);
+            }
+        }
+    }
+    
+    public boolean isValid(List<Integer> placement, int row, int col) {
+        for (int i = 0; i < placement.size(); i++) {
+            if (placement.get(i) == col) {  // same column
+                return false;
+            }
+            if ((i + placement.get(i)) == (row + col)) { // diagonal
+                return false;
+            }
+            if ((i - placement.get(i)) == (row - col)) { // anti-diagonal
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public List<List<String>> buildboard(List<List<Integer>> placements, int n) {
+        List<List<String>> res = new ArrayList<>();
+        for (List<Integer> placement : placements) {
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < placement.size(); i++) {
+                int place = placement.get(i);
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < place; j++) {
+                    sb.append(".");
+                }
+                sb.append("Q");
+                for (int j = place + 1; j < n; j++) {
+                    sb.append(".");
+                }
+                list.add(sb.toString());
+            }
+            res.add(list);
+        }
+        return res;
+    }
+}
+
+// version 1:
 public class Solution {
     public List<List<String>> solveNQueens(int n) {
         
