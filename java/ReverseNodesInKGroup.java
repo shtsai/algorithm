@@ -24,6 +24,57 @@
  * }
  */
 
+// Solution 3:
+// Use helper function
+// Time: O(n)
+// Space: O(1)
+// 02/02/2018
+
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        ListNode prev = dummy;
+        while (prev != null) {
+            prev = reverseAndReturnNextPrev(prev, k);
+        }
+        
+        return dummy.next;
+    }
+       
+    // VISUALIZATION: 
+    // prev -> n1 -> n2 ... nk -> nk+1
+    // =>
+    // prev -> nk -> nk-1 .. n1 -> nk+1
+    // return n1
+    private ListNode reverseAndReturnNextPrev(ListNode prev, int k) {
+        ListNode lastPrev = prev;
+        ListNode n1 = prev.next;
+        ListNode nk = prev;
+        
+        for (int i = 0; i < k; i++) {   
+            nk = nk.next;
+            if (nk == null) {   // less than k nodes left, unable to reverse
+                return null;
+            }
+        }
+        ListNode nkplus = nk.next;
+        ListNode current = n1;
+        for (int i = 0; i < k; i++) {    // reverse k-group
+            ListNode next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        
+        lastPrev.next = nk;
+        n1.next = nkplus;
+        
+        return n1;
+    }
+}
+
 // Solution 2:
 // reverse K group, no extra memory needed
 class Solution {
