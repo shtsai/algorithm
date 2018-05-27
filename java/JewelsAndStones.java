@@ -23,6 +23,7 @@
 //
 // Time: O(m + n) - m:len(J), n:len(S)
 // Space: O(m)
+// 05/27/2018
 class Solution {
     public int numJewelsInStones(String J, String S) {
         HashSet<Character> jewels = new HashSet<>();
