@@ -24,14 +24,41 @@
     The given array will be in the range [1, 20000].
  */
 
-// Solution 4: min queue
-// Create a days array, where days[i] represents that slot i will open on days[i].
-// Maintain a min queue of size k, and we check if min of the window is greater than 
-// both neighbors.
-// 
-// Time: O(n^2) - min-O(1), remove-O(n)
+// Solution 4: Find peaks
+// First convert `flowers` to `days`
+// Then looks for windows [i,j] where i + k + 1 = j
+// and for all k > i && k < j, days[k] < days[i] && days[k] < days[j]
+//
+// Time: O(n)
 // Space: O(n)
-// 07/20/2018
+// 07/21/2018
+class Solution {
+    public int kEmptySlots(int[] flowers, int k) {
+        int[] days = new int[flowers.length];
+        for (int i = 0; i < flowers.length; i++) {
+            days[flowers[i] - 1] = i + 1;
+        }
+        int res = Integer.MAX_VALUE;
+        int left = 0, right = k + 1;
+        while (right < days.length) {
+            boolean satisfied = true;
+            int i = left + 1;
+            for (; i < right; i++) {    // check if all values within this window satisfy condition
+                if (days[i] < days[left] || days[i] < days[right]) {
+                    satisfied = false;
+                    break;
+                }
+            }
+            if (satisfied) {
+                res = Math.min(res, Math.max(days[left], days[right]));
+            }
+            // continue search from the new valley
+            left = i;
+            right = left + k + 1;
+        }
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
 
 // Solution 3: Tree set, find prev and next
 // Use a tree set to store slots in order.
