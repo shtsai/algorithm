@@ -5,7 +5,7 @@
 
 // Solution 1 version 3:
 // More generic, only need to modify map to add or remove new type of parenthesis
-// 09/25/2017
+// 08/03/2018
 class Solution {
     public boolean isValid(String s) {
         HashMap<Character, Character> map = new HashMap<>();
@@ -13,20 +13,16 @@ class Solution {
         map.put(']', '[');
         map.put('}', '{');
         Stack<Character> stack = new Stack<>();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (map.containsKey(c)) {   // right parenthesis
-                if (stack.isEmpty() || stack.pop() != map.get(c)) {
-                    return false;
-                }
-            } else {    // left parenthesis
+        for (char c : s.toCharArray()) {
+            if (!map.containsKey(c)) {
                 stack.push(c);
+            } else if (stack.isEmpty() || stack.pop() != map.get(c)) {
+                return false;
             }
         }
         return stack.isEmpty();
     }
 }
-
 // Solution 1 version 2:
 // use HashMap
 class Solution {
