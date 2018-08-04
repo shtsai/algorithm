@@ -11,10 +11,49 @@
  * }
  */
 
+// Solution 3:
+// Store list heads in a PriorityQueue 
+// Time: O(nlogk)
+// Space: O(k) - priority queue
+// 08/04/2018
+
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        PriorityQueue<ListNode> heads = new PriorityQueue<>(new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode a, ListNode b) {
+                return a.val - b.val;
+            }
+        });
+        for (ListNode list : lists) {
+            if (list != null) {
+                heads.offer(list);                
+            }
+        }
+        ListNode dummy = new ListNode(-1), p = dummy;
+        
+        while (!heads.isEmpty()) {
+            ListNode head = heads.poll();
+            p.next = head;
+            p = p.next;
+            if (head.next != null) {
+                heads.offer(head.next);
+            }
+        }
+        return dummy.next;
+    }
+}
+
 // Solution 2:
 // Divide and conquer (better performance, less memory used)
 // recurvisely divide the problem into two halves, 
 // solve by brute force when subproblem is small enough (0, 1 or 2 lists)
+// 
+// Time: O(nlogk) - mergeTwo:O(n), do logK times
+// Space: O(logk) - call stack
+// 08/04/2018
+
 public class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
@@ -62,6 +101,9 @@ public class Solution {
 // Solution 1:
 // create a class to store (val, listIndex) pairs
 // use a priority queue to efficiently obtain the min among heads of lists
+//
+// Time: O(nlogk)
+// Space: O(k)
 public class Solution {
     private class Entry implements Comparable<Entry>{
         int val;
