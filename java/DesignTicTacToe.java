@@ -98,20 +98,13 @@ class TicTacToe {
         cols[col] += score;
         if (row == col) diagonal += score;
         if (row + col + 1 == N) antidiagonal += score;
-        
-        if (check(player)) return player;
+        if (check(player, row, col)) return player;
         return 0;
     }
     
-    public boolean check(int player) {
+    public boolean check(int player, int row, int col) {
         int winning = player == 1 ? N : -N;
-        if (diagonal == winning || antidiagonal == winning) return true;
-        for (int i = 0; i < N; i++) {
-            if (rows[i] == winning || cols[i] == winning) {
-                return true;
-            }
-        }
-        return false;
+        return (rows[row] == winning || cols[col] == winning || diagonal == winning || antidiagonal == winning);
     }
 }
 
