@@ -24,7 +24,7 @@
  */
 
 
-// Solution 1: Trie
+// Solution 2: Trie
 // First add all words into a trie.
 // Then do dfs on the board to find words.
 // Can break early if no word starts with the current prefix.
@@ -109,5 +109,60 @@ class Solution {
             }
         }
         return p;
+    }
+}
+
+// Solution 1: Search individual words
+// Reuse Word Search I
+//
+// Time: O(n * 4^w)
+// Space: O(mn)
+// 08/12/2018
+
+class Solution {
+    final int[][] dirs = new int[][] {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    
+    public List<String> findWords(char[][] board, String[] words) {
+        List<String> res = new ArrayList<>();
+        for (String word : new HashSet<String>(Arrays.asList(words))) {
+            if (exist(board, word)) {
+                res.add(word);
+            }
+        }
+        return res;
+    }    
+    
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return false;
+        }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] == word.charAt(0)) {
+                    boolean[][] visited = new boolean[board.length][board[0].length];
+                    if (search(board, word, 0, i, j, visited)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean search(char[][] board, String word, int index, int r, int c, boolean[][] visited) {
+        if (r < 0 || r >= board.length || c < 0 || c >= board[0].length || visited[r][c] || board[r][c] != word.charAt(index)) {
+            return false;
+        }
+        if (index == word.length() - 1) {
+            return true;
+        }
+        visited[r][c] = true;
+        for (int[] dir : dirs) {
+            if (search(board, word, index + 1, r + dir[0], c + dir[1], visited)) {
+                return true;
+            }
+        }
+        visited[r][c] = false;   // reset visited so that we can use this char later in another path
+        return false;
     }
 }
