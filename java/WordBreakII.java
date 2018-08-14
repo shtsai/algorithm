@@ -1,16 +1,16 @@
 /*
  * Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, add spaces in s to construct a sentence where each word is a valid dictionary word. You may assume the dictionary does not contain duplicate words.
- * 
+ *
  * Return all such possible sentences.
- * 
+ *
  * For example, given
  * s = "catsanddog",
  * dict = ["cat", "cats", "and", "sand", "dog"].
- * 
+ *
  * A solution is ["cats and dog", "cat sand dog"].
- * 
+ *
  * UPDATE (2017/1/4):
- * The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes. 
+ * The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
  */
 
 // https://leetcode.com/problems/word-break-ii/solution/
@@ -23,6 +23,9 @@
 // version 2:
 // Instead of creating substrings, use a integer to indicate start index.
 // Can also be used as key to the hashMap
+//
+// Time: O(n^2)
+// Space: O(n)
 // 11/07/2017
 class Solution {
     public List<String> wordBreak(String s, List<String> wordDict) {
@@ -30,7 +33,7 @@ class Solution {
         HashMap<Integer, List<String>> map = new HashMap<>();
         return breaker(s, dict, map, 0);
     }
-    
+
     private List<String> breaker(String s, Set<String> dict, HashMap<Integer, List<String>> map, int start) {
         List<String> res = new LinkedList<>();
         if (map.containsKey(start)) {  // already exist
@@ -59,23 +62,23 @@ class Solution {
     public List<String> wordBreak(String s, List<String> wordDict) {
         Set<String> dict = new HashSet<>(wordDict);
         HashMap<String, List<String>> map = new HashMap<>();
-        return wordFinder(s, dict, map);    
+        return wordFinder(s, dict, map);
     }
-    
+
     private List<String> wordFinder(String s, Set<String> dict, HashMap<String, List<String>> map) {
         if (map.containsKey(s)) return map.get(s);
-        
+
         List<String> list = new ArrayList<>();
         if (s == null || s.length() == 0) {  // empty string
             list.add("");
             return list;
         }
-        
+
         for (int i = 1; i <= s.length(); i++) {
             if (dict.contains(s.substring(0, i))) {
                 // get the result for the remaining subproblems
                 List<String> sublist = wordFinder(s.substring(i), dict, map);
-                
+
                 // insert current word to the front of the result of subproblems
                 for (String sub : sublist) {
                     list.add(s.substring(0,i) + (sub.isEmpty()?"":" ") + sub);
@@ -90,15 +93,16 @@ class Solution {
 // Solution 2:
 // Backtracking approach
 // recursively build result
-// Time limit exceeded
+// Time: O(n!) - Time limit exceeded
+// Space: O(n + m) - n:len(s), m:len(wordDict)
 class Solution {
     public List<String> wordBreak(String s, List<String> wordDict) {
         Set<String> dict = new HashSet<>(wordDict);
         List<String> res = new ArrayList<>();
-        wordFinder(s, dict, res, "");    
+        wordFinder(s, dict, res, "");
         return res;
     }
-    
+
     private void wordFinder(String s, Set<String> dict, List<String> res, String cur) {
         if (s == null || s.length() == 0) {
             res.add(new String(cur));   // find all words
@@ -124,7 +128,7 @@ class Solution {
         List<String>[] dp = new List[s.length()+1];
         dp[0] = new ArrayList<String>();
         dp[0].add("");
-        
+
         for (int i = 1; i <= s.length(); i++) {
             for (int j = 0; j < i; j++) {
                 if (dict.contains(s.substring(j, i)) && dp[j] != null) {
