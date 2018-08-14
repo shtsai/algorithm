@@ -1,23 +1,55 @@
 /*
  * Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
- * 
+ *
  * For example, given
  * s = "leetcode",
  * dict = ["leet", "code"].
- * 
+ *
  * Return true because "leetcode" can be segmented as "leet code".
- * 
+ *
  * UPDATE (2017/1/4):
  * The wordDict parameter had been changed to a list of strings (instead of a set of strings). Please reload the code definition to get the latest changes.
  */
 
-// Solution 2: Dynamic programming
+// Solution 4: Dynamic programming - recursive
+//
+// Time: O(n^2)
+// Space: O(n)
+// 08/14/2018
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Boolean[] memo = new Boolean[s.length()];
+        HashSet<String> set = new HashSet<>(wordDict);
+        search(s, set, 0, memo);
+        return memo[0];
+    }
+
+    public boolean search(String s, HashSet<String> words, int index, Boolean[] memo) {
+        if (index == s.length()) {
+            return true;
+        }
+        if (memo[index] != null) {
+            return memo[index];
+        }
+        for (int i = 1; (i + index) <= s.length(); i++) {
+            String segment = s.substring(index, i + index);
+            if (words.contains(segment) && search(s, words, index + i, memo)) {
+                memo[index] = true;
+                return memo[index];
+            }
+        }
+        memo[index] = false;
+        return memo[index];
+    }
+}
+
+// Solution 3: Dynamic programming - iterative
 // Use array to memoize results of smaller subproblems.
 // Each cell i represent whether we can break substring (0, i].
 // So we need to look back, and find substring (0, j] which is breakable.
 // We check if (j, i] is in the dictionary. If so, (0, i] is also breakable.
 // Otherwise, continue searching
-// 
+//
 // Time: O(n^2)
 // Space: O(n)
 // 11/06/2017
@@ -53,7 +85,7 @@ class Solution {
         Queue<Integer> q = new LinkedList<>();
         q.offer(0);
         boolean[] visited = new boolean[s.length()];
-        
+
         while (!q.isEmpty()) {
             int start = q.poll();
             if (start == s.length()) return true;
@@ -72,8 +104,8 @@ class Solution {
 
 // Solution 1: DFS (brute force)
 // Recursion and backtracking
-// Time: O(n^n) - time limit exceeded 
-// Space: O(n) - worst case call stack 
+// Time: O(n^n) - time limit exceeded
+// Space: O(n) - worst case call stack
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
         if (s.equals("") || s.length() == 0) return true;
