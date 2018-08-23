@@ -38,7 +38,7 @@ class Solution {
             } else if (map.containsKey(sum - k)) {
                 max = Math.max(max, i - map.get(sum - k));
             }
-            if (!map.containsKey(sum)) {
+            if (!map.containsKey(sum)) {    // only store first occurence (left most)
                 map.put(sum, i);
             }
         }
@@ -50,3 +50,20 @@ class Solution {
 // Try all n^2 subarray
 // Time: O(n^2)
 // Space: O(1)
+// 08/23/2018
+
+class Solution {
+    public int maxSubArrayLen(int[] nums, int k) {
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int res = 0;
+            for (int j = i; j < nums.length; j++) {
+                res += nums[j];
+                if (res == k) {
+                    max = Math.max(max, j - i + 1);
+                }
+            }
+        }
+        return max;
+    }
+}
