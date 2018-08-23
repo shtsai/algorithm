@@ -14,43 +14,26 @@
 // to there.
 // Time: O(n) - one pass
 // Space: O(1)
-// reference: https://leetcode.com/articles/move-zeroes/
+// 08/23/2018
+
 class Solution {
     public void moveZeroes(int[] nums) {
         int zero = 0;
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != 0) {
-                int temp = nums[zero];
-                nums[zero] = nums[i];
-                nums[i] = temp;
+                swap(nums, i, zero);
                 zero++;
             }
         }
     }
-}
-
-// Solution 2:
-// Two pointers, one points at zero value, the other points at nonzero value.
-// Scan through the array, swap zero value with nonzero values
-// Time: O(n^2) worst case, slower than solution 1
-// Space: O(1)
-// 10/01/2017
-class Solution {
-    public void moveZeroes(int[] nums) {
-        int zero = 0, nonzero = 0;
-        while (zero < nums.length) {
-            while (zero < nums.length && nums[zero] != 0) zero++;
-            nonzero = zero;
-            while (nonzero < nums.length && nums[nonzero] == 0) nonzero++;
-            if (zero >= nums.length || nonzero >= nums.length) break;
-            int temp = nums[zero];
-            nums[zero] = nums[nonzero];
-            nums[nonzero] = temp;
-        }
+    private void swap(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
     }
 }
 
-// Solution 1 version 2:
+// Solution 2:
 // Two pointer, one scans through the array,
 // the other points to the insert position.
 // Move all non-zero numbers to the front, then fill the rest with 0s.
@@ -75,31 +58,23 @@ public class Solution {
 }
 
 // Solution 1:
-public class Solution {
+// Two pointers, one points at zero value, the other points at nonzero value.
+// Scan through the array, swap zero value with nonzero values
+// Time: O(n^2) worst case
+// Space: O(1)
+// 10/01/2017
+class Solution {
     public void moveZeroes(int[] nums) {
-        int zero = -1;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == 0) { // find first 0
-                zero = i;
-                break;
-            }
+        int zero = 0, nonzero = 0;
+        while (zero < nums.length) {
+            while (zero < nums.length && nums[zero] != 0) zero++;
+            nonzero = zero;
+            while (nonzero < nums.length && nums[nonzero] == 0) nonzero++;
+            if (zero >= nums.length || nonzero >= nums.length) break;
+            int temp = nums[zero];
+            nums[zero] = nums[nonzero];
+            nums[nonzero] = temp;
         }
-        if (zero == -1 || zero == nums.length-1) return; // no zero found
-        int count = 1;
-        
-        for (int i = zero+1; i < nums.length; i++) { // start from the first number after the first zero
-            if (nums[i] != 0) {  // if the number is not zero, move it to zero's place and increment zero
-                nums[zero] = nums[i];
-                zero++;
-            } else {  // else increment the count of zeroes
-                count++;
-            }
-        }
-        
-        for (int i = nums.length-count; i < nums.length; i++) { // overwrite the last few numbers to zero
-            nums[i] = 0;
-        }
-        
-        return;
     }
 }
+
