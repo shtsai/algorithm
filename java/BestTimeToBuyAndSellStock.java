@@ -4,10 +4,11 @@
  * design an algorithm to find the maximum profit.
  */
 
-// Solution 3: Dynamic Programming
+// Solution 3: Kadane's Algorithm
 // Compare cummulative daily differences, reset to 0 when difference is negative
 // Use a variable max to keep track of max difference
-// Time: O(n), Space: O(1)
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public int maxProfit(int[] prices) {
         // dynamic programming
@@ -18,8 +19,6 @@ public class Solution {
             max = Math.max(max, maxCur);
         }
         return max;
-
-
     }
 }
 
@@ -31,19 +30,18 @@ public class Solution {
 
 class Solution {
     public int maxProfit(int[] prices) {
-        int buy = Integer.MAX_VALUE, sell = 0;
-        
+        int buy = Integer.MAX_VALUE, sell = 0;      
         for (int price : prices) {
             sell = Math.max(sell, price-buy);  // determine sell or not
             buy = Math.min(buy, price);    // find lowest prices
         }
-        
         return sell;
     }
 }
 
 // Solution 2: Find min buy price at each day
-// Time: O(n), Space: O(n)
+// Time: O(n)
+// Space: O(n)
 class Solution {
     public int maxProfit(int[] prices) {
         if (prices == null || prices.length == 0) return 0;
@@ -60,7 +58,8 @@ class Solution {
 
 // Solution 1: Brute force
 // Check every valid buy and sell
-// Time: O(n^2), Space: O(1)
+// Time: O(n^2) 
+// Space: O(1)
 public class Solution {
     public int maxProfit(int[] prices) {
         int max = 0;
