@@ -5,7 +5,29 @@
 
 // Solution 3:
 // Generalized solution for k transactions
-// See BestTimeToBuyAndSellStockIV.java
+// Time: O(nk)
+// Space: O(nk)
+// 08/25/2018
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) {
+            return 0;
+        }
+        int[][] buys = new int[prices.length + 1][3];
+        int[][] sells = new int[prices.length + 1][3];
+        for (int k = 0; k < 3; k++) {
+            buys[0][k] = -prices[0];
+        }
+        for (int i = 1; i < prices.length; i++) {
+            for (int k = 2; k > 0; k--) {
+                sells[i][k] = Math.max(sells[i - 1][k], prices[i] + buys[i - 1][k]);
+                buys[i][k] = Math.max(buys[i - 1][k], sells[i - 1][k - 1] - prices[i]);
+            }
+        }
+        return sells[prices.length - 1][2];
+    }
+}
+
 
 // Solution 2:
 // Dynamic programming, without extra memory
