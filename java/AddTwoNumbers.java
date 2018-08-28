@@ -23,8 +23,38 @@
 // Finally, check if carry is zero, if not, append a new node with value carry.
 // Time: O(max(m,n))
 // Space: O(1)
-// 10/04/2017
 
+// version 2:
+// 08/28/2018
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(-1);
+        ListNode p = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int v1, v2;
+            if (l1 == null) {
+                v1 = 0;
+            } else {
+                v1 = l1.val;
+                l1 = l1.next;
+            }
+            if (l2 == null) {
+                v2 = 0;
+            } else {
+                v2 = l2.val;
+                l2 = l2.next;
+            }
+            p.next = new ListNode((v1 + v2 + carry) % 10);
+            p = p.next;
+            carry = (v1 + v2 + carry) / 10;
+        }
+        return dummy.next;
+    }
+}
+
+// version 1:
+// 10/04/2017
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode dummy = new ListNode(-1), p = dummy;
