@@ -24,6 +24,26 @@
 // Generalized solution to buy and sell stocks
 // reference: https://discuss.leetcode.com/topic/107998/most-consistent-ways-of-dealing-with-the-series-of-stock-problems
 
+// Solution 2: Dynamic programming with dp arrays
+// Time: O(n)
+// Space: O(n)
+// 08/28/2018
+class Solution {
+    public int maxProfit(int[] prices, int fee) {
+        if (prices.length == 0) {
+            return 0;
+        }
+        int[] buy = new int[prices.length];
+        int[] sell = new int[prices.length];
+        buy[0] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            sell[i] = Math.max(sell[i - 1], buy[i - 1] + prices[i] - fee);
+            buy[i] = Math.max(buy[i - 1], sell[i - 1] - prices[i]);
+        }
+        return sell[prices.length - 1];
+    }
+}
+
 
 // Solution 1: Dynamic programming
 // For each day, there are two possible states:
