@@ -13,38 +13,30 @@
  *  [1,4],
  * ]
  */
-// backtracking
-public class Solution {
+
+// Solution 1: backtracking
+//
+// Time: O(2^n)
+// Space: O(n)
+// 08/30/2018
+
+class Solution {
     public List<List<Integer>> combine(int n, int k) {
-        List<List<Integer>> list = new ArrayList<>();        
-        for (int i = 1; i <= n; i++) {
-            List<Integer> a = new ArrayList<>();
-            a.add(i);
-            helper(a, list, i+1, n, k-1);
-        }
-        return list;
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(res, n, k, 1, new ArrayList<>());
+        return res;
     }
     
-    public void helper(List<Integer> a, List<List<Integer>> list, int i, int n, int k) {
-        // base case, have k nums in the list
+    private void backtrack(List<List<Integer>> res, int n, int k, int index, List<Integer> current) {
         if (k == 0) {
-            // create a deep copy of the list
-            list.add(new ArrayList<Integer>(a));
-            
-            /* alternative way to create a deep copy
-            List<Integer> clone = new ArrayList<>();
-            clone.addAll(a);
-            list.add(clone);
-            */
-
+            res.add(new ArrayList<>(current));
             return;
+        } else {
+            for (int i = index; i <= n; i++) {
+                current.add(i);
+                backtrack(res, n, k - 1, i + 1, current);
+                current.remove(current.size() - 1);
+            }
         }
-        for (int j = i; j <= n; j++) {
-            // add the next num, and remove it later
-            a.add(j);
-            helper(a, list, j+1, n, k-1);
-            a.remove(a.size()-1);
-        }
-        return;
     }
 }
