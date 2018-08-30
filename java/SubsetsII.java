@@ -4,56 +4,30 @@
  * Note: The solution set must not contain duplicate subsets.
  */
 
-// Solution 1: version 2
- class Solution {
-     public List<List<Integer>> subsetsWithDup(int[] nums) {
-         List<List<Integer>> res = new ArrayList<>();
-         Arrays.sort(nums);   // sort array to ascending order
-         helper(nums, res, 0, new ArrayList<Integer>());
-         return res;
-     }
-
-     private void helper(int[] nums, List<List<Integer>> res, int index, ArrayList<Integer> list) {
-         res.add(new ArrayList<Integer>(list));
-
-         for (int i = index; i < nums.length; i++) {
-             if (i > index && nums[i] == nums[i-1]) {    // duplicate number
-                 continue;                               // skip
-             }
-
-             list.add(nums[i]);
-             helper(nums, res, i+1, list);
-             list.remove(list.size()-1);
-         }
-     }
- }
-
-// Solution 1: version 1
-// very similiar to subsets, need to take care of duplicates
-public class Solution {
+// Solution 1: 
+// Similar to subsets.
+// Sort the array, and skip duplicate numbers
+// 08/20/2018
+class Solution {
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
+        List<List<Integer>> res = new ArrayList<>();
         Arrays.sort(nums);
-        helper(result, new ArrayList<>(), 0, nums);
-        return result;
+        backtrack(nums, res, 0, new ArrayList<>());
+        return res;
     }
-
-    public void helper(List<List<Integer>> result, List<Integer> list, int start, int[] nums) {
-        // base case
-        if (start > nums.length) return;
-
-        // add the deep copy of list to the result
-        result.add(new ArrayList<Integer>(list));
-
-        int i = start;
-        while (i < nums.length) {
-            list.add(nums[i]);
-            helper(result, list, i+1, nums);
-            list.remove(list.size()-1);
-            i++;
-            // skip duplicate elements
-            while (i < nums.length && nums[i] == nums[i-1]) i++;
+    
+    private void backtrack(int[] nums, List<List<Integer>> res, int index, List<Integer> current) {
+        if (index > nums.length) {
+            return;
         }
-        return;
+        res.add(new ArrayList<>(current));
+        for (int i = index; i < nums.length; i++) {
+            if (i > index && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            current.add(nums[i]);
+            backtrack(nums, res, i + 1, current);
+            current.remove(current.size() - 1);
+        }
     }
 }
