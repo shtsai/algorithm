@@ -46,25 +46,28 @@ class Solution {
     }
 }
 
-// version 1:
+// Solution 1: Add or not add
+// Time: O(2 ^ n)
+// Space: O(n)
+// 08/30/2018
 class Solution {
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
-        if (candidates.length == 0) return res;
-        helper(res, candidates, target, 0, new ArrayList<Integer>());
+        backtrack(candidates, res, 0, target, new ArrayList<>());
         return res;
     }
-
-    private void helper(List<List<Integer>> res, int[] candidates, int target, int index, ArrayList<Integer> list) {
+    
+    private void backtrack(int[] candidates, List<List<Integer>> res, int index, int target, List<Integer> current) {
         if (target == 0) {
-            res.add(new ArrayList<Integer>(list));
+            res.add(new ArrayList<>(current));
             return;
-        }
-        if (target < 0) return;     // all number will be positive
-        for (int i = index; i < candidates.length; i++) {
-            list.add(candidates[i]);
-            helper(res, candidates, target-candidates[i], i, list); // <- the index is i here, because we can reuse the same element
-            list.remove(list.size()-1);
+        } else if (index >= candidates.length || target < 0) {
+            return;
+        } else {
+            backtrack(candidates, res, index + 1, target, current);
+            current.add(candidates[index]);
+            backtrack(candidates, res, index, target - candidates[index], current);
+            current.remove(current.size() - 1);
         }
     }
 }
