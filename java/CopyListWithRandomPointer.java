@@ -14,8 +14,10 @@
  */
 
 // Solution 2 version 2:
+// Create copy node right after each original node
+// Time: O(n)
+// Space: O(1)
 // 10/14/2017
-
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
         if (head == null) return null;
@@ -47,9 +49,7 @@ public class Solution {
     }
 }
 
-// Solution 2:
-// faster
-// time: O(n), space: O(1)
+// Version 1:
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
         if (head == null) return null;
@@ -86,7 +86,8 @@ public class Solution {
 // Solution 1: HashMap approach
 // first iteration, use HashMap to store <original, copy> pair
 // then connects copies in the second iteration
-// Time: O(n), space: O(n)
+// Time: O(n)
+// Space: O(n)
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
         if (head == null) return null;
