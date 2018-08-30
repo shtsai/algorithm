@@ -9,7 +9,114 @@
  * ")(" -> [""]
  */
 
-// reference: https://discuss.leetcode.com/topic/34875/easy-short-concise-and-fast-java-dfs-3-ms-solution
+// Solution 3: DFS
+// Count # of '(' and ')' to remove.
+// Then for each character, we choose add and not add.
+// If the resulting string violates any requirement, we break.
+//
+// Time: O(2 ^ n)
+// Space: O(n)
+// 08/30/2018
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        int left = 0, right = 0;
+        for (char c : s.toCharArray()) {    // count # of '(' ')' to remove
+            if (c == '(') {
+                left++;
+            } else if (c == ')') {
+                if (left != 0) {
+                    left--;
+                } else {
+                    right++;
+                }
+            }
+        }
+        Set<String> res = new HashSet<>();
+        StringBuilder sb = new StringBuilder();
+        dfs(s, res, sb, 0, left, right, 0);
+        return new ArrayList<>(res);
+    }
+    
+    private void dfs(String s, Set<String> res, StringBuilder sb, int index, int left, int right, int stack) {
+        if (left < 0 || right < 0 || stack < 0) {
+            return;
+        } else if (index == s.length()) {
+            if (left == 0 && right == 0 && stack == 0) {
+                res.add(sb.toString());
+            }
+            return;
+        }
+        
+        if (s.charAt(index) == '(') {
+            dfs(s, res, sb, index + 1, left - 1, right, stack);
+            dfs(s, res, sb.append('('), index + 1, left, right, stack + 1);
+            sb.deleteCharAt(sb.length() - 1);
+        } else if (s.charAt(index) == ')') {
+            dfs(s, res, sb, index + 1, left, right - 1, stack);
+            dfs(s, res, sb.append(')'), index + 1, left, right, stack - 1);
+            sb.deleteCharAt(sb.length() - 1);
+        } else {
+            dfs(s, res, sb.append(s.charAt(index)), index + 1, left, right, stack);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+}
+
+// Solution 2: BFS
+// Check if current string is valid, if not, remove one of its parenthese and add it to the queue.
+// Repeat this process until find valid string, which has the minimum removal.
+// Because of the property of BFS, we know the result will contain minimum removal.
+//
+// Time: O(2 ^ n)
+// Space: O(2 ^ n)
+// 08/30/2018
+class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> res = new ArrayList<>();
+        HashSet<String> seen = new HashSet<>();
+        Queue<String> q = new LinkedList<>();
+        seen.add(s);
+        q.offer(s);
+        
+        // Stop when find first valid string for minimal removal
+        boolean found = false;
+        while (!q.isEmpty()) {
+            String p = q.poll();
+            if (isValid(p)) {
+                res.add(p);
+                found = true;
+            } 
+            if (!found) {
+                for (int i = 0; i < p.length(); i++) {
+                    if (p.charAt(i) != '(' && p.charAt(i) != ')') {
+                        continue;
+                    }
+                    String after = p.substring(0, i) + p.substring(i + 1);
+                    if (!seen.contains(after)) {
+                        seen.add(after);
+                        q.offer(after);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+    private boolean isValid(String s) {
+        int count = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                count++;
+            } 
+            if (c == ')') {
+                count--;
+            }
+            if (count < 0) {
+                return false;
+            }
+        }
+        return count == 0;
+    }
+}
 
 // Solution 1 version 2: DFS
 // First check from left to right.
@@ -22,9 +129,8 @@
 // Also note that we need to handle duplicates. When multiple ')'s occur, we only handle
 // the first one. All subsequent ')'s are ignored.
 // After we check from left the right, we also need to check from right to left.
+// reference: https://discuss.leetcode.com/topic/34875/easy-short-concise-and-fast-java-dfs-3-ms-solution
 //
-// Time: O(n) - at most n chars to delete
-// Space: O(1)
 // 11/06/2017
 
 class Solution {
