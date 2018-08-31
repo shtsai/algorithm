@@ -18,7 +18,7 @@
  * isMatch("aab", "c*a*b") → false
  */
 
-// Solution 2: Button-up DP
+// Solution 4: Button-up DP
 // Put two string s and p on the two sides of a matrix.
 // DP[i][j] represent whether str1[0:i] matches str2[0:j]
 // Compare each pair of characters str1[i] and str2[j].
@@ -38,6 +38,7 @@ class Solution {
     public boolean isMatch(String s, String p) {
         boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
         dp[0][0] = true;
+        // Initialize first row
         for (int i = 1; i <= p.length(); i++) {
             dp[0][i] = dp[0][i-1] && p.charAt(i-1) == '*';
         }
@@ -58,7 +59,7 @@ class Solution {
     }
 }
 
-// Solution 1: 
+// Solution 3: 
 // Scan through two strings using two pointers, compare char by char.
 // When see a '*', recording its position j and the matching index i.
 // When find mismatch, return to that star index and retry.
@@ -96,5 +97,62 @@ public class Solution {
         }
  
         return j == p.length();     // after these operations, see if j is pointing at the end of string p
+    }
+}
+
+// Solution 2: Recursion + Memoization
+// Time: O(sp)
+// Space: O(sp)
+// 08/31/2018
+class Solution {
+    public boolean isMatch(String s, String p) {
+        Boolean[][] memo = new Boolean[s.length() + 2][p.length() + 2];
+        return helper(s, 0, p, 0, memo);
+    }
+    
+    private boolean helper(String s, int sIndex, String p, int pIndex, Boolean[][] memo) {
+        if (memo[sIndex][pIndex] != null) {
+            return memo[sIndex][pIndex];
+        }
+        
+        if (pIndex == p.length()) {
+            memo[sIndex][pIndex] = sIndex == s.length();
+        } else if (sIndex > s.length()) {
+            memo[sIndex][pIndex] = false;
+        } else {
+            boolean firstMatch = sIndex < s.length() && (s.charAt(sIndex) == p.charAt(pIndex) || p.charAt(pIndex) == '?');
+        
+            if (p.charAt(pIndex) == '*') {
+                memo[sIndex][pIndex] = helper(s, sIndex + 1, p, pIndex, memo) || helper(s, sIndex, p, pIndex + 1, memo);
+            } else {
+                memo[sIndex][pIndex] = firstMatch && helper(s, sIndex + 1, p, pIndex + 1, memo);
+            }
+        }
+        return memo[sIndex][pIndex];
+    }
+}
+
+
+// Solution 1: Recursion
+// Time: O(2 ^ (s + p)) - time limit exceeded
+// 08/31/2018
+class Solution {
+    public boolean isMatch(String s, String p) {
+        return helper(s, 0, p, 0);
+    }
+    
+    private boolean helper(String s, int sIndex, String p, int pIndex) {
+        if (pIndex == p.length()) {
+            return sIndex == s.length();
+        } else if (sIndex > s.length()) {
+            return false;
+        }
+        boolean firstMatch = sIndex < s.length() && (s.charAt(sIndex) == p.charAt(pIndex) || p.charAt(pIndex) == '?');
+        
+        if (p.charAt(pIndex) == '*') {
+            return helper(s, sIndex + 1, p, pIndex) || helper(s, sIndex, p, pIndex + 1);
+        } else {
+            return firstMatch && helper(s, sIndex + 1, p, pIndex + 1);
+        }
     }
 }
