@@ -11,51 +11,75 @@
  * Your algorithm should run in linear runtime complexity. Could you implement it using only constant space complexity?
  */
 
+// Solution 2:
 // XOR, bit manipulation
-// reference:
-// https://discuss.leetcode.com/topic/21605/accepted-c-java-o-n-time-o-1-space-easy-solution-with-detail-explanations/2
+// Since there are two single numbers, there must be a bit where two numbers are different.
+// eg. [1, 1, 7, 3, 2, 2]
 
-public class Solution {
+// 1:   0001
+// 1:   0001
+// 7:   0111
+// 3:   0011
+// 2:   0010
+// 2:   0010
+// -----------
+// XOR->0100     This means that two numbers are different in this bit
+//
+// We can then separate the numbers by this bit and XOR each group
+// 7:   0111      =>  0111 (7)
+// -----------------
+// 1:   0001
+// 1:   0001
+// 3:   0011      =>  0011 (3)
+// 2:   0010
+// 2:   0010
+//
+// Time: O(n)
+// Space: O(1)
+// 08/31/2018
+class Solution {
     public int[] singleNumber(int[] nums) {
         int xor = 0;
-        for (int i = 0; i < nums.length; i++) {
-            xor ^= nums[i];
+        for (int n : nums) {
+            xor ^= n;
+        }
+        int i = 0;
+        while (i < 32 && ((xor >> i) & 1) == 0) {     // find a set bit in XOR
+            i++;
         }
         
-        xor &= -xor;   // equivalent to xor = xor & (~(xor-1))  // find the set bit, the bit that separates two numbers
-        
-        int[] result = new int[2];
-        for (int i = 0; i < nums.length; i++) {
-            if ((xor & nums[i]) != 0) { // set bit is set
-                result[0] ^= nums[i];
-            } else {                    // set bit is not set
-                result[1] ^= nums[i];
+        int[] res = new int[2];
+        for (int n : nums) {
+            if (((n >> i) & 1) == 0) {
+                res[0] ^= n;
+            } else {
+                res[1] ^= n;
+            }
+        }
+        return res;
+    }
+}
+
+// Solution 1: HashSet
+// Time: O(n)
+// Space: O(n)
+// 08/31/2018
+class Solution {
+    public int[] singleNumber(int[] nums) {
+        Set<Integer> set = new HashSet<Integer>();
+        for (int n : nums) {
+            if (!set.contains(n)) {
+                set.add(n);
+            } else {
+                set.remove(n);
             }
         }
         
+        Iterator it = set.iterator();
+        int[] result = new int[2];
+        for (int i = 0; i < 2; i++) {
+            result[i] = (int) it.next();
+        }
         return result;
     }
 }
-
-/*
-// use hashset, extra space
-public class Solution {
-    public int[] singleNumber(int[] nums) {
-        Set<Integer> set = new HashSet<Integer>();
-        for (int i = 0; i < nums.length; i++) {
-            if (!set.contains(nums[i])) {
-                set.add(nums[i]);
-            } else {
-                set.remove(nums[i]);
-            }
-        }
-        
-        Integer[] result = set.toArray(new Integer[2]);
-        int[] result1 = new int[2];
-        for (int i = 0; i < 2; i++) {
-            result1[i] = result[i];
-        }
-        return result1;
-    }
-}
-*/
