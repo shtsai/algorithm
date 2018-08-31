@@ -25,6 +25,8 @@
 
 // Solution 1:
 // use a global variable to maintain the max value for all nodes
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     int max = 0;
     public int diameterOfBinaryTree(TreeNode root) {
@@ -35,19 +37,20 @@ public class Solution {
     // This is a helper function that calculates the depth of a given node
     public int depth (TreeNode root) {
         if (root == null) return 0;
-        
+
         int left = depth(root.left);
-        int right = depth(root.right);
-        
+        int right = depth(root.right);        
         // keep track of the max yet
-        max = Math.max(max, left+right);
-        
+        max = Math.max(max, left+right); 
         return 1 + Math.max(left, right);
     }
 }
 
 
-// Solution 2:
+// Solution 2: Brute force
+// Time: O(n ^ 2)
+// Space: O(1)
+
 public class Solution {
     public int diameterOfBinaryTree(TreeNode root) {
         if (root == null) return 0;
