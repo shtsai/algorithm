@@ -7,8 +7,40 @@
  * 1234567 -> "One Million Two Hundred Thirty Four Thousand Five Hundred Sixty Seven"
  */
 
-// Solution 2:
-// much more consice version
+// Solution 2: Recursive
+// 08/31/2018
+public class Solution {
+    private final String[] belowTwenty = new String[] {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+    private final String[] tens = new String[] {"", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+    
+    public String numberToWords(int num) {
+        if (num == 0) {
+            return "Zero";
+        } else {
+            return helper(num); 
+        }
+    }
+    
+    private String helper(int num) {
+        String result = new String();
+        if (num < 20) {
+            result = belowTwenty[num];
+        } else if (num < 100) {
+            result = tens[num/10] + " " + helper(num % 10);
+        } else if (num < 1000) {
+            result = helper(num/100) + " Hundred " +  helper(num % 100);
+        } else if (num < 1000000) {
+            result = helper(num/1000) + " Thousand " +  helper(num % 1000);
+        } else if (num < 1000000000) {
+            result = helper(num/1000000) + " Million " +  helper(num % 1000000);
+        } else {
+            result = helper(num/1000000000) + " Billion " + helper(num % 1000000000);
+        }
+        return result.trim();
+    }
+}
+
+// Solution 1: Iterative
 // reference: https://discuss.leetcode.com/topic/23054/my-clean-java-solution-very-easy-to-understand
 class Solution {
     private final String[] under20 = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
@@ -46,104 +78,5 @@ class Solution {
         } else {    // >= 100
             return process(num/100) + "Hundred " + process(num%100);
         }
-    }
-}
-
-// Solution 1:
-// process number by units (billion, million, thousand, hundred, etc)
-// recursively solve
-class Solution {
-    public String numberToWords(int num) {
-        if (num == 0) return "Zero";
-        StringBuilder sb = new StringBuilder();
-        if (num < 0) {
-            sb.append("Negative ");     // store sign
-            num *= -1;                  // convert to positive
-        }
-        if (num >= 1000000000) {
-            int billions = num / 1000000000;
-            int rest = num % 1000000000;
-            String restString = underOneBillion(rest);
-            String billionsString = underOneThousand(billions);
-            if (billions == 0) sb.append(restString);
-            else if (rest == 0) sb.append(billionsString + " Billion");
-            else sb.append(billionsString + " Billion " + restString);
-        } else {   // num < billion
-            sb.append(underOneBillion(num));
-        }
-        return sb.toString();
-    }
-    
-    private String underOneBillion(int num) {
-        int millions = num / 1000000;
-        int rest = num % 1000000;
-        String restString = underOneMillion(rest);
-        String millionsString = underOneThousand(millions);
-        if (millions == 0) return restString;
-        if (rest == 0) return millionsString + " Million";
-        return millionsString + " Million " + restString;
-    }
-    
-    private String underOneMillion(int num) {
-        int thousands = num / 1000;
-        int rest = num % 1000;
-        String restString = underOneThousand(rest);
-        String thousandsString = underOneThousand(thousands);
-        if (thousands == 0) return restString;
-        if (rest == 0) return thousandsString + " Thousand";
-        return thousandsString + " Thousand " + restString;
-    }
-    
-    private String underOneThousand(int num) {
-        int hundreds = num / 100;
-        int rest = num % 100;
-        String restString = underOneHundred(rest);
-        String hundredsString = underTen(hundreds);
-        if (hundreds == 0) return restString;
-        if (rest == 0) return hundredsString + " Hundred";
-        return hundredsString + " Hundred " + restString;
-    }
-    
-    private String underOneHundred(int num) {
-        if (num < 10) return underTen(num);
-        else if (num == 10) return "Ten";
-        else if (num == 11) return "Eleven";
-        else if (num == 12) return "Twelve";
-        else if (num == 13) return "Thirteen";
-        else if (num == 14) return "Fourteen";
-        else if (num == 15) return "Fifteen";
-        else if (num == 16) return "Sixteen";
-        else if (num == 17) return "Seventeen";
-        else if (num == 18) return "Eighteen";
-        else if (num == 19) return "Nineteen";
-        else {      // >= 20
-            int left = num / 10;
-            int right = num % 10;
-            String space = right == 0 ? "" : " ";
-            String rightString = underTen(right);
-            if (left == 2) return "Twenty" + space + rightString;
-            else if (left == 3) return "Thirty" + space + rightString;
-            else if (left == 4) return "Forty" + space + rightString;
-            else if (left == 5) return "Fifty" + space + rightString;
-            else if (left == 6) return "Sixty" + space + rightString;
-            else if (left == 7) return "Seventy" + space + rightString;
-            else if (left == 8) return "Eighty" + space + rightString;
-            else if (left == 9) return "Ninety" + space + rightString;
-        }
-        return "";
-    }
-    
-    private String underTen(int num) {
-        if (num == 0) return "";
-        else if (num == 1) return "One";
-        else if (num == 2) return "Two";
-        else if (num == 3) return "Three";
-        else if (num == 4) return "Four";
-        else if (num == 5) return "Five";
-        else if (num == 6) return "Six";
-        else if (num == 7) return "Seven";
-        else if (num == 8) return "Eight";
-        else if (num == 9) return "Nine";
-        return "";
     }
 }
