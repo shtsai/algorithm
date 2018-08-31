@@ -2,42 +2,39 @@
  *  Given an array of integers, every element appears twice except for one. Find that single one.
  */
 
+// Solution 2: Bit manipulation
+// use bit manipulation
+// 0 ^ number = number
+// number ^ number = 0
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public int singleNumber(int[] nums) {
-        
-        // use bit manipulation
-        // 0 ^ number = number
-        // number ^ number = 0
-        
         int num = 0;
-        for (int i = 0; i < nums.length; i++) {
-            num ^= nums[i];
+        for (int n : nums) {
+            num ^= n;
         }
         return num;
-        
-        
-        /*
-        // use a hash map to keep track of the occurence of each number
+    }
+}
+
+
+// Solution 1: HashMap
+// use a hash map to keep track of the occurence of each number
+// Time: O(n)
+// Space: O(n)
+// 08/31/2018
+public class Solution {
+    public int singleNumber(int[] nums) {
         HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
-        
         for (int i = 0; i < nums.length; i++) {
-            if (!map.containsKey(nums[i])) {
-                map.put(nums[i], 1);
-            } else {
-                int count = 0;
-                count = map.get(nums[i]);
-                map.put(nums[i], count + 1);
+            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        }
+        for (Integer key : map.keySet()) {
+            if (map.get(key) == 1) {
+                return key;
             }
         }
-        
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            int count = entry.getValue();
-            if (count == 1) {
-                return entry.getKey();
-            }
-        }
-        
         throw new IllegalArgumentException("No single element");
-        */
     }
 }
