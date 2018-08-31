@@ -23,8 +23,33 @@
     Space: O(n)
  */
 
-// version 2: 
-// use two arrays and three passes, easier to write
+// Solution 2: 
+// Use only one array and two passes, constant space
+// Time: O(n)
+// Space: O(1)
+
+public class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int[] result = new int[nums.length];
+        result[0] = 1;                              // first run
+        for (int i = 1; i < nums.length; i++) {     // build from left to right
+            result[i] = result[i-1] * nums[i-1];
+        }
+        
+        int right = 1;                              // second run
+        for (int i = nums.length-1; i >= 0; i--) {  // build from right to left
+            result[i] = result[i] * right;
+            right = right * nums[i];
+        }
+        
+        return result;
+    }
+}
+
+// Solution 1:
+// use two arrays and three passes
+// Time: O(n)
+// Space: O(n)
 // 11/16/2017
 class Solution {
     public int[] productExceptSelf(int[] nums) {
@@ -42,25 +67,5 @@ class Solution {
             right[i] *= left[i];
         }
         return right;
-    }
-}
-
-// version 1:
-// Use only one array and two passes
-public class Solution {
-    public int[] productExceptSelf(int[] nums) {
-        int[] result = new int[nums.length];
-        result[0] = 1;                              // first run
-        for (int i = 1; i < nums.length; i++) {     // build from left to right
-            result[i] = result[i-1] * nums[i-1];
-        }
-        
-        int right = 1;                              // second run
-        for (int i = nums.length-1; i >= 0; i--) {  // build from right to left
-            result[i] = result[i] * right;
-            right = right * nums[i];
-        }
-        
-        return result;
     }
 }
