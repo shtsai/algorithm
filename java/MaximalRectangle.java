@@ -13,7 +13,16 @@
 
 // Solution 1:
 // Dynamic programming, use arrays to store left boundary, right boundary and height
+// - left(i,j) = max(left(i-1,j), cur_left), cur_left can be determined from the current row
+// - right(i,j) = min(right(i-1,j), cur_right), cur_right can be determined from the current row
+// - height(i,j) = height(i-1,j) + 1, if matrix[i][j]=='1';
+// - height(i,j) = 0, if matrix[i][j]=='0'
 // update max in every iteration
+// Note the value for right array.
+//
+// Time: O(mn)
+// Space: O(n)
+// 09/03/2018
 class Solution {
     public int maximalRectangle(char[][] matrix) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
@@ -51,38 +60,48 @@ class Solution {
 }
 
 // Solution 2:
-// base on "Largest Rectangle In Histogram"
+// Build histogram level by level
+// Then use algorithm in "Largest Rectangle In Histogram"
 // use stacks to record left boundaries and heights
-// a little bit slower than solutio 1
+// Time: O(mn)
+// Space: O(n)
+// 09/03/2018
 class Solution {
     public int maximalRectangle(char[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
-        int m = matrix.length, n = matrix[0].length, max = 0;
-        int[] rectangles = new int[n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {           // create histogram
-                if (matrix[i][j] == '1') rectangles[j]++;
-                else rectangles[j] = 0;
-            }
-            
-            // Largest Rectangle In Histogram
-            Stack<Integer> stack = new Stack<>();
-            int index = 0;
-            while (index < n) {
-                if (stack.isEmpty() || rectangles[index] >= rectangles[stack.peek()]) {
-                    stack.push(index);
-                    index++;
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int[] histogram = new int[matrix[0].length + 1];     // add a zero at the end for ending
+        int max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            // build histogram
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] == '1') {
+                    histogram[j]++;
                 } else {
-                    int height = rectangles[stack.pop()];
-                    int width = stack.isEmpty() ? index : index - (stack.peek()+1);
-                    max = Math.max(max, height * width);
+                    histogram[j] = 0;
                 }
+                
             }
-            while (!stack.isEmpty()) {
-                int height = rectangles[stack.pop()];
-                int width = stack.isEmpty() ? index : index - (stack.peek()+1);
-                max = Math.max(max, height * width);
+            max = Math.max(max, findMaxRectangleInHistogram(histogram));
+        }
+        return max;
+    }
+    
+    private int findMaxRectangleInHistogram(int[] histogram) {
+        Stack<Integer> stack = new Stack<>();
+        int right = 0, max = 0;
+        while (right < histogram.length) {
+            int rightH = histogram[right];
+            while (!stack.isEmpty() && histogram[stack.peek()] > rightH) {
+                int mid = stack.pop();
+                int left = stack.isEmpty() ? -1 : stack.peek();
+                int h = histogram[mid];
+                int w = right - left - 1;
+                max = Math.max(max, h * w);
             }
+            stack.push(right);
+            right++;
         }
         return max;
     }
