@@ -19,7 +19,7 @@
 
 // Solution 1 version 2:
 // Create a Point class
-// Time: O(n) - n = length of buildings
+// Time: O(nlogn) - n = length of buildings
 // Space: O(n)
 // 10/26/2017
 
@@ -38,9 +38,6 @@ class Solution {
             } else {
                 return this.x - other.x;
             }
-        }        
-        public String toString() {
-            return x + " " + y;
         }
     }
 
@@ -82,6 +79,8 @@ class Solution {
 // then iterate through these critical points and use a priority queue
 // to quickly retrieve the current max height. 
 // When max height changes, it indicates a key point
+// Time: O(nlogn) - n = length of buildings
+// Space: O(n)
 class Solution {
     public List<int[]> getSkyline(int[][] buildings) {
         List<int[]> res = new ArrayList<>();
