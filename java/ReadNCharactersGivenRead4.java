@@ -13,9 +13,31 @@
       int read4(char[] buf); */
 
 // Solution 1: 
+// version 2:
+// 09/03/2018
+public class Solution extends Reader4 {
+    /**
+     * @param buf Destination buffer
+     * @param n   Maximum number of characters to read
+     * @return    The number of characters read
+     */
+    public int read(char[] buf, int n) {
+        int res = 0;
+        int read = 4;
+        while (read == 4 && res < n) {
+            char[] temp = new char[4];
+            read = read4(temp);
+            for (int i = 0; i < read && res < n; i++) {
+                buf[res++] = temp[i];
+            }
+        } 
+        return res;
+    }
+}
+
+// version 1:
 // reference: https://discuss.leetcode.com/topic/18289/another-accepted-java-solution
 // 09/24/2017
-
 public class Solution extends Reader4 {
     /**
      * @param buf Destination buffer
