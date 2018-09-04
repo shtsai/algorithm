@@ -17,6 +17,9 @@
 // Solution 3:
 // greedy solution, similar to BFS solution
 // try to go as far as possible, make a jump when reaches the end
+// Time: O(n)
+// Space: O(1)
+// 09/04/2018
 class Solution {
     public int jump(int[] nums) {
         if (nums.length < 2) return 0;
@@ -38,6 +41,7 @@ class Solution {
 // at every iteration, we try to get as far as possible,
 // then we increase the jump counter and go to next iteration,
 // repeat the same process until we reach the goal
+// Time: O(n)
 class Solution {
     public int jump(int[] nums) {
         if (nums.length < 2) return 0;
