@@ -35,7 +35,6 @@ class Solution {
             }
         }
     }
-    
     private void swap(int[] A, int a, int b) {
         int temp = A[a];
         A[a] = A[b];
@@ -45,12 +44,13 @@ class Solution {
 
 // solution 2:
 // move 2s to the end, and move 0s to the front
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public void sortColors(int[] nums) {
         int zero = 0;
         int two = nums.length - 1;
-        int index = 0;
-        
+        int index = 0;    
         while (index <= two) {
             while (nums[index] == 2 && index != two) { // swap 2 to the end
                 swap(nums, index, two); 
@@ -62,10 +62,7 @@ public class Solution {
             }
             index++;
         }
-        
-        return;
     }
-    
     private void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
@@ -75,10 +72,11 @@ public class Solution {
 
 // solution 1: Counting sort
 // count the frequency of each color, then build the array
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public void sortColors(int[] nums) {
-        int zero = 0, one = 0, two = 0;
-        
+        int zero = 0, one = 0, two = 0;      
         for (int i = 0; i < nums.length; i++) {
             switch (nums[i]){
                 case 0:
@@ -91,8 +89,7 @@ public class Solution {
                     two++;
                     break;
             }
-        }
-        
+        }  
         int index = 0;
         for (int i = 0; i < zero; i++) {
             nums[index++] = 0;
@@ -103,7 +100,5 @@ public class Solution {
         for (int i = 0; i < two; i++) {
             nums[index++] = 2;
         }
-        
-        return;
     }
 }
