@@ -58,8 +58,6 @@ class Solution {
 // when the interval is still not inserted after a round of searching, it must be added to the end of the list
 // Time: O(n)
 // Space: O(1)
-
-// version 2: add to a new list
 // 01/05/2018
 class Solution {
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
@@ -88,34 +86,6 @@ class Solution {
     }
 }
 
-// version 1:
-class Solution {
-    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
-        boolean inserted = false;  
-        int prev_end = -1, i = 0;
-        while (i < intervals.size()) {
-            Interval cur = intervals.get(i);
-            if (prev_end < newInterval.start && newInterval.end < cur.start) {  // can insert with no overlap
-                intervals.add(i, newInterval);
-                inserted = true;
-                break;  // finished searching
-            }
-            if (newInterval.start > cur.end || cur.start > newInterval.end) {  // no overlap with new interval
-                prev_end = cur.end;
-                i++;
-                continue;   
-            }
-            
-            // find an overlap, merge it with the new interval
-            newInterval.start = Math.min(cur.start, newInterval.start);
-            newInterval.end = Math.max(cur.end, newInterval.end);
-            intervals.remove(i);    // remove overlapped interval
-        }
-        
-        if (!inserted) intervals.add(newInterval);  // newInterval is to be added at the end of the list
-        return intervals;
-    }
-}
 
 // Solution 1: recursion solution
 // every time we find an interval that is overlapped with the new interval
