@@ -10,9 +10,13 @@
  * 
  */
 
+// Solution 1:
 // process two strings character by character
 // store results in a big int array, then build string from there
 // reference: https://discuss.leetcode.com/topic/30508/easiest-java-solution-with-graph-explanation
+// Time: O(n)
+// Space: O(n)
+// 09/04/2018
 class Solution {
     public String multiply(String num1, String num2) {
         int m = num1.length(), n = num2.length();
@@ -28,8 +32,12 @@ class Solution {
         }
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        while (i < m+n && res[i] == 0) i++;    // skip all the leading zeros
-        for (; i < m+n; i++) sb.append(res[i]);
+        while (i < m+n && res[i] == 0) {
+            i++;    // skip all the leading zeros
+        }
+        for (; i < m+n; i++) {
+            sb.append(res[i]);
+        }
         return sb.length() == 0 ? "0" : sb.toString();
     }
 }
