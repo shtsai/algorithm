@@ -1,8 +1,15 @@
 /*
- *  Given an absolute path for a file (Unix-style), simplify it.
- *  For example,
- *  path = "/home/", => "/home"
- *  path = "/a/./b/../../c/", => "/c"
+    Given an absolute path for a file (Unix-style), simplify it.
+
+    For example,
+    path = "/home/", => "/home"
+    path = "/a/./b/../../c/", => "/c"
+
+    Corner Cases:
+    - Did you consider the case where path = "/../"?
+      In this case, you should return "/".
+    - Another corner case is the path might contain multiple slashes '/' together, such as "/home//foo/".
+      In this case, you should ignore redundant slashes and return "/home/foo".
  */
 
 // Solution 2: List (Stack is not allowed)
@@ -12,7 +19,6 @@
 // 11/09/2017
 class Solution {
     public String simplifyPath(String path) {
-        Stack<String> stack = new Stack<>();
         ArrayList<String> list = new ArrayList<>();
         for (String p : path.split("/")) {
             if (p.equals("") || p.equals(".")) {
@@ -43,60 +49,26 @@ class Solution {
 // Finally, concatenate all parts in reverse order.
 // Time: O(n) - two passes
 // Space: O(n) - stack
-
-// version 2:
-// 11/09/2017
+// 09/04/2018
 class Solution {
     public String simplifyPath(String path) {
         Stack<String> stack = new Stack<>();
-        String[] paths = path.split("/");
-        
-        for (String p : paths) {
-            if (p.equals(".") || p.equals("")) {
+        String[] ps = path.split("/");
+        for (String p : ps) {
+            if (p.equals("") || p.equals(".")) {
                 continue;
             } else if (p.equals("..")) {
                 if (!stack.isEmpty()) {
-                    stack.pop();   
+                    stack.pop();
                 }
             } else {
                 stack.push(p);
             }
         }
         StringBuilder sb = new StringBuilder();
-        StringBuilder sb2 = new StringBuilder();
-        while (!stack.isEmpty()) {  // concatenate in reverse order
-            sb2.append("/" + stack.pop() + sb);
-            sb = sb2;
-            sb2 = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.insert(0, "/" + stack.pop());
         }
         return sb.length() == 0 ? "/" : sb.toString();
-    }
-}
-
-// version 1:
-public class Solution {
-    public String simplifyPath(String path) {
-        if (path == null || path.length() == 0) {
-            return null;
-        }
-
-        LinkedList<String> stack = new LinkedList<>();
-        for (String directory : path.split("/")) {
-            if (!stack.isEmpty() && directory.equals("..")) {   // '..' means parent directory, need to pop
-                stack.pop();
-            } else if (!directory.equals("") && !directory.equals(".") && !directory.equals("..")) {
-                stack.push(directory);
-            }
-        }
-        
-        String result = "";
-        for (String directory : stack) {
-            result = "/" + directory + result;  // need to reverse order b/c stack is LIFO
-        }
-        if (result == "") {
-            return "/";
-        } else {
-            return result;
-        }
     }
 }
