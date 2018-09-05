@@ -21,26 +21,25 @@
 //
 // Time: O(n^2)
 // Space: O(1)
-// 07/12/2018
-    
+// 09/04/2018
 class Solution {
     public int countSubstrings(String s) {
-        int len = s.length(), count = 0;
-        for (int left = 0; left < len; left++) {
-            int l1 = left, r1 = left;
-            while (l1 >= 0 && r1 < len && s.charAt(l1) == s.charAt(r1)) {
-                l1--;
-                r1++;
-                count++;
-            }
-            int l2 = left, r2 = left + 1;
-            while (l2 >= 0 && r2 < len && s.charAt(l2) == s.charAt(r2)) {
-                l2--;
-                r2++;
-                count++;
-            }
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            res += count(s, i, i);
+            res += count(s, i, i + 1);
         }
-        return count;
+        return res;
+    }
+    
+    private int count(String s, int left, int right) {
+        int res = 0;
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            res++;
+            left--;
+            right++;
+        }
+        return res;
     }
 }
 
