@@ -17,58 +17,55 @@
 //
 // Then use variable need as an indicator of whether we need more words
 // Start and end work as two pointers to represent the window
-// Time: O(m) - m is the length of the string
-// Space: O(nw) - n is the number of words, and w is the length of each word
-//
-// reference: https://discuss.leetcode.com/topic/35676/accepted-java-solution-12ms-with-explanation
+// Time: O(mw) - m:len(s), w:len(word)
+// Space: O(nw) - n:len(words), w:len(word)
+// 09/06/2018
 
-        int distinctWord = 0;
 class Solution {
     public List<Integer> findSubstring(String s, String[] words) {
         List<Integer> res = new ArrayList<>();
-        int wordLen = words[0].length(), wordNum = words.length;
-        HashMap<String, int[]> map = new HashMap<>();  // array[0] stores the number of this words we need
-                                                           // array[1] stores the number of this words we have in the substring
-        int distinctWord = 0;
-        for (String word : words) {
-            if (!map.containsKey(word)) {       // build hashmap
-                map.put(word, new int[2]);
-                distinctWord++;
-            }
-            map.get(word)[0]++;
+        if (s.length() == 0 || words.length == 0) {
+            return res;
         }
-        
-        for (int i = 0; i < wordLen; i++) {
-            int need = distinctWord, start = i, end = i;
-            while (end <= s.length()-wordLen) {
-                while (end <= s.length()-wordLen && need > 0) {
-                    String word = s.substring(end, end + wordLen);  // get next word
-                    if (map.containsKey(word)) {     // need this word
-                        map.get(word)[1]++;      // add the counter of this word
-                        if (map.get(word)[1] == map.get(word)[0]) { // find exact the number we need
+        int len = words[0].length();
+        int wordLen = words.length;
+        HashMap<String, Integer> freq = new HashMap<>();
+        HashMap<String, Integer> seen = new HashMap<>();
+        for (String w : words) {
+            freq.put(w, freq.getOrDefault(w, 0) + 1);
+            seen.put(w, 0);
+        }
+        for (int i = 0; i < len; i++) {     // only need to try `len` start position
+            int need = freq.keySet().size();
+            int left = i, right = i;
+            while (right + len <= s.length()) {
+                while (right + len <= s.length() && need != 0) {
+                    String sub = s.substring(right, right + len);
+                    if (seen.containsKey(sub)) {
+                        seen.put(sub, seen.get(sub) + 1);
+                        if (freq.get(sub) == seen.get(sub)) {
                             need--;
-                        }
+                        }           
                     }
-                    end += wordLen;
+                    right += len;
                 }
-
-                // find all words we need
-                while (start < end && need == 0) {
-                    String word = s.substring(start, start + wordLen);
-                    if (map.containsKey(word)) {
-                        map.get(word)[1]--;     // decrement the counter for this word
-                        if (map.get(word)[1] == map.get(word)[0]-1) {   // make sure the counter is one less than what we need
-                            need++;                                     // need to do this check b/c counter can be more than what we need
-                        }
-                        if (end - start == wordLen * wordNum) {
-                            res.add(start);
-                        }
+                
+                while (left < right && need == 0) {
+                    if (right - left == wordLen * len) {
+                        res.add(left);
                     }
-                    start += wordLen;
-                }
+                    String prev = s.substring(left, left + len);
+                    if (seen.containsKey(prev)) {
+                        seen.put(prev, seen.get(prev) - 1);
+                        if (freq.get(prev) > seen.get(prev)) {
+                            need++;
+                        }
+                    } 
+                    left += len;
+                }                
             }
-            for (String key : map.keySet()) {   // reset counters in the map
-                map.get(key)[1] = 0;
+            for (String k : freq.keySet()) {    // reset seen for next iteration
+                seen.put(k, 0);
             }
         }
         return res;
@@ -79,8 +76,8 @@ class Solution {
 // Use hashmap and two pointers
 // Hashmap enables quick check if the word is valid, and it allows duplicates.
 // Two pointers: 
-//      - one points at the starting point of this substring
-//      - the other is used to traverse s
+//      - `start` points at the starting point of this substring
+//      - `i` is used to traverse s
 // Time: O(mn), m = length of s, n is length of words
 // Space: O(mnw), we make m copies of map, which contains n words of length w
 //                may be optimized to use less space
@@ -99,11 +96,12 @@ class Solution {
                 map.put(word, map.get(word)+1);
             }
         }
-        int wordLen = words[0].length(), wordNum = words.length;
-        for (int start = 0; start <= s.length()-wordLen*wordNum; start++) { // try different start point
+        int wordLen = words[0].length();
+        int wordNum = words.length;
+        for (int start = 0; start <= s.length()- wordLen * wordNum; start++) { // try different start point
             HashMap<String, Integer> copy = new HashMap<>(map);
             for (int i = 0; i < wordNum; i++) {     // need to find all words
-                String nextWord = s.substring(start+i*wordLen, start+(i+1)*wordLen);
+                String nextWord = s.substring(start + i * wordLen, start + (i + 1) * wordLen);
                 if (copy.containsKey(nextWord)) {   // if map contains next word
                     if (copy.get(nextWord) == 1) {   // last count, can remove it
                         copy.remove(nextWord);
@@ -117,9 +115,7 @@ class Solution {
             if (copy.size() == 0) {  // find all words, valid start
                 res.add(start);
             }
-            
         }
-        
         return res;
     }
 }
