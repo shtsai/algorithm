@@ -19,8 +19,6 @@
     findMedian() -> 2
  */
 
-
-
 // Solution 3: Two Heaps (priority queue)
 // One priority stores number greater than the median.
 // The other stores number less than median.
@@ -29,67 +27,44 @@
 // If one heap is larger than the other, then return the peek() of the
 // heap with larger size.
 //
-// Time: O(1) add, O(1) get
+// Time: O(logn) add, O(1) get
 // Space: O(n)
 // version 2:
 // 10/26/2017
 
 class MedianFinder {
-    PriorityQueue<Integer> large;
-    PriorityQueue<Integer> small;
+    PriorityQueue<Integer> smaller;
+    PriorityQueue<Integer> larger;
+    
     /** initialize your data structure here. */
     public MedianFinder() {
-        large = new PriorityQueue<>();
-        small = new PriorityQueue<>(Collections.reverseOrder());
+        smaller = new PriorityQueue<Integer>(Collections.reverseOrder());
+        larger = new PriorityQueue<Integer>();
     }
     
     public void addNum(int num) {
-        if (large.isEmpty() || num > large.peek()) {
-            large.offer(num);
+        if (smaller.isEmpty() || num <= smaller.peek()) {
+            smaller.offer(num);
         } else {
-            small.offer(num);
+            larger.offer(num);
         }
-        // rebalance two priorityqueue, make sure difference is at most 1
-        if (large.size() > small.size() + 1) {
-            small.offer(large.poll());
+        // make sure smaller is equal to larger or has one more element
+        while (smaller.size() > larger.size() + 1) {
+            larger.offer(smaller.poll());
         }
-        if (small.size() > large.size() + 1) {
-            large.offer(small.poll());
+        while (smaller.size() < larger.size()) {
+            smaller.offer(larger.poll());
         }
     }
     
     public double findMedian() {
-        if (large.size() == small.size()) {
-            return (large.peek() + small.peek()) / 2.0;
-        } 
-        return large.size() > small.size() ? large.peek() : small.peek();
+        if ((smaller.size() + larger.size()) % 2 == 0) {
+            return (smaller.peek() + larger.peek()) / 2.0;
+        } else {
+            return smaller.peek();
+        }
     }
 }
-
-// version 1:
-public class MedianFinder {
-    // use max and min heap to store the top and bottom half of the data
-    PriorityQueue<Integer> large = new PriorityQueue<>();  // min heap
-    PriorityQueue<Integer> small = new PriorityQueue<>(1000, Collections.reverseOrder());  // max heap
-    
-    // Adds a number into the data structure.
-    public void addNum(int num) {
-        large.offer(num);                    // first add to large heap
-        small.offer(large.poll());           // then move the smallest element in large to small
-        if (large.size() < small.size()) {   // make sure large has more or the same number of elements as small
-            large.offer(small.poll());
-        }
-    }
-
-    // Returns the median of current data stream
-    public double findMedian() {
-        if (large.size() > small.size()) {  // median is in large
-            return large.peek();
-        } else {      // otherwise median is the average of the two middle value
-            return (large.peek() + small.peek()) / 2.0;
-        }
-    }
-};
 
 // Solution 2: LinkedList
 // maintain a sorted linkedlist, and a counter for the length
@@ -133,7 +108,6 @@ class MedianFinder {
         }
     }
 }
-
 
 // Solution 1: ArrayList
 // maintain a sorted list and the position of the median
