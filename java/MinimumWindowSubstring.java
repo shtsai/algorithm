@@ -12,58 +12,51 @@
  * If there are multiple such windows, you are guaranteed that there will always be only one unique minimum window in S.
  */
 
-// Solution 1: version 2
-// HashMap version
-// Time: O(n) - n = s.length()
-// Space: O(n)
-// 09/27/2017
+// Solution 1: HashMap version
+// Time: O(n + m) - n:len(s), m:len(t)
+// Space: O(m)
+// 09/06/2018
 class Solution {
     public String minWindow(String s, String t) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        int count = t.length();
-        for (int i = 0; i < t.length(); i++) {  // store char frequency of t
-            char c = t.charAt(i);
-            if (map.containsKey(c)) {
-                map.put(c, map.get(c)-1);
-            } else {
-                map.put(c, -1);
-            }
+        HashMap<Character, Integer> freq = new HashMap<>();
+        for (char tc : t.toCharArray()) {
+            freq.put(tc, freq.getOrDefault(tc, 0) + 1);
         }
-        
+        int need = freq.keySet().size();
+        int min = Integer.MAX_VALUE;
+        int minStart = -1;
         int left = 0, right = 0;
-        int min = Integer.MAX_VALUE, minLeft = 0, minRight = 0;
         while (right < s.length()) {
-            char c = s.charAt(right);
-            if (map.containsKey(c)) {
-                if (map.get(c) < 0) {
-                    count--;
-                }
-                map.put(c, map.get(c)+1);
-                
-            }
-            right++;
-            while (left < right && count == 0) {   // find all chars
-                if ((right - left) < min) { // update min
-                    min = right - left;
-                    minLeft = left;
-                    minRight = right;
-                }
-                c = s.charAt(left);
-                if (map.containsKey(c)) {
-                    if (map.get(c) == 0) {  // find a new valid start
-                        count++;
+            while (right < s.length() && need != 0) {
+                char c = s.charAt(right);
+                if (freq.containsKey(c)) {
+                    freq.put(c, freq.get(c) - 1);
+                    if (freq.get(c) == 0) {
+                        need--;
                     }
-                    map.put(c, map.get(c)-1);
+                }
+                right++;
+            }
+            while (left < right && need == 0) {
+                if (right - left < min) {
+                    min = right - left;
+                    minStart = left;
+                }
+                char c = s.charAt(left);
+                if (freq.containsKey(c)) {
+                    freq.put(c, freq.get(c) + 1);
+                    if (freq.get(c) == 1) {
+                        need++;
+                    }
                 }
                 left++;
             }
         }
-        
-        return s.substring(minLeft, minRight);
+        return min == Integer.MAX_VALUE ? "" : s.substring(minStart, minStart + min);
     }
 }
 
-// Solution 1: Map and two pointers
+// version 2: int array
 // reference: https://discuss.leetcode.com/topic/30941/here-is-a-10-line-template-that-can-solve-most-substring-problems/12
 
 public class Solution {
@@ -94,7 +87,6 @@ public class Solution {
                 start++;    // find right start position
             }
         }
-        
         return min == Integer.MAX_VALUE ? "" : s.substring(head, head+min);
     }
 }
