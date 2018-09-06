@@ -61,24 +61,22 @@
 //
 // Note that we need to be careful with indexing here.
 //
-// Time: O(logn(m))
+// Time: O(log(min(m, n)))
 // Space: O(1)
-// 11/08/2017
+// 09/06/2018
 
 // version 2:
 class Solution {
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         if (nums1.length > nums2.length) {  // make nums1 to be the shorter array
-            int[] temp = nums1;
-            nums1 = nums2;
-            nums2 = temp;
+            return findMedianSortedArrays(nums2, nums1);
         }
         int m = nums1.length, n = nums2.length;
 
         int iMin = 0, iMax = m;
         int half = (m + n + 1) / 2;  // # of element on each half
         while (iMin <= iMax) {
-            int i = iMin + (iMax-iMin)/2;
+            int i = iMin + (iMax - iMin) / 2;
             int j = half - i;
             if (i > 0 && nums1[i-1] > nums2[j]) {
                 iMax = i-1;
@@ -94,7 +92,9 @@ class Solution {
                     leftMax = Math.max(nums1[i-1], nums2[j-1]);
                 }
                 // if odd, return leftMax, b/c left has one more element than right
-                if ((m + n) % 2 == 1) return leftMax; 
+                if ((m + n) % 2 == 1) {
+                    return leftMax; 
+                }
 
                 if (i == m) {   // find right
                     rightMin = nums2[j];
@@ -106,41 +106,6 @@ class Solution {
                 return (leftMax + rightMin) / 2.0;
             }
         }
-        return -1;
-    }
-}
-
-// version 1:
-public class Solution {
-    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        if (nums1.length > nums2.length) {     // make nums1 shorter than nums2
-            int[] temp = nums1;
-            nums1 = nums2;
-            nums2 = temp;
-        }
-        
-        int m = nums1.length, n = nums2.length, half = (m + n + 1) / 2;     // add 1 to round up
-        int i_max = m, i_min = 0;
-        
-        while (i_max >= i_min) {
-            int i = i_min + (i_max - i_min) / 2, j = half - i;   // make sure # of nums on the left = # of nums on the right
-            if (i < m && nums1[i] < nums2[j-1]) i_min = i+1;
-            else if (i > 0 && nums2[j] < nums1[i-1]) i_max = i-1;
-            else {      // find correct i
-                int leftMax, rightMin;
-                if (i == 0) leftMax = nums2[j-1];
-                else if (j == 0) leftMax = nums1[i-1];
-                else leftMax = Math.max(nums1[i-1], nums2[j-1]);
-        
-                if ((m + n) % 2 == 1) return leftMax;       // if total is odd, the median is the max on the left
-        
-                if (i == m) rightMin = nums2[j];
-                else if (j == n) rightMin = nums1[i];
-                else rightMin = Math.min(nums1[i], nums2[j]);
-                return (leftMax + rightMin) / 2.0;
-            }
-        }
-        
-        return 0;
+        return -1.0;
     }
 }
