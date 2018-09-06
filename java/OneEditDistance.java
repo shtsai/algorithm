@@ -3,32 +3,23 @@
  */
 
 // Solution 2:
-// Make sure s is shorter than t
-// Use a pointer i to scan through two strings concurrently
-// When see a mismatch, consider the following cases:
-//      a. When i is at the end of s, all previous chars match, except the last char in t
-//      b. When sLen == tLen, we skip the mismatched char, and continue
-//      c. When sLen < tLen, we skip one char in t because it is one char longer
-// Finally, we see if i reaches the end of s
-//
 // Time: O(n) - one pass
 // Space: O(1)
-// 09/30/2017
-    
+// 09/06/2018
 class Solution {
     public boolean isOneEditDistance(String s, String t) {
-        int sLen = s.length(), tLen = t.length();
-        if (sLen > tLen) return (isOneEditDistance(t, s));
-        if (tLen - sLen > 1) return false;
-        
-        int offset = tLen - sLen;   // 0 | 1
-        int i = 0;
-        while (i < sLen && s.charAt(i) == t.charAt(i)) i++;
-        if (i == sLen) return offset == 1;  // previous all match, t has one more char
-        if (offset == 0) i++;   // skip the mismatch char
-        while (i < sLen && s.charAt(i) == t.charAt(i+offset)) i++;
-        return i == sLen;   // see if we reach the end
-
+        for (int i = 0; i < Math.min(s.length(), t.length()); i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                if (s.length() == t.length()) {        // replace
+                    return s.substring(i + 1).equals(t.substring(i + 1));
+                } else if (s.length() > t.length()) {  // remove one from s
+                    return s.substring(i + 1).equals(t.substring(i));
+                } else {                               // remove one from t
+                    return s.substring(i).equals(t.substring(i + 1));
+                }
+            }
+        }
+        return Math.abs(s.length() - t.length()) == 1; // check if diff is 1
     }
 }
 
