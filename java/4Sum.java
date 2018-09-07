@@ -66,9 +66,7 @@ class Solution {
 public class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
         ArrayList<List<Integer>> result = new ArrayList<>();
-        
         Arrays.sort(nums);
-        
         for (int i = 0; i < nums.length - 3; i++) {
             if (i > 0 && nums[i] == nums[i-1]) continue;   // skip duplicates
             for (int j = i + 1; j < nums.length -2; j++){  // convert into 3 Sum
@@ -90,7 +88,6 @@ public class Solution {
                         l--;
                     }
                 }
-                
             }
         }
         return result;
