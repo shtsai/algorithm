@@ -17,19 +17,16 @@
 
 class Solution {
     public int lengthOfLIS(int[] nums) {
-        if (nums == null || nums.length == 0) return 0;
-        int[] dp = new int[nums.length];
-        dp[0] = 1;
-        int max = 1;
-        for (int i = 1; i < nums.length; i++) {
-            int pre = 0;
+        int max = 0;
+        int[] res = new int[nums.length];
+        Arrays.fill(res, 1);
+        for (int i = 0; i < nums.length; i++) {
             for (int j = 0; j < i; j++) {
                 if (nums[j] < nums[i]) {
-                    pre = Math.max(pre, dp[j]);
+                    res[i] = Math.max(res[i], res[j] + 1);
                 }
             }
-            dp[i] = pre + 1;
-            max = Math.max(max, dp[i]);
+            max = Math.max(max, res[i]);
         }
         return max;
     }
@@ -48,29 +45,32 @@ class Solution {
 // Time: O(nlogn)
 // Space: O(n)
 // reference: https://discuss.leetcode.com/topic/28738/java-python-binary-search-o-nlogn-time-with-explanation
-// 09/27/2017
-
-public class Solution {
+// 09/07/2018
+class Solution {
     public int lengthOfLIS(int[] nums) {
         int[] tails = new int[nums.length];
         int size = 0;
-        
-        for (int n : nums) {
-            int i = 0, j = size;
-            
-            // binary search for correct position given the size
-            while (i != j) {
-                int mid = i + (j - i) / 2;
-                if (tails[mid] < n) {
-                    i = mid + 1;
-                } else {
-                    j = mid;
-                }
+        for (int i = 0; i < nums.length; i++) {
+            int index = binarySearch(tails, size, nums[i]);
+            if (index == size) {
+                size++;
             }
-            tails[i] = n;   // insert n into its position
-            if (i == size) size++;   // find a num greater than all tails, increment size
+            tails[index] = nums[i];
         }
-        
         return size;
+    }
+    
+    // Find insert position for target
+    private int binarySearch(int[] nums, int end, int target) {
+        int left = 0, right = end;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
     }
 }
