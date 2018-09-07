@@ -16,6 +16,49 @@
  * }
  */
 
+// Solution 3: Sweeping line
+// For each interval, create two events: start (1) and end (-1).
+// Sort the events by time stamps, and end comes before start.
+// Then use a counter to accumulate the values.
+// The max counter is the result.
+//
+// Time: O(nlogn)
+// Space: O(n)
+// 09/07/2018
+
+class Solution {
+    class Event implements Comparable<Event> {
+        int time;
+        int type;
+        public Event(int time, int type) {
+            this.time = time;
+            this.type = type;
+        }
+        public int compareTo(Event other) {
+            if (this.time != other.time) {
+                return this.time - other.time;
+            } else {
+                return this.type - other.type;
+            }
+        }
+    }
+    public int minMeetingRooms(Interval[] intervals) {
+        PriorityQueue<Event> pq = new PriorityQueue<>();
+        for (Interval i : intervals) {
+            pq.offer(new Event(i.start, 1));
+            pq.offer(new Event(i.end, -1));
+        }
+        int count = 0;
+        int max = 0;
+        while (!pq.isEmpty()) {
+            Event e = pq.poll();
+            count += e.type;
+            max = Math.max(max, count);
+        }
+        return max;
+    }
+}
+
 // Solution 2: Greedy
 // First sort the intervals by start time.
 // Then use a priorityqueue to maintain the first finish time.
