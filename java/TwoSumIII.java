@@ -18,8 +18,9 @@
  */
 
 // Solution 2: HashMap
-// O(1) insertion, O(n) look up
-// O(n) space
+// Time: add - O(1)
+//       find - O(n) 
+// Space: O(n) 
 // Good when more insertions than look ups
 // 09/28/2017
 
@@ -55,9 +56,9 @@ class TwoSum {
 }
 
 // Solution 1: Use HashSet to store all two sums
-// O(n) insertion - pair new number with all existing numbers
-// O(1) look up - see if the set contains the target sum
-// O(n^2) space - for all possible pairs
+// Time: add - O(n) pair new number with all existing numbers
+//       find - O(1)  see if the set contains the target sum
+// Space: O(n^2) for all possible pairs
 // Good when more look ups than insertions
 // 09/28/2017
 
