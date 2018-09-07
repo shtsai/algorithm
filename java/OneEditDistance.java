@@ -2,6 +2,36 @@
     Given two strings S and T, determine if they are both one edit distance apart.
  */
 
+// Solution 3: General solution for K edit distance
+// Time: O(3^k * n) - Three choices for each edit
+// Space: O(k * n)
+// 09/07/2018
+class Solution {
+    public boolean isOneEditDistance(String s, String t) {
+        return helper(s, t, 1);
+    }
+    
+    // s is guaranteed to be shorter than t
+    private boolean helper(String s, String t, int edit) {
+        if (edit < 0) {
+            return false;
+        } else if (s.length() > t.length()) {
+            return helper(t, s, edit);
+        } else if (s.length() == 0) {
+            return t.length() == edit;
+        } else {
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    return helper(s.substring(i + 1), t.substring(i + 1), edit - 1) ||
+                           helper(s.substring(i), t.substring(i + 1), edit - 1) ||
+                           helper(s.substring(i + 1), t.substring(i), edit - 1);
+                }
+            }
+            return (t.length() - s.length()) == edit;
+        }
+    }
+}
+
 // Solution 2:
 // Time: O(n) - one pass
 // Space: O(1)
