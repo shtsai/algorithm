@@ -11,25 +11,25 @@
  * Output: index1=1, index2=2
  */
 
-public class Solution {
+// Solution 1: Two pointers
+// Time: O(n)
+// Space: O(1)
+// 09/07/2018
+class Solution {
     public int[] twoSum(int[] numbers, int target) {
-        int start = 0;
-        int end = numbers.length-1;
-        int[] result = new int[2];
-        
-        while (start < end) {
-            int sum = numbers[start]+numbers[end];
-            if (sum == target) {
-                result[0] = start+1;
-                result[1] = end+1;
-                return result;
-            } else if (sum < target) {
-                start++;
+        int[] res = new int[2];
+        int left = 0, right = numbers.length - 1;
+        while (left < right) {
+            if (numbers[left] + numbers[right] == target) {
+                res[0] = left + 1;
+                res[1] = right + 1;
+                break;
+            } else if (numbers[left] + numbers[right] < target) {
+                left++;
             } else {
-                end--;
+                right--;
             }
         }
-        
-        return result;
+        return res;
     }
 }
