@@ -39,81 +39,45 @@ class Solution {
 
 // Solution 2: convert it to two sum, two pointer search
 // Sort the array in acsending order
-// Use a pointer to scan through the array, the value it points at is the target
-// Use another two pointers to search for 2Sum for that value in the remaining array.
+// Use a pointer `i` to scan through the array, the value it points at is the target
+// Use another two pointers `left` and `right` to search for 2Sum for target value in the remaining array.
 // Be careful with duplicates, skip duplicate numbers.
 //
 // Time: O(n^2) - two nested loops
 // Space: O(1)
-
-// version 2
-// 12/30/2017
+// 09/07/2018
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        Arrays.sort(nums);
         List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length-2; i++) {
-            if (i > 0 && nums[i] == nums[i-1]) continue;
-            int j = i+1, k = nums.length-1;
-            while (j < k) {
-                int sum = nums[i] + nums[j] + nums[k];
-                if (sum == 0) {
-                    List<Integer> l = new ArrayList<>();
-                    l.add(nums[i]);
-                    l.add(nums[j]);
-                    l.add(nums[k]);
-                    res.add(l);
-                    while (j < k && nums[j+1] == nums[j]) j++;
-                    while (j < k && nums[k-1] == nums[k]) k--;
-                    j++;
-                    k--;
-                } else if (sum < 0) {
-                    j++;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            int target = -nums[i];
+            int left = i + 1, right = nums.length - 1;
+            while (left < right) {
+                if (nums[left] + nums[right] == target) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(nums[i]);
+                    list.add(nums[left]);
+                    list.add(nums[right]);
+                    res.add(list);
+                    do {
+                        left++;
+                    } while (left < right && nums[left - 1] == nums[left]);
+                    do {
+                        right--;
+                    } while (left < right && nums[right + 1] == nums[right]);
+                } else if (nums[left] + nums[right] < target) {
+                    left++;
                 } else {
-                    k--;
+                    right--;
                 }
             }
         }
         return res;
     }
-}
-
-// Version 1
-// 10/02/2017
-public class Solution {
-	public List<List<Integer>> threeSum(int[] nums) {		
-		// convert the problem to 2Sum
-		List<List<Integer>> result = new ArrayList<>();
-		int len = nums.length;
-		if (len < 3) {
-			return result;
-		}
-		Arrays.sort(nums);
-
-		for (int i = 0; i < len; i++) {
-			if (i > 0 && nums[i] == nums[i - 1]) { // find duplicate and skip
-				continue;
-			}
-			int target = 0 - nums[i];	// use i to point at the target value
-			int left = i + 1;			// use two pointers left and right to find two sum
-			int right = len - 1;
-			while (left < right) {
-				if (nums[left] + nums[right] == target) {
-					result.add(Arrays.asList(nums[i], nums[left], nums[right]));
-					while(left<right && nums[left]==nums[left+1]) left++;	 // find duplicate and skip
-					while(left<right && nums[right]==nums[right-1]) right--; // find duplicate and skip
-					left++;
-					right--;
-				} else if (nums[left] + nums[right]  > target) {
-					right--;
-				} else {
-					left++;
-				}
-			}
-		}
-
-		return result;
-	}
 }
 
 // Solution 1: brute force
