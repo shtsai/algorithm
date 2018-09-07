@@ -114,20 +114,3 @@ class Solution {
         return count;
     }
 }
-
-// version 1:
-class Solution {
-    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
-        int count = 0;
-        for (int a : A) {
-            for (int b : B) {
-                for (int c : C) {
-                    for (int d : D) {
-                        if (a + b + c + d == 0) count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
-}
