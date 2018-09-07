@@ -11,12 +11,12 @@
 
 // Solution 3: DFS
 // Count # of '(' and ')' to remove.
-// Then for each character, we choose add and not add.
-// If the resulting string violates any requirement, we break.
+// Then we try to remove '(', and then ')'.
+// For continuous occurrences of the same parentheses, we also consider first one.
 //
-// Time: O(2 ^ n)
-// Space: O(n)
-// 08/30/2018
+// Time: O(2 ^ n) - In worse case, need to remove, so (n choose n) = 2 ^ n
+// Space: O(n ^ 2) - In worse case, n level, each level need O(n) space
+// 09/07/2018
 class Solution {
     public List<String> removeInvalidParentheses(String s) {
         int left = 0, right = 0;
@@ -31,34 +31,49 @@ class Solution {
                 }
             }
         }
-        Set<String> res = new HashSet<>();
-        StringBuilder sb = new StringBuilder();
-        dfs(s, res, sb, 0, left, right, 0);
+        List<String> res = new ArrayList<>();
+        dfs(s, res, 0, left, right);
         return new ArrayList<>(res);
     }
     
-    private void dfs(String s, Set<String> res, StringBuilder sb, int index, int left, int right, int stack) {
-        if (left < 0 || right < 0 || stack < 0) {
+    // index is the last remove position
+    private void dfs(String s, List<String> res, int index, int left, int right) {
+        if (left == 0 && right == 0) {
+            if (isValid(s)) {
+                res.add(s);
+            } 
             return;
-        } else if (index == s.length()) {
-            if (left == 0 && right == 0 && stack == 0) {
-                res.add(sb.toString());
-            }
-            return;
-        }
-        
-        if (s.charAt(index) == '(') {
-            dfs(s, res, sb, index + 1, left - 1, right, stack);
-            dfs(s, res, sb.append('('), index + 1, left, right, stack + 1);
-            sb.deleteCharAt(sb.length() - 1);
-        } else if (s.charAt(index) == ')') {
-            dfs(s, res, sb, index + 1, left, right - 1, stack);
-            dfs(s, res, sb.append(')'), index + 1, left, right, stack - 1);
-            sb.deleteCharAt(sb.length() - 1);
         } else {
-            dfs(s, res, sb.append(s.charAt(index)), index + 1, left, right, stack);
-            sb.deleteCharAt(sb.length() - 1);
+            for (int i = index; i < s.length(); i++) {
+                if (i > index && s.charAt(i) == s.charAt(i - 1)) {  // skip duplicates
+                    continue;
+                }
+                if (right > 0) { // remove right parentheses first, because need left to match with right
+                    if (s.charAt(i) == ')') {
+                        dfs(s.substring(0, i) + s.substring(i + 1), res, i, left, right - 1);
+                    }
+                } else {
+                    if (s.charAt(i) == '(') {
+                        dfs(s.substring(0, i) + s.substring(i + 1), res, i, left - 1, right);
+                    }
+                }
+            }
         }
+    }
+    // Helper function for checking if s is valid           
+    private boolean isValid(String s) {
+        int stack = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                stack++;
+            } else if (c == ')') {
+                if (stack == 0) {
+                    return false;
+                }
+                stack--;
+            }
+        }
+        return stack == 0;
     }
 }
 
