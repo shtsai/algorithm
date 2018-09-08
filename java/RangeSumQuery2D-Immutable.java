@@ -7,45 +7,49 @@
  * 2. There are many calls to sumRegion function.
  * 3. You may assume that row1 ≤ row2 and col1 ≤ col2.
  */
-// use dynamic programming to calculate results for all subproblems
-// so look up later only take O(1) time
-public class NumMatrix {
-    private int[][] matrix;
 
+/**
+ * Your NumMatrix object will be instantiated and called as such:
+ * NumMatrix obj = new NumMatrix(matrix);
+ * int param_1 = obj.sumRegion(row1,col1,row2,col2);
+ */
+
+// Solution 2: Dynamic Programming
+// Use dynamic programming to calculate results for all subproblems
+// so look up later only take O(1) time
+// Time: O(1)
+// Space: O(mn)
+// 09/08/2018
+
+class NumMatrix {
+    int[][] rangeSum;
+    
     public NumMatrix(int[][] matrix) {
-        if(matrix == null || matrix.length == 0 || matrix[0].length == 0){
-            return;   
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return;
         }
-        // use dynamic programming
-        for (int j = 1; j < matrix[0].length; j++) {  // calculate dp first row
-            matrix[0][j] += matrix[0][j-1];
-        }
-        for (int i = 1; i < matrix.length; i++) {     // calculate dp first col
-            matrix[i][0] += matrix[i-1][0];
-        }
+        rangeSum = new int[matrix.length + 1][matrix[0].length + 1];
         
-        for (int i = 1; i < matrix.length; i++) {     // calculate dp matrix
-            for (int j = 1; j < matrix[0].length; j++) {
-                matrix[i][j] = matrix[i][j] + matrix[i-1][j] + matrix[i][j-1] - matrix[i-1][j-1];
+        for (int i = 1; i <= matrix.length; i++) {
+            for (int j = 1; j <= matrix[0].length; j++) {
+                rangeSum[i][j] = matrix[i - 1][j - 1] + rangeSum[i - 1][j] + rangeSum[i][j - 1] - rangeSum[i - 1][j - 1];
             }
         }
-        this.matrix = matrix;
     }
-
+    
     public int sumRegion(int row1, int col1, int row2, int col2) {
-        if (col1 == 0 && row1 == 0) return matrix[row2][col2];                 // if start on [0][0]
-        if (col1 == 0) return matrix[row2][col2] - matrix[row1-1][col2];       // if start on first col
-        if (row1 == 0) return matrix[row2][col2] - matrix[row2][col1-1];       // if start on first row
-        return matrix[row2][col2] - matrix[row1-1][col2] - matrix[row2][col1-1] + matrix[row1-1][col1-1];
+        return rangeSum[row2 + 1][col2 + 1] - rangeSum[row1][col2 + 1] - rangeSum[row2 + 1][col1] + rangeSum[row1][col1];
     }
 }
 
-// Your NumMatrix object will be instantiated and called as such:
-// NumMatrix numMatrix = new NumMatrix(matrix);
-// numMatrix.sumRegion(0, 1, 2, 3);
-// numMatrix.sumRegion(1, 2, 3, 4);
 
-/*  naive solution, do not store any additional information, calculate range sum on the fly, very slow
+// Solution 1: naive solution
+// Do not store any additional information
+// calculate range sum on the fly
+// Time: O(mn)
+// Space: O(1) - only store reference
+// 09/08/2018
+
 public class NumMatrix {
     private int[][] matrix;
 
@@ -63,9 +67,3 @@ public class NumMatrix {
         return sum;
     }
 }
-*/
-
-// Your NumMatrix object will be instantiated and called as such:
-// NumMatrix numMatrix = new NumMatrix(matrix);
-// numMatrix.sumRegion(0, 1, 2, 3);
-// numMatrix.sumRegion(1, 2, 3, 4);
