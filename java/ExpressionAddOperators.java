@@ -11,9 +11,10 @@
 
 // Solution 1:
 // recursive solution, try different cutting points, until reach the end
-// time: O(3^n)
-// T(n) = 3n * T(n-1); 
+// Time: O(4^n)
+// Space: O(n) - stack space
 // reference: https://discuss.leetcode.com/topic/24523/java-standard-backtrace-ac-solutoin-short-and-clear
+// 09/07/2018
 class Solution {
     public List<String> addOperators(String num, int target) {
         List<String> res = new ArrayList<>();
@@ -34,15 +35,14 @@ class Solution {
             Long thisNumber = Long.parseLong(sub);
             if (current.length() == 0) {    // first element of the expression, no sign needed
                 helper(num, res, target, i+1, thisNumber, thisNumber, thisNumber.toString());
-                continue;
-            }
-            
-            // addition
-            helper(num, res, target, i+1, value+thisNumber, thisNumber, current+"+"+thisNumber.toString());
-            // subtraction    * because we are doing subtraction here, last number needs to * -1
-            helper(num, res, target, i+1, value-thisNumber, -thisNumber, current+"-"+thisNumber.toString());
-            // multiplication  * we need to remove last value before doing multiplication, otherwise double counting
-            helper(num, res, target, i+1, value-lastInt+(lastInt*thisNumber), lastInt*thisNumber, current+"*"+thisNumber.toString());
+            } else {
+                // addition
+                helper(num, res, target, i+1, value+thisNumber, thisNumber, current+"+"+thisNumber.toString());
+                // subtraction    * because we are doing subtraction here, last number needs to * -1
+                helper(num, res, target, i+1, value-thisNumber, -thisNumber, current+"-"+thisNumber.toString());
+                // multiplication  * we need to remove last value before doing multiplication, otherwise double counting
+                helper(num, res, target, i+1, value-lastInt+(lastInt*thisNumber), lastInt*thisNumber, current+"*"+thisNumber.toString());
+            }            
         }
     }
    
