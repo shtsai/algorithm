@@ -16,44 +16,27 @@
  * NumArray obj = new NumArray(nums);
  * int param_1 = obj.sumRange(i,j);
  */
-// Solution 2: improved version of solution 1
-// if we don't need to keep the original array
-class NumArray {
-    private int[] preSum;
-    
-    public NumArray(int[] nums) {
-        this.preSum = nums;
-        for (int i = 1; i < preSum.length; i++) {
-            preSum[i] += preSum[i-1];
-        }
-    }
-    
-    public int sumRange(int i, int j) {
-               // [0, j] - [0, i]    +   [i]     = [i, j]
-        return i == 0 ? preSum[j] : preSum[j] - preSum[i-1];
-    }
-}
 
 // Solution 1: preSum approach
+// preSum[i] = the sum of all numbers from index 0 to index i
+// Time: O(1)
+// Space: O(n)
+// 09/08/2018
 class NumArray {
-    private int[] number;
-    private int[] preSum;
-    
+    int[] preSum;
     public NumArray(int[] nums) {
-        this.number = nums;
-        if (nums.length == 0) return;
-        
-        // preSum[i] = the sum of all numbers from index 0 to index i
-        this.preSum = new int[nums.length];
+        if (nums.length == 0) {
+            return;
+        }
+        preSum = new int[nums.length];
         preSum[0] = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            preSum[i] = preSum[i-1] + nums[i];
+            preSum[i] = preSum[i - 1] + nums[i];
         }
     }
     
     public int sumRange(int i, int j) {
-               // [0, j] - [0, i]    +   [i]     = [i, j]
-        return preSum[j] - preSum[i] + number[i];
+        int delete = i - 1 >= 0 ? preSum[i - 1] : 0;
+        return preSum[j] - delete;
     }
 }
-
