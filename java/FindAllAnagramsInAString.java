@@ -40,44 +40,41 @@
 // Time: O(m) - scan s with two pointers
 // Space: O(n) - create hashmap for p
 // reference: https://discuss.leetcode.com/topic/68976/sliding-window-algorithm-template-to-solve-all-the-leetcode-substring-search-problem
-// 10/15/2017
-
+// 09/09/2018
 class Solution {
     public List<Integer> findAnagrams(String s, String p) {
         List<Integer> res = new ArrayList<>();
         int len = p.length();
         HashMap<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < len; i++) {
-            if (!map.containsKey(p.charAt(i))) {
-                map.put(p.charAt(i), 1);
-            } else {
-                map.put(p.charAt(i), map.get(p.charAt(i))+1);
-            }
+        for (char c : p.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
         }
         
-        int count = map.keySet().size();
+        int count = map.size();
         int start = 0, end = 0;
         while (end < s.length()) {
             char c = s.charAt(end);
             if (map.containsKey(c)) {
                 map.put(c, map.get(c)-1);
-                if (map.get(c) == 0) count--;
-
-                while (count == 0) {
-                    char cstart = s.charAt(start);
-                    if (map.containsKey(cstart)) {
-                        map.put(cstart, map.get(cstart) + 1);
-                        if (map.get(cstart) == 1) {
-                            count++;
-                            if (end - start + 1 == len) {
-                                res.add(start);
-                            }
-                        }
-                    }
-                    start++;
+                if (map.get(c) == 0) {
+                    count--;
                 }
             }
             end++;
+
+            while (start < end && count == 0) {
+                char cstart = s.charAt(start);
+                if (map.containsKey(cstart)) {
+                    map.put(cstart, map.get(cstart) + 1);
+                    if (map.get(cstart) == 1) {
+                        count++;
+                        if (end - start == len) {
+                            res.add(start);
+                        }
+                    }
+                }
+                start++;
+            }
         }
         return res;
     }
