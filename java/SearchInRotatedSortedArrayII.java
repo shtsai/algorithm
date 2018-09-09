@@ -19,32 +19,34 @@
 // we can just do left++ to remove it of them so that we can continue searching
 // Note that since duplicates exist, it is harder to find the sorted portion of the array.
 // Therefore, we need to check if one side is in sorted order, or the other side is unsorted.
-
+//
+// Time: O(logn)
+// Space: O(1)
+// 09/09/2018
 class Solution {
     public boolean search(int[] nums, int target) {
         if (nums == null || nums.length == 0) return false;
-        int left = 0, right = nums.length-1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
+        int i = 0, j = nums.length - 1;
+        while (i < j) {
+            int mid = i + (j - i) / 2;
             if (nums[mid] == target) {
                 return true;
-            } else if (nums[left] < nums[mid] || nums[mid] > nums[right]) {    // left is sorted or right is unsorted
-                if (nums[left] <= target && target <= nums[mid]) {
-                    right = mid - 1;
+            } else if (nums[i] == nums[mid] && nums[mid] == nums[j]) {
+                i++;    // move left to remove one duplicate
+            } else if (nums[mid] >= nums[i]) {       // left half is in accending order
+                if (nums[i] <= target && target <= nums[mid]) {
+                    j = mid - 1;
                 } else {
-                    left = mid + 1;
+                    i = mid + 1;
                 }
-            } else if (nums[mid] < nums[right] || nums[mid] < nums[left]) {   // right is sorted or left is unsorted
-                if (nums[mid] <= target && target <= nums[right]) {
-                    left = mid + 1;
+            } else {                                // right half is in accending order
+                if (nums[mid] <= target && target <= nums[j]) {
+                    i = mid + 1;
                 } else {
-                    right = mid - 1;
-                }
-            } else {      // nums[left] == nums[mid] == nums[right]
-                left++;   // move left to remove one duplicate
+                    j = mid - 1;
+                } 
             }
         }
-        return nums[left] == target ? true : false;
-
+        return nums[i] == target;
     }
 }
