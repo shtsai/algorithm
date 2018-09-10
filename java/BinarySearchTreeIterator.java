@@ -23,35 +23,36 @@
 
 // Solution 1:
 // use stack to store the parent nodes
-// using stack meets the requirement of O(h) space
-// next() is approximately O(1) time
-// reference: https://discuss.leetcode.com/topic/6575/my-solutions-in-3-languages-with-stack
+// Time: hasNext() - O(1)
+//       next() - O(1)
+// Space: O(h)
+// 09/10/2018
 
 public class BSTIterator {
-    private Stack<TreeNode> stack;
-        
+    Stack<TreeNode> stack;
+    
     public BSTIterator(TreeNode root) {
         stack = new Stack<>();
-        addAllLeftChild(root);
-    }
-
-    /** @return whether we have a next smallest number */
-    public boolean hasNext() {
-        return !stack.isEmpty();	// has next if the stack is not empty
-    }
-
-    /** @return the next smallest number */
-    public int next() {
-        TreeNode nextNode = stack.pop();	// the number on the top of stack is result
-        addAllLeftChild(nextNode.right);	// before return, add its right subtree to the stack
-        return nextNode.val;
-    }
-    
-    /** @add all left children to the stack */
-    private void addAllLeftChild(TreeNode root) {
         while (root != null) {
             stack.push(root);
             root = root.left;
         }
     }
+
+    /** @return whether we have a next smallest number */
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+
+    /** @return the next smallest number */
+    public int next() {
+        TreeNode next = stack.pop();
+        TreeNode p = next.right;
+        while (p != null) {
+            stack.push(p);
+            p = p.left;
+        }
+        return next.val;
+    }
 }
+
