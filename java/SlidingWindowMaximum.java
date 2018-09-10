@@ -25,33 +25,37 @@
 // use deque, so that we can check both end
 // only maintain the largest elements for a window in the queue
 // remove smaller and old elements
-// https://discuss.leetcode.com/topic/19055/java-o-n-solution-using-deque-with-explanation
+// Time: O(n)
+// Space: O(k)
+// 09/10/2018
 class Solution {
-    public int[] maxSlidingWindow(int[] a, int k) {     
-        if (a.length == 0 || k <= 0) return new int[0];
-        int[] res = new int[a.length-k+1];
-        int index = 0;
-        Deque<Integer> q = new ArrayDeque<>();      // use q to store indices
-        
-        for (int i = 0; i < a.length; i++) {
-            while (!q.isEmpty() && q.peek() < i-k+1) {  // remove elements that are no longer in the window
-                q.poll();   
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if (nums.length == 0 || k == 0) {
+            return new int[0];
+        }
+        int[] res = new int[nums.length - k + 1];
+        Deque<Integer> max = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (i < nums.length) {    // add max
+                while(!max.isEmpty() && max.peekLast() < nums[i]) {
+                    max.pollLast();
+                }
+                max.offerLast(nums[i]);
             }
-            while (!q.isEmpty() && a[q.peekLast()] < a[i]) { // current element > last element in the q
-                q.pollLast();                                // element can be removed
-            }
-            q.offer(i);
-            if (i >= k - 1) {       // reach a windows
-                res[index] = a[q.peek()];
-                index++;
+            if (i >= k - 1) {         // store max in window and remove oldest
+                res[i - k + 1] = max.peekFirst();
+                if (nums[i - k + 1] == max.peekFirst()) {
+                    max.pollFirst();
+                }
             }
         }
         return res;
     }
 }
-
 // Solution 1:
 // use priorityqueue to get max
+// Time: O(kn) - n iterations, remove in queue is O(k)
+// Space: O(k)
 class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
         int[] res = new int[nums.length - k+1];
