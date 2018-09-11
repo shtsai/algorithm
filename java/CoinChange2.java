@@ -28,7 +28,11 @@
  */
 
 // Solution 3: Iterative DP
-// Same idea as solution 2, but buttom-up
+// DP[i][j] = # of ways for amount i using first j coins
+// Base case:
+//     DP[0][j] = 1   // empty set
+// Recurrence relation:
+//     DP[i][j] = DP[i][j-1] + DP[i - coins[j]][j]  
 // Time: O(kn)
 // Space: O(kn)
 // 01/05/2018
