@@ -14,6 +14,39 @@
 	Output: [-1,-1]
  */
 
+// Solution 2: Binary search for insert position
+// Time: O(logn)
+// Space: O(1)
+// 09/11/2018
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int[] res = new int[2];
+        res[0] = insertPosition(nums, target);
+        res[1] = insertPosition(nums, target + 1) - 1;
+        if (res[0] < 0 || res[0] >= nums.length || nums[res[0]] != target ||
+            res[1] < 0 || res[1] >= nums.length || nums[res[1]] != target) {
+            return new int[] {-1, -1};
+        }
+        return res;
+    }
+    
+    private int insertPosition(int[] nums, int target) {
+        if (nums.length == 0) {
+            return -1;
+        }
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] >= target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
+
 // Solution 1: Two Binary search
 // Time: O(logn)
 // Space: O(1)
