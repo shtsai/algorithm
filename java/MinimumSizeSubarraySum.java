@@ -12,20 +12,18 @@
  */
 
 // Solution 1:
-// Two pointers, maintain a window sum
+// Two pointers, maintain a sliding window sum
 // Time: O(n)
 // Space: O(1)
-// 04/25/2018
+// 09/11/2018
 class Solution {
     public int minSubArrayLen(int s, int[] nums) {
-        if (nums == null || nums.length == 0) {
-            return 0;
-        }
-        int sum = 0, left = 0, min = Integer.MAX_VALUE;
-        for (int right = 0; right < nums.length; right++) {
+        int left = 0, right = 0, sum = 0, min = Integer.MAX_VALUE;
+        while (right < nums.length) {
             sum += nums[right];
-            while (sum >= s) {
-                min = Math.min(min, right + 1 - left);
+            right++;
+            while (left < right && sum >= s) {
+                min = Math.min(min, right - left);
                 sum -= nums[left];
                 left++;
             }
