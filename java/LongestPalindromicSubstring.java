@@ -15,8 +15,39 @@
  * Output: "bb"
  */
 
-// Solution 2, version 2:
-// use helper function to find Palindrome, cleaner and faster
+// Solution 2: Dynamic Programming
+// dp[i][j] = whether substring (i, j) is palindrome
+// Recurence relation:
+//     dp[i][j] = s.charAt(i) == s.charAt(j) && dp[i + 1][j - 1]
+// Base case:
+//     s.charAt(i) == s.charAt(j) and j - i < 2  
+//     e.g. "A", "AA"
+//
+// Time: O(n ^ 2)
+// Space: O(n ^ 2)
+// 09/11/2018
+class Solution {
+    public String longestPalindrome(String s) {
+        String res = "";
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        
+        for (int i = s.length() - 1; i >= 0; i--) {
+            for (int j = i; j < s.length(); j++) {
+                // j - i < 2 handles base case such as "a" and "aa"
+                dp[i][j] = (s.charAt(i) == s.charAt(j)) && (j - i < 2 || dp[i + 1][j - 1]);
+                if (dp[i][j] && j - i + 1 > res.length()) {
+                    res = s.substring(i, j + 1);
+                }
+            }
+        }
+        return res;
+    }
+}
+
+// Solution 1, version 2:
+// use helper function to find Palindrome, cleaner 
+// Time: O(n ^ 2)
+// Space: O(1)
 class Solution {
     private int max, maxLeft;
     
@@ -43,86 +74,35 @@ class Solution {
     }
 }
 
-// Solution 2:
+// Solution 1:
 // try centering at every position, use one char or two chars as center
-// time: O(n2)
+// Time: O(n ^ 2)
+// Space: O(1)
 class Solution {
     public String longestPalindrome(String s) {
         if (s == null || s.length() <= 1) return s;
         int max = 0, maxLeft = 0;
         for (int i = 0; i < s.length(); i++) {
             int oneLeft = i, oneRight = i;
-            int twoLeft = i, twoRight = i+1;
+            int twoLeft = i, twoRight = i + 1;
             while (oneLeft >= 0 && oneRight < s.length() && s.charAt(oneLeft)==s.charAt(oneRight)) {
                 oneLeft--;
                 oneRight++;
             }
-            if (max < oneRight-oneLeft-1) {
-                max = oneRight-oneLeft-1;
-                maxLeft = oneLeft+1;
+            if (max < oneRight-oneLeft - 1) {
+                max = oneRight-oneLeft - 1;
+                maxLeft = oneLeft + 1;
                 
             }
             while (twoLeft >= 0 && twoRight < s.length() && s.charAt(twoLeft)==s.charAt(twoRight)) {
                 twoLeft--;
                 twoRight++;
             }
-            if (max < twoRight-twoLeft-1) {
-                max = twoRight-twoLeft-1;
-                maxLeft = twoLeft+1;
+            if (max < twoRight-twoLeft - 1) {
+                max = twoRight-twoLeft - 1;
+                maxLeft = twoLeft + 1;
             }
         }
-        return s.substring(maxLeft, maxLeft+max);
-    }
-}
-
-// Solution 1:
-// expand from the center, search for palindrome starting from every index
-// O(n2) time
-public class Solution {
-    public String longestPalindrome(String s) {
-        int max = 0, start = 0, end = 0;
-        
-        for (int i = 0; i < s.length(); i++) {
-            int[] param = new int[3];   // param[0]=len, param[1]=start, param[2]=end;
-            
-            // palindrome centered at i
-            if ((i - 1 >= 0) && (i + 1 < s.length()) && s.charAt(i-1) == s.charAt(i+1)) {
-                param[0] = 1;
-                param[1] = i;
-                param[2] = i;
-                if (findPalindrome(param, s) > max) {
-                    max = param[0];
-                    start = param[1];
-                    end = param[2];
-                }
-            } 
-            
-            // palindrome centered at i and i+1
-            if (i + 1 < s.length() && s.charAt(i) == s.charAt(i+1)) {
-                param[0] = 2;
-                param[1] = i;
-                param[2] = i+1;
-                if (findPalindrome(param, s) > max) {
-                    max = param[0];
-                    start = param[1];
-                    end = param[2];
-                }
-            }
-        }
-        
-        return s.substring(start, end+1);
-    }
-    
-    private int findPalindrome(int[] param, String s) {
-        int len = param[0], p = param[1], q = param[2];
-        while ((p - 1 >= 0) && (q + 1 < s.length()) && s.charAt(p-1) == s.charAt(q+1)) {
-                len += 2;
-                p--;
-                q++;
-        }
-        param[0] = len;
-        param[1] = p;
-        param[2] = q;
-        return len;
+        return s.substring(maxLeft, maxLeft + max);
     }
 }
