@@ -4,35 +4,58 @@
  * If that amount of money cannot be made up by any combination of the coins, return -1. 
  */
 
-// Solution 3: DFS + memoization
+// Solution 3: Iterative Dynamic Programming
+// Start exchange from amount 1 -> target.
+// Try all coins, store min coins to get each amount.
+// Then build result from previous subproblems.
+// Time: O(kn) - k is the target amount, n is the number of coins
+// Space: O(k) - store min change for each amount
+// 09/11/2018
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int c : coins) {
+                if (i - c >= 0 && dp[i - c] != Integer.MAX_VALUE) {
+                    dp[i] = Math.min(dp[i], dp[i - c] + 1);
+                }
+            }
+        }
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+    }
+}
+
+// Solution 2: DFS + memoization
 // Time: O(kn) - k is target amount, n is the number of coins
 // Space: O(k)
-// 01/05/2018
-
+// 09/11/2018
 class Solution {
-    int MAX;
     public int coinChange(int[] coins, int amount) {
         int[] memo = new int[amount+1];
-        MAX = amount + 1;
         int res = search(coins, amount, memo);
-        return res == MAX ? -1 : res;
+        return res;
     }
     
     public int search(int[] coins, int amount, int[] memo) {
         if (amount == 0) return 0;
-        if (amount < 0) return MAX;
+        if (amount < 0) return -1;
         if (memo[amount] != 0) return memo[amount];
         
-        int min = MAX;
+        int min = Integer.MAX_VALUE;
         for (int coin : coins) {
-            min = Math.min(min, search(coins, amount-coin, memo) + 1);
+            int sub = search(coins, amount - coin, memo);
+            if (sub != -1) {
+                min = Math.min(min, sub + 1);
+            }
         }
-        memo[amount] = min;
+        memo[amount] = min == Integer.MAX_VALUE ? -1 : min;
         return memo[amount];
     }
 }
 
-// Solution 2: Recursive 2D-DP with memoization
+// Solution 1: Recursive 2D-DP with memoization
 // DP[i, T]: use coins from [0: i] to get amout T
 // = MIN{ DP[i, T - Ci] -> use coin i, reduce problem size, i doesn't change b/c can reuse
 //		{ DP[i-1, T]    -> skip coin i, reduce coin size, target amount doesn't change
@@ -62,33 +85,3 @@ class Solution {
     }
 }
 
-// Solution 1: Iterative Dynamic Programming
-// Start exchange from amount 1 -> target.
-// Try all coins, store min coins to get each amount.
-// Then build result from previous subproblems.
-// Time: O(kn) - k is the target amount, n is the number of coins
-// Space: O(k) - store min change for each amount
-public class Solution {
-    public int coinChange(int[] coins, int amount) {
-	// dp array, store the minimum number of coin change for the current amount (current index)
-	int[] change = new int[amount + 1];
-	change[0] = 0; // 0 requires 0 coin change
-	for (int i = 1; i <= amount; i++) {
-	    change[i] = -1;  // initialize all elements of the array to -1
-	}
-
-	for (int i = 1; i <= amount; i++) {
-	    int temp = Integer.MAX_VALUE; // stores the minimun value among all the possible changes
-	    for (int coin : coins) {  // try all coins
-			if (i - coin >= 0 && change[i-coin] != -1) {
-			    // if the coin is smaller than the amount, and the remaining amount is changable
-			    temp = Math.min(temp, 1 + change[i-coin]);
-			}
-	    }
-	    if (temp != Integer.MAX_VALUE) { // if there exists an valid change
-			change[i] = temp;            // store its value in the dp array
-	    }
-	}
-	return change[amount];
-    }
-}
