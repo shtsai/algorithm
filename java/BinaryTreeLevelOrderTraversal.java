@@ -58,40 +58,31 @@ class Solution {
 // Needs to keep track of number of nodes at each level and next level.
 // Time: O(n) - scan each node exactly once
 // Space: O(n) - queue
-// 10/31/2017
-
-public class Solution {
+// 09/11/2018
+class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> result = new ArrayList<>();
-        if (root == null) return result;
-        
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
         Queue<TreeNode> q = new LinkedList<>();
         q.offer(root);
-        List<Integer> list = new ArrayList<>();
-        int count = 1, next = 0;
         while (!q.isEmpty()) {
-            TreeNode n = q.poll();
-            list.add(n.val);
-            if (n.left != null) { 
-                q.offer(n.left);
-                next++;
-            }
-            if (n.right != null) {
-                q.offer(n.right);
-                next++;
-            }
-            count--;
-            
-            if (count == 0) {  // current level is finished, move on to next level
-                result.add(list);
-                if (next > 0) {
-                    count = next;
-                    next = 0;
-                    list = new ArrayList<Integer>();
+            int count = q.size();
+            List<Integer> list = new ArrayList<>();
+            while (count > 0) {
+                TreeNode node = q.poll();
+                count--;
+                list.add(node.val);
+                if (node.left != null) {
+                    q.offer(node.left);
+                }
+                if (node.right != null) {
+                    q.offer(node.right);
                 }
             }
+            res.add(list);
         }
-        
-        return result;
+        return res;
     }
 }
