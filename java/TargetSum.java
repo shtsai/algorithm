@@ -21,7 +21,7 @@
     Your output answer is guaranteed to be fitted in a 32-bit integer.
  */
 
-// Solution 3: Dynamic Programming with 2D array
+// Solution 3: Dynamic Programming - buttom up
 // Build 2D DP array.
 // Each cell dp[i][j] represents the number of possible combinations.
 // i means that we uses all numbers from index 0 to index i (inclusively).
@@ -39,24 +39,28 @@
 //
 // Time: O(ln) - l is the range of the sum, n is the length of the array
 // Space: O(ln)
-// 11/07/2017
- 
+// 09/12/2018
 class Solution {
     public int findTargetSumWays(int[] nums, int S) {
-        int[][] dp = new int[nums.length][2001];
-        dp[0][nums[0] + 1000] = 1;
-        dp[0][-nums[0] + 1000] += 1;   // need "+=" b/c nums[0] might = -nums[0]
-        
-        for (int i = 1; i < nums.length; i++) {
-            for (int sum = -1000; sum <= 1000; sum++) {
-                if (dp[i-1][sum + 1000] > 0) {     // exists
-                    dp[i][sum + nums[i] + 1000] += dp[i-1][sum + 1000];
-                    dp[i][sum - nums[i] + 1000] += dp[i-1][sum + 1000];
+        int sum = 0;
+        for (int n : nums) {
+            sum += n;
+        }
+        if (S > sum) {
+            return 0;
+        }
+        int dp[][] = new int[nums.length + 1][2 * sum + 1];
+        dp[0][sum] = 1;
+        for (int i = 1; i <= nums.length; i++) {
+            int value = nums[i - 1];
+            for (int j = 0; j < 2 * sum + 1; j++) {
+                if (dp[i - 1][j] > 0) {
+                    dp[i][j - value] += dp[i - 1][j];
+                    dp[i][j + value] += dp[i - 1][j];
                 }
             }
         }
-        
-        return S > 1000 || S < -1000 ? 0 : dp[nums.length-1][S+1000];
+        return dp[nums.length][S + sum];
     }
 }
 
@@ -71,32 +75,37 @@ class Solution {
 //
 // Time: O(ln) - l is the range of sum, n the length of array
 // Space: O(n) 
-// 11/07/2017
-
+// 09/12/2018
 class Solution {
+    int sum;
     public int findTargetSumWays(int[] nums, int S) {
-        int[][] memo = new int[nums.length][2001];   // possible range [-1000, 1000]
+        sum = 0;
+        for (int n : nums) {
+            sum += n;
+        }
+        int memo[][] = new int[nums.length][2 * sum + 1];
         for (int i = 0; i < nums.length; i++) {
             Arrays.fill(memo[i], -1);
         }
-        return finder(nums, S, memo, 0, 0);
+        return helper(nums, 0, 0, S, memo);
     }
-    private int finder(int[] nums, int S, int[][] memo, int index, int current) {
+    
+    private int helper(int[] nums, int index, int cur, int target, int[][] memo) {
         if (index == nums.length) {
-            if (S == current) {
-                return 1;       // find a valid combination
+            if (cur == target) {
+                return 1;
             } else {
                 return 0;
             }
-        } else if (memo[index][current+1000] != -1) {
-            return memo[index][current+1000];
-        } else {
-            int plus = finder(nums, S, memo, index+1, current + nums[index]);
-            int minus = finder(nums, S, memo, index+1, current - nums[index]);    
-            memo[index][current+1000] = plus + minus;
-            return memo[index][current+1000];
+        } else if (memo[index][cur + sum] != -1) {
+            return memo[index][cur + sum];
         }
         
+        int res = 0;
+        res += helper(nums, index + 1, cur + nums[index], target, memo);
+        res += helper(nums, index + 1, cur - nums[index], target, memo);
+        memo[index][cur + sum] = res;
+        return res;
     }
 }
 
@@ -120,7 +129,6 @@ class Solution {
             if (S == current) count++; 
             return;
         }
-        
         finder(nums, S, index+1, current + nums[index]);
         finder(nums, S, index+1, current - nums[index]);
     }
