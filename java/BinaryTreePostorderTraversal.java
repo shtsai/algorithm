@@ -14,19 +14,26 @@
  */
 
 // Solution 3: Iterative approach (reverse of the preorder traversal)
+// Time: O(n)
+// Space: O(n)
+// 09/12/2018
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
-        if (root == null) return result;    
-        Deque<TreeNode> q = new ArrayDeque<>();  // use stack to store parent node
-        TreeNode p = root;
-        while (!q.isEmpty() || p != null) {
-            if (p != null) {
-                result.add(0, p.val);  // insert the node to the front
-                q.push(p);             // save the parent node, whose right child is visited
-                p = p.right;           // move to its right node first
-            } else {                   // if the current node is invalid
-                p = q.pop().left;      // pop to get parent node and traverse its left
+        if (root == null) {
+            return result;    
+        }
+        Stack<TreeNode> stack = new Stack<>();  
+        stack.push(root);
+        
+        while (!stack.isEmpty()) {
+            TreeNode p = stack.pop();
+            result.add(0, p.val);    // insert the node to the front
+            if (p.left != null) {    
+                stack.push(p.left);       
+            }
+            if (p.right != null) {    
+                stack.push(p.right);      
             }
         }
         return result;
@@ -36,7 +43,7 @@ class Solution {
 // Soltion 2: Iterative solution
 // Use a stack and pre node.
 // Time: O(n)
-// Space: O(logn)
+// Space: O(n)
 // 11/20/2017
 class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
@@ -76,7 +83,7 @@ class Solution {
 
 // Solution 1: Recursive solution
 // Time: O(n)
-// Space: O(logn) - call stack
+// Space: O(n) - call stack
 // 11/20/2017
 public class Solution {
     public List<Integer> postorderTraversal(TreeNode root) {
