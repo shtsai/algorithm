@@ -16,11 +16,20 @@
  * solution.pick(1);
  */
 
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(nums);
+ * int param_1 = obj.pick(target);
+ */
+
 // Solution 2:
 // Reservoir sampling
 // reference: 
 // https://en.wikipedia.org/wiki/Reservoir_sampling
 // https://discuss.leetcode.com/topic/58301/simple-reservoir-sampling-solution
+// Time: O(n)
+// Space: O(1) - no extra space
+// 09/12/2018
 public class Solution {
     int[] nums;
     Random rand;
@@ -44,11 +53,14 @@ public class Solution {
     }
 }
 
-// Solution 1:
+// Solution 1: HashMap
 // create a hashmap with <int, indices> map
 // use random number generator to pick an index from the indices
-// time limit exceeded
-public class Solution {
+// Time: init - O(n)
+//       pick - O(1)
+// Space: O(n)
+// 09/12/2018
+class Solution {
     HashMap<Integer, List<Integer>> map;
     Random rand;
     
@@ -56,13 +68,7 @@ public class Solution {
         rand = new Random();
         map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            if (!map.containsKey(nums[i])) {    // create a list to store the indices of this num
-                List<Integer> list = new ArrayList<>();
-                list.add(i);
-                map.put(nums[i], list);
-            } else {
-                map.get(nums[i]).add(i);
-            }
+            map.computeIfAbsent(nums[i], x -> new ArrayList<>()).add(i);
         }
     }
     
@@ -72,9 +78,3 @@ public class Solution {
         return list.get(index);
     }
 }
-
-/**
- * Your Solution object will be instantiated and called as such:
- * Solution obj = new Solution(nums);
- * int param_1 = obj.pick(target);
- */
