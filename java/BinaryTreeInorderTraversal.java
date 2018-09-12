@@ -21,7 +21,30 @@
  * }
  */
 
-// Recursive solution
+// Solution 2: Iterative
+// Time: O(n)
+// Space: O(n)
+// 09/12/2018
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || root != null) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            res.add(root.val);
+            root = root.right;
+        }
+        return res;
+    }
+}
+
+// Solution 1: Recursive
+// Time: O(n)
+// Space: O(n)
 public class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> list = new ArrayList<Integer>();
@@ -37,29 +60,3 @@ public class Solution {
         return;
     }
 }
-
-/*
-// iterative solution
-public class Solution {
-    public List<Integer> inorderTraversal(TreeNode root) {
-        TreeNode cur = root;
-        Stack<TreeNode> stack = new Stack<>();
-        List<Integer> list = new ArrayList<Integer>();
-        
-        while (cur != null || !stack.empty()) {
-            while (cur != null) {   // go to the left most node
-                stack.push(cur);
-                cur = cur.left;
-            }
-            cur = stack.pop();      // cur is null at this point, pop from stack
-            list.add(cur.val);      // add the value of cur to the list
-            cur = cur.right;        // then, move on to the right node
-                                    // at this point, if cur.right is not null, 
-                                    // the inner while loop will again try to go as left as possible,
-                                    // otherwise, we will skip the inner while loop and pop from the stack
-        }
-    
-        return list;
-    }
-}
-*/
