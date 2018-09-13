@@ -21,12 +21,17 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
+
+// Solution 2: DFS
+// DFS, use a variable to keep track of the current level
+// Since we do root -> right -> left
+// if a node is the first node visited at the current level,
+// we add it to the result list
+// Time: O(n)
+// Space: O(n)
 public class Solution {
     public List<Integer> rightSideView(TreeNode root) {
-        // DFS, use a variable to keep track of the current level
-        // Since we do root -> right -> left
-        // if a node is the first node visited at the current level,
-        // we add it to the result list
+        
         List<Integer> result = new ArrayList<>();
         if (root == null) return result;
         
@@ -44,9 +49,15 @@ public class Solution {
         }
         helper(result, node.right, currentLevel+1);
         helper(result, node.left, currentLevel+1);
-    }
+    } 
+}
 
-    /*    BFS, add the last nodes in each level
+
+// Solution 1: BFS
+// BFS, add the last nodes in each level
+// Time: O(n)
+// Space: O(n)
+class Solution {
     public List<Integer> rightSideView(TreeNode root) {
         Queue<TreeNode> q = new LinkedList<>();
         List<Integer> list = new ArrayList<>();
@@ -71,5 +82,4 @@ public class Solution {
         }
         return list;
     }
-    */
 }
