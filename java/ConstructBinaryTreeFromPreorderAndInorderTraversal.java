@@ -18,6 +18,9 @@
 // Solution 1: recursive approach
 // by the property of preorder traversal, the first element is the root
 // find that element in inorder array, then divide the original problem to two halves and solve recursively
+// Time: O(n)
+// Space: O(logn) - stack
+
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         if (preorder.length == 0 || inorder.length == 0) return null;
@@ -28,10 +31,14 @@ class Solution {
     // inEnd is the end index of the tree in the inorder array
     // preStart is the index of the root of the current subtree
     private TreeNode builder(int[] preorder, int[] inorder,int inStart, int inEnd, int preStart) {
-        if (inStart>inEnd||inStart>preorder.length||inEnd>preorder.length) return null;
+        if (inStart > inEnd || inStart > preorder.length || inEnd > preorder.length) {
+            return null;
+        }
         int rootIndex = inStart;                        // preorder[preStart] is the root
         for (;rootIndex <= inEnd; rootIndex++) {        // find its position in inorder array
-            if (inorder[rootIndex] == preorder[preStart]) break;
+            if (inorder[rootIndex] == preorder[preStart]) {
+                break;
+            }
         }
         TreeNode root = new TreeNode(preorder[preStart]);
         
