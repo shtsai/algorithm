@@ -30,6 +30,9 @@
 // if p and q are both smaller than the root, then their LCA must be on the left subtree of root
 // if p and q are both greater than the root, we should go find in the right subtree
 // else p and q are on two different subtrees of the root, or one of p and q is the root
+// Time: O(n) - worst case, skewed tree
+//       O(h) - normal case
+// Space: O(n)
 public class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root.val < p.val && root.val < q.val) {
@@ -44,6 +47,8 @@ public class Solution {
 
 // Solution 1:
 // Generic solution for lowest common ancestor of a binary tree
+// Time: O(n)
+// Space: O(n) - stack space
 public class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null || p == root || q == root) return root;
