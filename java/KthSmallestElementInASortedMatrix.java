@@ -20,6 +20,9 @@
 // Binary search
 // guess the mid number, count the numbers that are less than the mid
 // adjust range according to the result
+// Time: O(mnlog(v)) - v: max - min
+// Space: O(1)
+
 public class Solution {
     public int kthSmallest(int[][] matrix, int k) {
         int n = matrix.length;
@@ -29,20 +32,42 @@ public class Solution {
             int mid = low + (high - low) / 2;
             int count = 0, j = n-1;         // count the number of elements that are larger than mid
             for (int i = 0; i < n; i++) {
-                while (j >= 0 && matrix[i][j] > mid) j--;      // if matrix[i][j] > mid, then matrix[i+1][j] > mid, because columns are sorted
+                while (j >= 0 && matrix[i][j] > mid) {
+                    j--;      // if matrix[i][j] > mid, then matrix[i+1][j] > mid, because columns are sorted
+                }
                 count += (j + 1);
             }
-            if (count < k) low = mid + 1;  // mid is smaller than Kth smallest element
-            else high = mid;
+            if (count < k) {
+                low = mid + 1;  // mid is smaller than Kth smallest element
+            } else {
+                high = mid;
+            }
         }
         
         return low;
     }
 }
 
-// Solution 1:
-// use priority queue
-public class Solution {
+// Solution 1: priority queue
+// Time: O(mnlog(mn))
+// Space: O(mn)
+class Solution {
+    class Tuple implements Comparable<Tuple> {
+        int num;
+        int row;
+        int col;
+        
+        public Tuple (int number, int row_num, int col_num) {
+            this.num = number;
+            this.row = row_num;
+            this.col = col_num;
+        }
+        
+        public int compareTo(Tuple other) {
+            return this.num - other.num;
+        }
+    }
+
     public int kthSmallest(int[][] matrix, int k) {
         PriorityQueue<Tuple> q = new PriorityQueue<>();
         int[] index = new int[matrix.length];
@@ -65,18 +90,4 @@ public class Solution {
 
 }
 
-class Tuple implements Comparable<Tuple> {
-    int num;
-    int row;
-    int col;
     
-    public Tuple (int number, int row_num, int col_num) {
-        this.num = number;
-        this.row = row_num;
-        this.col = col_num;
-    }
-    
-    public int compareTo(Tuple other) {
-        return this.num - other.num;
-    }
-}
