@@ -28,10 +28,14 @@
 
 // Solution 1:
 // level order traversal, reverse even levels
+// Time: O(n)
+// Space: O(n)
 class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
-        if (root == null) return res;
+        if (root == null) {
+            return res;
+        }
         
         Queue<TreeNode> q = new LinkedList<>();
         q.offer(root);
@@ -66,6 +70,8 @@ class Solution {
 
 // Solution 2:
 // DFS, add nodes to their corresponding level during visits
+// Time: O(n)
+// Space: O(n)
 class Solution {
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
@@ -74,7 +80,9 @@ class Solution {
     }
     
     private void visit(TreeNode root, List<List<Integer>> res, int level) {
-        if (root == null) return;
+        if (root == null) {
+            return;
+        }
         if (res.size() <= level) {// if the list for current level is not initialized
             res.add(new LinkedList<>());
         }
