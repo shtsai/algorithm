@@ -8,8 +8,11 @@
  * Your algorithm should run in O(n) time and uses constant space.
  */
 
+// Solution 1:
 // swap each number to its correct position
 // then scan the array and find the misplaced integer
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public int firstMissingPositive(int[] nums) {
         for (int i = 0; i < nums.length; i++) {
