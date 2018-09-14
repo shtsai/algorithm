@@ -12,6 +12,8 @@
 // First do in-order traversal to find the two misplaced nodes.
 // Then swap the value of these two nodes.
 // reference: https://discuss.leetcode.com/topic/3988/no-fancy-algorithm-just-simple-and-powerful-in-order-traversal
+// Time: O(n)
+// Space: O(1)
 
 class Solution {
     TreeNode prev, first, second;
