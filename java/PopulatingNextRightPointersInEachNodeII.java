@@ -30,89 +30,87 @@
  * }
  */
 
-// Solution 1: use pointers
-// version 2: better naming
-// Same idea as version 1
-// Use four pointers:
+// Solution 2: In place
+// Use three pointers:
 //      - parent: points at the parent node
-//      - parentHead: points at the next parent (in next iteration)
+//      - nextParent: points at the next parent (in next iteration)
 //      - child: points at the current child node, this is where we append to
-//      - childHead: points at the head of child in next interation
 // We then scan through the parent level, if we find a child, we append
-// it to the child. Meanwhile, if next child head is not found, see if
-// the child node has any grandchild.
+// it to the child. 
 // After we are done with the current level, move to next level and repeat.
 //
 // Time: O(n) - n is the number of nodes
 // Space: O(1)
-// 11/13/2017
-
+// 09/18/2018
 public class Solution {
     public void connect(TreeLinkNode root) {
-        if (root == null) return;
-        TreeLinkNode parentHead = root, parent = root;
-        TreeLinkNode childHead = root.left != null ? root.left : root.right;
-        while (childHead != null) {
-            TreeLinkNode child = childHead;
-            parent = parentHead;
-            parentHead = childHead;
-            childHead = null;
+        if (root == null) {
+            return;
+        }
+        TreeLinkNode parent = root;
+        TreeLinkNode child = null;
+        TreeLinkNode nextParent = null;
+        while (parent != null) {
             while (parent != null) {
-                if (parent.left != null && parent.left != child) {
-                    child.next = parent.left;
-                    child = child.next;
+                if (parent.left != null) {
+                    if (child == null) {
+                        child = parent.left;
+                        nextParent = child;
+                    } else {
+                        child.next = parent.left;
+                        child = child.next;
+                    }
                 }
-                if (childHead == null) {
-                    childHead = child.left != null ? child.left : child.right;
-                }
-                if (parent.right != null && parent.right != child) {
-                    child.next = parent.right;
-                    child = child.next;
-                }
-                if (childHead == null) {
-                    childHead = child.left != null ? child.left : child.right;
+                if (parent.right != null) {
+                    if (child == null) {
+                        child = parent.right;
+                        nextParent = child;
+                    } else {
+                        child.next = parent.right;
+                        child = child.next;
+                    }
                 }
                 parent = parent.next;
             }
+            parent = nextParent;
+            child = null;
+            nextParent = null;
         }
     }
 }
 
-// version 1:
-// cur: points to the node we are currently processing
-// head: points to the head of the list on next level, which is where to start after finishing current level
-// tail: points to the tail of the list on next level, so that we can append to it
+// Solution 1: Level order traversal
+// Time: O(n)
+// Space: O(n)
+// 09/18/2018
+
 public class Solution {
     public void connect(TreeLinkNode root) {
-        if (root == null) return;
-        TreeLinkNode cur = root, head = null, tail = null;
-        while (cur != null) {
-            while (cur != null) {
-                if (cur.left != null) {     // left child
-                    if (head == null) {     // haven't found the head of current level
-                        head = cur.left;
-                        tail = cur.left;
-                    } else {
-                        tail.next = cur.left;  // append left child to the tail
-                        tail = tail.next;
-                    }
-                }   
-                if (cur.right != null) {
-                    if (head == null) {
-                        head = cur.right;
-                        tail = cur.right;
-                    } else {
-                        tail.next = cur.right;
-                        tail = tail.next;
-                    }
-                }
-                cur = cur.next;     // handle next node at the current level
-            }
-            // finish all nodes at the current level, move on to next
-            cur = head;
-            head = null;
-            tail = null;
+        if (root == null) {
+            return;
         }
-        return;
+        Queue<TreeLinkNode> q = new LinkedList<>();
+        q.offer(root);
+        TreeLinkNode prev = null;
+        while (!q.isEmpty()) {
+            int count = q.size();
+            while (count > 0) {
+                TreeLinkNode p = q.poll();
+                count--;
+                if (prev == null) {
+                    prev = p;
+                } else {
+                    prev.next = p;
+                    prev = p;
+                }
+                if (p.left != null) {
+                    q.offer(p.left);
+                }
+                if (p.right != null) {
+                    q.offer(p.right);
+                }
+            }
+            prev = null;
+        }
     }
 }
