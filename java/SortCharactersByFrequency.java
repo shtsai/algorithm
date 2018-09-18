@@ -42,20 +42,15 @@
 // of values. In this way, each poll() of priority queue will return the
 // character with max frequency in the queue.
 // We can then build the result.
-// Time: O(n)
+// Time: O(nlogn) - n polls from priority queue
 // Space: O(n)
-// 10/18/2017
-    
+// 09/18/2018
 class Solution {
     public String frequencySort(String s) {
         // get frequency map
         HashMap<Character, Integer> map = new HashMap<>();
-        for (Character c : s.toCharArray()) {
-            if (!map.containsKey(c)) {
-                map.put(c, 1);
-            } else {
-                map.put(c, map.get(c) + 1);
-            }
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
         }
         
         PriorityQueue<Map.Entry<Character, Integer>> pq = new PriorityQueue<>(new Comparator<Map.Entry<Character, Integer>>() {
@@ -79,7 +74,7 @@ class Solution {
     }
 }
 
-// Solution 2: 
+// Solution 2: Bucket sort
 // First get the frequency map.
 // Then, for each frequency, build a list of characters with that frequency
 // Lastly, build result from the list.
@@ -91,14 +86,10 @@ class Solution {
     public String frequencySort(String s) {
         // get frequency map
         HashMap<Character, Integer> map = new HashMap<>();
-        for (Character c : s.toCharArray()) {
-            if (!map.containsKey(c)) {
-                map.put(c, 1);
-            } else {
-                map.put(c, map.get(c) + 1);
-            }
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
         }
-        
+
         // build lists for each frequency
         ArrayList<Character>[] list = new ArrayList[s.length()+1];
         for (Character c : map.keySet()) {
@@ -179,10 +170,10 @@ class Solution {
     private void moveToNextLevel(Character c, HashMap<Character, FreqNode> map) {
         FreqNode cur = map.get(c);
         cur.set.remove(c);
-        if (cur.next.freq == cur.freq+1) {
+        if (cur.next.freq == cur.freq + 1) {
             cur.next.set.add(c);
             map.put(c, cur.next);
-        } else {
+        } else {  // add bext level
             FreqNode nextFreq = new FreqNode(cur.freq + 1);
             nextFreq.pre = cur;
             nextFreq.next = cur.next;
@@ -198,13 +189,13 @@ class Solution {
             head.next.set.add(c);
             map.put(c, head.next);
         } else {
-            FreqNode Freq1 = new FreqNode(1);
-            Freq1.pre = head;
-            Freq1.next = head.next;
-            Freq1.pre.next = Freq1;
-            Freq1.next.pre = Freq1;
-            Freq1.set.add(c);
-            map.put(c, Freq1);
+            FreqNode freq1 = new FreqNode(1);
+            freq1.pre = head;
+            freq1.next = head.next;
+            freq1.pre.next = freq1;
+            freq1.next.pre = freq1;
+            freq1.set.add(c);
+            map.put(c, freq1);
         }
     }
 }
