@@ -1,91 +1,21 @@
 /*
- * Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
- *
- * push(x) -- Push element x onto stack.
- * pop() -- Removes the element on top of the stack.
- * top() -- Get the top element.
- * getMin() -- Retrieve the minimum element in the stack.
- *
+    Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+    push(x) -- Push element x onto stack.
+    pop() -- Removes the element on top of the stack.
+    top() -- Get the top element.
+    getMin() -- Retrieve the minimum element in the stack.
+  
+    Example:
+    MinStack minStack = new MinStack();
+    minStack.push(-2);
+    minStack.push(0);
+    minStack.push(-3);
+    minStack.getMin();   --> Returns -3.
+    minStack.pop();
+    minStack.top();      --> Returns 0.
+    minStack.getMin();   --> Returns -2.
  */
-
-// optimized version (using two stacks)
-public class MinStack {
-
-    private Stack<Integer> stack;
-    private Stack<Integer> minstack;
-
-
-    /** initialize your data structure here. */
-    public MinStack() {
-        stack = new Stack<Integer>();
-        minstack = new Stack<Integer>();
-    }
-    
-    public void push(int x) {
-        // if the current element is smaller than or equal to the min
-        // push it the the min stack
-        if (minstack.empty() || minstack.peek() >= x) {
-            minstack.push(x);
-        }
-    
-        stack.push(x);
-    }
-    
-    public void pop() {
-        if (!stack.empty()) {
-            int pop = stack.pop();
-            if (pop == minstack.peek()) {  // pop an element from min stack if it is the current min
-                minstack.pop();
-            }
-        }
-    }
-    
-    public int top() {
-        return stack.peek();
-    }
-    
-    public int getMin() {
-        return minstack.peek();
-    }
-}
-
-/*  use O(2n) space
-public class MinStack {
-
-    // min stack maintains the min at each level of the stack
-    private Stack<Integer> stack;
-    private Stack<Integer> minstack;
-
-    public MinStack() {
-        stack = new Stack<Integer>();
-        minstack = new Stack<Integer>();
-    }
-    
-    public void push(int x) {
-        if (minstack.empty() || minstack.peek() > x) {
-            minstack.push(x);
-        } else {
-            minstack.push(minstack.peek());
-        }
-        
-        stack.push(x);
-        
-    }
-    
-    public void pop() {
-        stack.pop();
-        minstack.pop();
-    }
-    
-    public int top() {
-        return stack.peek();
-    }
-    
-    public int getMin() {
-        return minstack.peek();
-    }
-}
-*/
 
 /**
  * Your MinStack object will be instantiated and called as such:
@@ -95,3 +25,83 @@ public class MinStack {
  * int param_3 = obj.top();
  * int param_4 = obj.getMin();
  */
+
+// Solution 2: 
+// Only update mins when necessary
+// More space efficient
+// Time: push - O(1)
+//       pop - O(1)
+//       top - O(1)
+//       getMin - O(1)
+// Space: O(n) 
+// 09/18/2018
+class MinStack {
+    Stack<Integer> values;
+    Stack<Integer> mins;
+    
+    public MinStack() {
+        values = new Stack<>();
+        mins = new Stack<>();
+    }
+    
+    public void push(int x) {
+        values.push(x);
+        if (mins.isEmpty() || x <= mins.peek()) {
+            mins.push(x);
+        } 
+    }
+    
+    public void pop() {
+        if (values.pop().equals(mins.peek())) {
+            mins.pop();
+        }
+    }
+    
+    public int top() {
+        return values.peek();
+    }
+    
+    public int getMin() {
+        return mins.peek();
+    }
+}
+
+// Solution 1: Two stacks
+// Time: push - O(1)
+//       pop - O(1)
+//       top - O(1)
+//       getMin - O(1)
+// Space: O(2n) = O(n) - two stacks of size n
+// 09/18/2018
+class MinStack {
+    Stack<Integer> values;
+    Stack<Integer> mins;
+    
+    public MinStack() {
+        values = new Stack<>();
+        mins = new Stack<>();
+    }
+    
+    public void push(int x) {
+        values.push(x);
+        if (mins.isEmpty() || x < mins.peek()) {
+            mins.push(x);
+        } else {
+            mins.push(mins.peek());
+        }
+    }
+    
+    public void pop() {
+        values.pop();
+        mins.pop();
+    }
+    
+    public int top() {
+        return values.peek();
+    }
+    
+    public int getMin() {
+        return mins.peek();
+    }
+}
+
