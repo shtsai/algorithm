@@ -38,6 +38,35 @@
  * }
  */
 
+// Solution 3: General solution
+// similar to PopulatingNextRightPointersInEachNodeII
+// Time: O(n)
+// Space: O(1)
+// 09/18/2018
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeLinkNode parent = root;
+        TreeLinkNode child;
+        while (parent.left != null) {
+            TreeLinkNode nextParent = parent.left;
+            child = parent.left;
+            while (parent != null) {
+                child.next = parent.right;
+                child = child.next;
+                parent = parent.next;
+                if (parent != null && parent.left != null) {
+                    child.next = parent.left;
+                    child = child.next;
+                }
+            }
+            parent = nextParent;
+        }
+    }
+}
+
 // Solution 2:
 // Since we have perfect binary tree as input, we only
 // need to keep track of the first node of every level.
@@ -48,8 +77,6 @@
 //
 // Time: O(n) - n is the number of nodes
 // Space: O(1)
-
-// version 2: better variable names
 // 11/13/2017
 
 public class Solution {
@@ -71,53 +98,39 @@ public class Solution {
     }
 }
 
-// version 1:
-public class Solution {
-    public void connect(TreeLinkNode root) {
-        if (root == null) return;
-        
-        TreeLinkNode prev = root, cur = null;
-        while (prev.left != null) {      // next level exists (b/c perfect binary tree)
-            cur = prev;
-            while (cur != null) {
-                cur.left.next = cur.right;
-                if (cur.next != null) cur.right.next = cur.next.left;
-                cur = cur.next;
-            }
-            prev = prev.left;
-        }
-
-        return;
-    }
-}
-
 // Solution 1:
 // level order traversal
-// space: O(n)  (queue)
+// Connect nodes on the same level
+// Time: O(n)
+// Space: O(n) - queue
+// 09/18/2018
 public class Solution {
     public void connect(TreeLinkNode root) {
-        if (root == null) return;
-        
-        int count = 1, next = 0;      // start from top level = 1
+        if (root == null) {
+            return;
+        }
         Queue<TreeLinkNode> q = new LinkedList<>();
         q.offer(root);
-        
+        TreeLinkNode prev = null;
         while (!q.isEmpty()) {
-            // first do level order traversal
-            TreeLinkNode p = q.poll();
-            if (p.left != null) q.offer(p.left); next++;
-            if (p.right != null) q.offer(p.right); next++;
-            count--;
-            
-            // handle last node on each level
-            if (count == 0) {
-                p.next = null;
-                count = next;
-                next = 0;
-            } else {
-                p.next = q.peek();
+            int count = q.size();
+            while (count > 0) {
+                TreeLinkNode p = q.poll();
+                count--;
+                if (prev == null) {
+                    prev = p;
+                } else {
+                    prev.next = p;
+                    prev = p;
+                }
+                if (p.left != null) {
+                    q.offer(p.left);
+                }
+                if (p.right != null) {
+                    q.offer(p.right);
+                }
             }
+            prev = null;
         }
-        return;
     }
 }
