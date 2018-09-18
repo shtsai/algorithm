@@ -21,151 +21,39 @@
  * }
  */
 
-// Solution 2 version 3: much more concise
-// 11/14/2017
-class Solution {
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        Stack<Integer> s1 = new Stack<>();
-        Stack<Integer> s2 = new Stack<>();
-        ListNode p = l1;
-        while (p != null) {
-            s1.push(p.val);
-            p = p.next;
-        }
-        p = l2;
-        while (p != null) {
-            s2.push(p.val);
-            p = p.next;
-        }
-        int carry = 0;
-        ListNode dummy = new ListNode(-1), node = null;
-        while (!(s1.isEmpty() && s2.isEmpty() && carry == 0)) {
-            int n1 = s1.isEmpty() ? 0 : s1.pop();
-            int n2 = s2.isEmpty() ? 0 : s2.pop();
-            ListNode newNode = new ListNode((n1 + n2 + carry) % 10);
-            newNode.next = node;    // insert after dummy
-            dummy.next = newNode;
-            node = newNode;
-            carry = (n1 + n2 + carry) / 10;
-        }
-        return dummy.next;
-    }
-}
-
-// Solution 2 version 2:
+// Solution 2: Stack + dummy node
+// Push two lists onto two stacks, so we can get LIFO order
+// Compute sum digit by digit
 // Use a dummy node to hold the result list
 // add nodes to the result list while computing.
-// Save one pass
-// Time: O(n), Space: O(n)
+// Time: O(n)
+// Space: O(n)
+// 09/18/2018
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        Stack<Integer> s1 = new Stack<>();
-        Stack<Integer> s2 = new Stack<>();
-        ListNode p = l1;
-        while (p != null) {
-            s1.push(p.val);
-            p = p.next;
+        Stack<ListNode> stack1 = new Stack<>();
+        Stack<ListNode> stack2 = new Stack<>();
+        while (l1 != null) {
+            stack1.push(l1);
+            l1 = l1.next;
         }
-        p = l2;
-        while (p != null) {
-            s2.push(p.val);
-            p = p.next;
+        while (l2 != null) {
+            stack2.push(l2);
+            l2 = l2.next;
         }
-        int carry = 0;
+        
         ListNode dummy = new ListNode(-1);
-        while (!s1.isEmpty() && !s2.isEmpty()) {
-            int n1 = s1.pop();
-            int n2 = s2.pop();
-            ListNode newNode = new ListNode((n1+n2+carry)%10);
-            carry = (n1+n2+carry) / 10;
-            newNode.next = dummy.next;
-            dummy.next = newNode;
-        }
-        while (!s1.isEmpty()) {
-            int n1 = s1.pop();
-            ListNode newNode = new ListNode((n1+carry)%10);
-            carry = (n1+carry) / 10;
-            newNode.next = dummy.next;
-            dummy.next = newNode;
-        } 
-        while (!s2.isEmpty()) {
-            int n2 = s2.pop();
-            ListNode newNode = new ListNode((n2+carry)%10);
-            carry = (n2+carry) / 10;
-            newNode.next = dummy.next;
-            dummy.next = newNode;
-        }
-        if (carry != 0) {
-            ListNode newNode = new ListNode(carry);
-            newNode.next = dummy.next;
-            dummy.next = newNode;
-        }
-        return dummy.next;
-    }
-}
-
-
-// solution 2: using stack 
-// Push two lists onto two stacks, so we can get LIFO order
-// Compute sum digit by digit, push result onto sum stack.
-// Build result list from the sum stack.
-// O(n) time, O(n) space
-
-public class Solution {
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        Stack<ListNode> num1 = new Stack<>();
-        Stack<ListNode> num2 = new Stack<>();
-        Stack<ListNode> sum = new Stack<>();
-        
-        // push all nodes into the stack
-        ListNode p = l1;
-        while (p != null) {
-            num1.push(p);
-            p = p.next;
-        }
-        
-        p = l2;
-        while (p != null) {
-            num2.push(p);
-            p = p.next;
-        }
-        
-        ListNode result = new ListNode(0);
         int carry = 0;
-        p = result;
-        // perform calculation node by node
-        while ((!num1.empty()) && (!num2.empty())) {
-            int x = num1.pop().val;
-            int y = num2.pop().val;
-            sum.push(new ListNode((x + y + carry) % 10));
-            carry = (x + y + carry) / 10;
+        while (!(stack1.isEmpty() && stack2.isEmpty() && carry == 0)) {
+            int i1 = stack1.isEmpty() ? 0 : stack1.pop().val;
+            int i2 = stack2.isEmpty() ? 0 : stack2.pop().val;
+            ListNode tail = dummy.next;
+            dummy.next = new ListNode((i1 + i2 + carry) % 10);
+            dummy.next.next = tail;
+            carry = (i1 + i2 + carry) / 10;
         }
-        
-        // handle different list length
-        if (num1.empty()) {
-            while (!num2.empty()) {
-                int x = num2.pop().val;
-                sum.push(new ListNode((x + carry) % 10));
-                carry = (x + carry) / 10;
-            }
-        } else if (num2.empty()) {
-            while (!num1.empty()) {
-                int x = num1.pop().val;
-                sum.push(new ListNode((x + carry) % 10));
-                carry = (x + carry) / 10;
-            }
-        }
-        
-        // don't forget to add the carry to the result
-        if (carry != 0) sum.push(new ListNode(carry));
-        
-        // convert the sum stack back into a list
-        while (!sum.empty()) {
-            p.next = new ListNode(sum.pop().val);
-            p = p.next;
-        }
-        
-        return result.next;
+
+        return dummy.next;
     }
 }
 
@@ -179,30 +67,25 @@ public class Solution {
         while (p != null) {
             num1 = num1 * 10 + p.val;
             p = p.next;
-        }
-        
+        }        
         p = l2;
         while (p != null) {
             num2 = num2 * 10 + p.val;
             p = p.next;
         }
         
-        System.out.println(num1);
-        System.out.println(num2);
         int sum = num1 + num2;
         
         // corner case
         if (sum == 0) return new ListNode(0);
-        
+
         p = null;
         while (sum != 0) {
             ListNode newNode = new ListNode(sum % 10);
             newNode.next = p;
             sum /= 10;
             p = newNode;
-        }
-        
+        }        
         return p;
-        
     }
 }
