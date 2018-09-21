@@ -18,9 +18,10 @@
 	You can print different paths in any order, but you should keep the order of nodes inside one path.
  */
 
-// Solution 1: DFS
-// Time: O(V + E)
-// Space: O(V)
+// Solution 1: Backtracking
+// No need for visited set because the graph is a DAG
+// Time: O(n!)
+// Space: O(n)
 // 07/09/2018
 
 class Solution {
