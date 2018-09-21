@@ -36,44 +36,6 @@
     Note that 'A' and 'a' are treated as two different characters.
  */
 
-// Solution 3: Frequency Map + Priority Queue
-// First get frequency map.
-// Then create a priority queue that sorts Map.Entry in descending order
-// of values. In this way, each poll() of priority queue will return the
-// character with max frequency in the queue.
-// We can then build the result.
-// Time: O(nlogn) - n polls from priority queue
-// Space: O(n)
-// 09/18/2018
-class Solution {
-    public String frequencySort(String s) {
-        // get frequency map
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (char c : s.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-        }
-        
-        PriorityQueue<Map.Entry<Character, Integer>> pq = new PriorityQueue<>(new Comparator<Map.Entry<Character, Integer>>() {
-            @Override
-            public int compare(Map.Entry<Character, Integer> a, Map.Entry<Character, Integer> b) {
-                return b.getValue() - a.getValue();
-            }
-        });
-        for (Map.Entry e : map.entrySet()) {
-            pq.offer(e);
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        while (!pq.isEmpty()) {
-            Map.Entry e = pq.poll();
-            for (int i = 0; i < (int) e.getValue(); i++) {
-                sb.append(e.getKey());
-            }
-        }
-        return sb.toString();
-    }
-}
-
 // Solution 2: Bucket sort
 // First get the frequency map.
 // Then, for each frequency, build a list of characters with that frequency
@@ -113,6 +75,44 @@ class Solution {
         return sb.toString();
     }
 }    
+
+// Solution 2: Frequency Map + Priority Queue
+// First get frequency map.
+// Then create a priority queue that sorts Map.Entry in descending order
+// of values. In this way, each poll() of priority queue will return the
+// character with max frequency in the queue.
+// We can then build the result.
+// Time: O(nlogn) - n polls from priority queue
+// Space: O(n)
+// 09/18/2018
+class Solution {
+    public String frequencySort(String s) {
+        // get frequency map
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        
+        PriorityQueue<Map.Entry<Character, Integer>> pq = new PriorityQueue<>(new Comparator<Map.Entry<Character, Integer>>() {
+            @Override
+            public int compare(Map.Entry<Character, Integer> a, Map.Entry<Character, Integer> b) {
+                return b.getValue() - a.getValue();
+            }
+        });
+        for (Map.Entry e : map.entrySet()) {
+            pq.offer(e);
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        while (!pq.isEmpty()) {
+            Map.Entry e = pq.poll();
+            for (int i = 0; i < (int) e.getValue(); i++) {
+                sb.append(e.getKey());
+            }
+        }
+        return sb.toString();
+    }
+}
 
 // Solution 1: Use FreqNode for each frequency
 // Similar to the idea of LRU
