@@ -21,27 +21,22 @@
 // Space: O(1)
 
 // Version 3: lambda function
-// 08/14/2018
+// 09/21/2018
 class Solution {
     public List<Interval> merge(List<Interval> intervals) {
-        Collections.sort(intervals, (Interval a, Interval b) -> {
-            if (a.start == b.start) {
-                return a.end - b.end;
-            } else {
-                return a.start - b.start;
-            }
+        Collections.sort(intervals, (a, b) -> {
+            return a.start - b.start;
         });
-
         List<Interval> res = new ArrayList<>();
         Interval prev = null;
         for (Interval i : intervals) {
             if (prev == null) {
                 prev = i;
-            } else if (prev.end >= i.start) {  // overlap
-                prev.end = Math.max(prev.end, i.end);
-            } else {
+            } else if (prev.end < i.start) {
                 res.add(prev);
                 prev = i;
+            } else {
+                prev.end = Math.max(prev.end, i.end);
             }
         }
         if (prev != null) {
@@ -84,7 +79,7 @@ class Solution {
 }
 
 // version 1: write comparator class
-public class Solution {
+class Solution {
     private class Cmp implements Comparator<Interval> {
         public int compare(Interval x, Interval y) {
             return x.start - y.start;
