@@ -58,28 +58,27 @@ class Solution {
 // when the interval is still not inserted after a round of searching, it must be added to the end of the list
 // Time: O(n)
 // Space: O(1)
-// 01/05/2018
+// 09/22/2018
 class Solution {
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         List<Interval> res = new ArrayList<>();
-        boolean added = false;
         for (Interval i : intervals) {
-            if (!added) {
+            if (newInterval != null) {
                 if (i.end < newInterval.start) {
                     res.add(i);
                 } else if (i.start > newInterval.end) {
                     res.add(newInterval);
+                    newInterval = null;
                     res.add(i);
-                    added = true;
                 } else {
                     newInterval.start = Math.min(newInterval.start, i.start);
                     newInterval.end = Math.max(newInterval.end, i.end);
-                } 
+                }
             } else {
                 res.add(i);
             }
         }
-        if (!added) {
+        if (newInterval != null) {
             res.add(newInterval);
         }
         return res;
@@ -92,9 +91,15 @@ class Solution {
 // we remove the overlapped one from the list, merge it with the new interval,
 // and then recursively insert it to the list
 // Problem: stack overflow when the number of intervals is huge
+// Time: O(n)
+// Space: O(n) - worst case, need to merge all n
+// 09/22/2018
 class Solution {
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
-        if (intervals.size() == 0) {intervals.add(newInterval); return intervals;}
+        if (intervals.size() == 0) {
+            intervals.add(newInterval); 
+            return intervals;
+        }
         
         int prev_end = -1;
         for (int i = 0; i < intervals.size(); i++) {
