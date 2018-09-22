@@ -27,7 +27,6 @@ public class Solution {
 // Time: O(n)
 // Space: O(1)
 // 10/24/2017
-
 class Solution {
     public int maxProfit(int[] prices) {
         int buy = Integer.MAX_VALUE, sell = 0;      
