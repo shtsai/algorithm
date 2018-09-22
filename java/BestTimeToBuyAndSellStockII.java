@@ -24,27 +24,23 @@
 class Solution {
     public int maxProfit(int[] prices) {
         int buy = Integer.MIN_VALUE, sell = 0;
-        
         for (int price : prices) {
             int presell = sell;
             sell = Math.max(sell, buy + price); // wait or sell
             buy = Math.max(buy, presell - price);
         }
-        
         return sell;
     }
 }
 
-// Solution 1:
+// Solution 2:
 // One pass, sum up all price increases
-// Time: O(n), Space: O(1)
+// The idea is to greedily sum up all the prices increase.
+// capture every uptick to maximize profit.
+// Time: O(n)
+// Space: O(1)
 public class Solution {
     public int maxProfit(int[] prices) {
-
-    	// This problem is actually easier than it looks.
-    	// The idea is to greedily sum up all the prices increase.
-    	// capture every uptick to maximize profit.
-
         int profit = 0;
         for (int i = 1; i < prices.length; i++) {
             if (prices[i] > prices[i-1]) {
@@ -55,20 +51,31 @@ public class Solution {
     }
 }
 
-// Solution 2:
+// Solution 1:
 // Find all local minimum and local maximum
 // and sum up the differences
-// Time: O(n), Space: O(1)
+// Time: O(n)
+// Space: O(1)
 // reference: https://discuss.leetcode.com/topic/7436/java-o-n-solution-if-we-re-not-greedy
+// 09/22/2018
 class Solution {
     public int maxProfit(int[] prices) {
         int sum = 0, i = 0;
         while (i < prices.length) {
-            while (i < prices.length-1 && prices[i] >= prices[i+1]) i++;
-            int min = prices[i];    // local minimum
+            // find local minimum
+            while (i + 1 < prices.length && prices[i] >= prices[i+1]) {
+                i++;
+            }
+            int min = prices[i];    
             i++;
-            while (i < prices.length-1 && prices[i] < prices[i+1]) i++;
-            sum += i >= prices.length ? 0 : prices[i] - min;
+            
+            // find local maximum
+            while (i + 1 < prices.length && prices[i] < prices[i+1]) {
+                i++;
+            }
+            if (i < prices.length) {
+                sum += prices[i] - min;
+            }
             i++;
         }
         return sum;
