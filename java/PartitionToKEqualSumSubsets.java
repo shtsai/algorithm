@@ -11,53 +11,94 @@
     0 < nums[i] < 10000.
  */
 
-// Solution 1: DFS
-// First check sum is divisable by k.
-// Sort the input array into descending order.
-// Then use DFS to find k occurence of the target value.
-// Remove nodes that sums up to target after each iteration so we don't double count.
-//
-// Time Limit Exceeded
-// 10/14/2017
+// Solution 2: Memoization
+// Use bits to indicate each possible combinations in `used`.
+// For example, 010 means the second element is used.
+// Therefore, there are 2 ^ n possible combinations.
+// Use a memo array to store intermediate results.
+// Time: O(n * 2 ^ n)
+// Space: O(2 ^ n)
+// 09/22/2018
 
 class Solution {
     public boolean canPartitionKSubsets(int[] nums, int k) {
-        if (nums == null || nums.length == 0) return false;
         int sum = 0;
-        for (int num : nums) {
-            sum += num;
+        for (int n : nums) {
+            sum += n;
         }
-        if (sum % k != 0) return false;     // cannot divide evenly
-        int target = sum / k;
-        
-        LinkedList<Integer> list = new LinkedList<>();
-        for (int i = 0; i < nums.length; i++) {
-            list.add(nums[i]);
+        if (sum % k != 0) {
+            return false;
         }
-        Collections.sort(list, Collections.reverseOrder());  // descending order
-
-        for (int i = 0; i < k; i++) {   // perform k times
-            if (!findTarget(list, target, 0)) {
-                return false;
-            } 
-        
-        }
-        return true;
+        Boolean[] memo = new Boolean[1 << nums.length];
+        memo[memo.length - 1] = true;   // all 1s
+        return search(nums, sum / k, 0, sum, memo);
     }
     
-    private boolean findTarget(LinkedList<Integer> list, int target, int current) {
+    private boolean search(int[] nums, int target, int used, int todo, Boolean[] memo) {
+        if (memo[used] != null) {
+            return memo[used];
+        }
+        memo[used] = false;
+        int t = (todo - 1) % target + 1;
+        for (int i = 0; i < nums.length; i++) {
+            if ((used & (1 << i)) == 0 && nums[i] <= t) {   // haven't used this digit
+                int newUsed = used | (1 << i);
+                if (search(nums, target, newUsed, todo - nums[i], memo)) {
+                    memo[used] = true;
+                    break;
+                }
+            }
+        }
+        return memo[used];
+    }
+}
 
-        if (current == target) return true;
-        if (current > target) return false;
-        if (list.size() == 0) return false;
+// Solution 1: Backtracking Search
+// Time: O(k ^ n)
+// Space: O(n)
+// 09/22/2018
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) > target-current) continue;
-            int add = list.remove(i);
-            if (findTarget(list, target, current + add)) return true;
-            list.add(i, add);
+class Solution {
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for (int n : nums) {
+            sum += n;
+        }
+        if (sum % k != 0) {
+            return false;
+        }
+        int target = sum / k;
+        Arrays.sort(nums);
+        int index = nums.length - 1;
+        if (nums[index] > target) {
+            return false;
         }
         
+        while (index >= 0 && nums[index] == target) {
+            index--;
+            k--;
+        }
+        return search(nums, k, target, new int[k], index);
+    }
+    
+    private boolean search(int[] nums, int k, int target, int[] groups, int index) {
+        if (index < 0) {    // base case
+            return true;
+        }
+        int v = nums[index];
+        index--;
+        for (int g = 0; g < groups.length; g++) {
+            if (groups[g] + v <= target) {
+                groups[g] += v;
+                if (search(nums, k, target, groups, index)) {
+                    return true;
+                }
+                groups[g] -= v;
+            }
+            if (groups[g] == 0) {   // avoid repeated search
+                break;
+            }
+        }
         return false;
     }
 }
