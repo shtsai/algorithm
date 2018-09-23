@@ -13,73 +13,45 @@
  * };
  */
 
-// Solution 2 version 2:
+// Solution 2:
 // Create copy node right after each original node
 // Time: O(n)
 // Space: O(1)
-// 10/14/2017
+// 09/23/2018
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
-        if (head == null) return null;
+        if (head == null) {
+            return null;
+        }
         RandomListNode p = head;
+        // 1. Create clone node
         while (p != null) {
-            RandomListNode copy = new RandomListNode(p.label);
-            copy.next = p.next;
-            p.next = copy;
-            p = copy.next;
+            RandomListNode clone = new RandomListNode(p.label);
+            clone.next = p.next;
+            p.next = clone;
+            p = clone.next;
         }
         
+        // 2. Copy random node
         p = head;
-        while (p != null && p.next != null) {
-            RandomListNode copy = p.next;
-            copy.random = p.random == null ? null : p.random.next; // random could point to null
-            p = copy.next;
-        }
-        
-        p = head;
-        RandomListNode headCopy = head.next;
-        while (p != null && p.next != null) {
-            RandomListNode copy = p.next;
-            p.next = copy.next;
-            copy.next = p.next == null ? null : p.next.next;  // be careful with tail
-            p = p.next;
-            copy = copy.next;
-        }
-        return headCopy;
-    }
-}
-
-// Version 1:
-public class Solution {
-    public RandomListNode copyRandomList(RandomListNode head) {
-        if (head == null) return null;
-        RandomListNode p = head, next;
-        while (p != null) {     // step 1: insert a copy node after each original node
-            next = p.next;
-            p.next = new RandomListNode(p.label);
-            p.next.next = next;
-            p = next;
-        }
-        
-        p = head;
-        while (p != null) {     // step 2: copy random pointers
-            if (p.random != null) p.next.random = p.random.next;
+        while (p != null) {
+            if (p.random != null) {
+                p.next.random = p.random.next;
+            }
             p = p.next.next;
         }
         
+        // 3. Concatenate clone list
+        RandomListNode dummy = new RandomListNode(-1);
+        RandomListNode prev = dummy;
         p = head;
-        RandomListNode dummyHead = new RandomListNode(0);
-        RandomListNode copy = dummyHead;
-        while (p != null) {     // step 3: separate two lists
-            next = p.next.next;     // save original next
-            // add copied nodes to copy list
-            copy.next = p.next;
-            copy = copy.next;
-            // restore the original list
-            p.next = next;
-            p = next;
+        while (p != null) {
+            prev.next = p.next;
+            prev = prev.next;
+            p.next = p.next.next;
+            p = p.next;
         }
-        return dummyHead.next;
+        return dummy.next;
     }
 }
 
@@ -90,7 +62,9 @@ public class Solution {
 // Space: O(n)
 public class Solution {
     public RandomListNode copyRandomList(RandomListNode head) {
-        if (head == null) return null;
+        if (head == null) {
+            return null;
+        }
         HashMap<RandomListNode, RandomListNode> map = new HashMap<>();
         RandomListNode node = head;
         while (node != null) {      // create copy for each node
