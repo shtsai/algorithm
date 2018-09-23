@@ -12,56 +12,54 @@
  * Note: All inputs will be in lower-case.
  */
 
-// Solution 2: sort strings by character
-// convert string to char[], then sort char[] and convert it back to string form
-// all anagrams will be the same
-// Time: O(nklogk) - n iterations, sort each string is klogk
-// Space: O(n * k) - HashMap
-public class Solution {
+// Solution 1:
+// use int[] to get character frequency
+// Then convert int array into a string, which uniquely identify
+// a set of anagrams.
+// Good when words are long
+// Time: O(26nk) = O(nk) - n is the number of strings, k is the length of string
+// Space: O(nk) - HashMap
+// 09/23/2018
+class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String, List<String>> map = new HashMap<>();
         List<List<String>> res = new ArrayList<>();
-        
+        HashMap<String, List<String>> map = new HashMap<>();
         for (String s : strs) {
-            char[] chars = s.toCharArray();
-            Arrays.sort(chars);
-            String index = Arrays.toString(chars);
-            if (!map.containsKey(index)) map.put(index, new ArrayList<>());
-            map.get(index).add(s);
+            int[] freq = new int[26];
+            for (char c : s.toCharArray()) {
+                freq[c - 'a']++;
+            }
+            String key = Arrays.toString(freq);
+            map.computeIfAbsent(key, x -> new ArrayList<>()).add(s);
         }
-        
-        for (String key : map.keySet()) {
-            res.add(map.get(key));
+        for (List<String> list : map.values()) {
+            res.add(list);
         }
         return res;
     }
 }
 
-// Solution 1:
-// use int[] to get character frequency
-// Then convert int array into a string, which uniquely identify
-// a set of anagrams.
-// Time: O(nk) - n is the number of strings, k is the length of string
-// Space: O(nk) - HashMap
-public class Solution {
+// Solution 2: sort strings by character
+// convert string to char[], then sort char[] and convert it back to string form
+// all anagrams will have the same key
+// Better when words are short.
+// Time: O(nklogk) - n iterations, sort each string is klogk
+// Space: O(n * k) - HashMap
+// 09/23/2018
+class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String, List<String>> map = new HashMap<>();
         List<List<String>> res = new ArrayList<>();
-        
+        HashMap<String, List<String>> map = new HashMap<>();
         for (String s : strs) {
-            int[] freq = new int[26];
-            for (int i = 0; i < s.length(); i++) {
-                freq[s.charAt(i)-'a']++;
-            }
-            // convert the frequency to a string, which is used as the key into the hashmap
-            String index = Arrays.toString(freq);
-            if (!map.containsKey(index)) map.put(index, new ArrayList<>());
-            map.get(index).add(s);
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String sorted = new String(chars);
+            map.computeIfAbsent(sorted, x -> new ArrayList<>()).add(s);
         }
-        
-        for (String key : map.keySet()) {
-            res.add(map.get(key));
+        for (List<String> list : map.values()) {
+            res.add(list);
         }
         return res;
     }
 }
+
