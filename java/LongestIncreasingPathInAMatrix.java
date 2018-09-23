@@ -1,67 +1,69 @@
 /*
- * Given an integer matrix, find the length of the longest increasing path.
- * 
- * From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).
- * 
- * Example 1:
- * 
- * nums = [
- *   [9,9,4],
- *   [6,6,8],
- *   [2,1,1]
- * ]
- * Return 4
- * The longest increasing path is [1, 2, 6, 9].
- * 
- * Example 2:
- * 
- * nums = [
- *   [3,4,5],
- *   [3,2,6],
- *   [2,2,1]
- * ]
- * Return 4
- * The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
+    Given an integer matrix, find the length of the longest increasing path.
+
+    From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).
+
+    Example 1:
+
+    Input: nums = 
+    [
+      [9,9,4],
+      [6,6,8],
+      [2,1,1]
+    ] 
+    Output: 4 
+    Explanation: The longest increasing path is [1, 2, 6, 9].
+    Example 2:
+
+    Input: nums = 
+    [
+      [3,4,5],
+      [3,2,6],
+      [2,2,1]
+    ] 
+    Output: 4 
+    Explanation: The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
  */
 
-// Dynamic programming
+// Solution 1: Dynamic Programming
 // Do DFS on every cell and maintain a global maximum
 // recursively solve smaller subproblems, and cache results in an memoized arrays
-public class Solution {
-    int max = 0;
+// Time: O(mn)
+// Space: O(mn)
+// 09/23/2018
+class Solution {
+    int[][] dirs = new int[][] {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
     public int longestIncreasingPath(int[][] matrix) {
-        if (matrix == null || matrix.length == 0) return 0;
-        int R = matrix.length, C = matrix[0].length, max = 1;
-        int[][] dp = new int[R][C];     // initialize dp arrays (0: unvisited)
-        
-        for (int i = 0; i < R; i++) {
-            for (int j = 0; j < C; j++) {
-                if (dp[i][j] == 0) visit(matrix, dp, i, j);
-                max = Math.max(max, dp[i][j]);
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[matrix.length][matrix[0].length];
+        int res = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (dp[i][j] == 0) {
+                    search(matrix, dp, i, j);
+                }
+                res = Math.max(res, dp[i][j]);
             }
         }
-
-        return max;
+        return res;
     }
     
-    private int visit(int[][] matrix, int[][] dp, int i, int j) {
-        if (dp[i][j] != 0) return dp[i][j];
-        int R = matrix.length, C = matrix[0].length;
-        
-        if (i - 1 >= 0 && matrix[i-1][j] > matrix[i][j]) {
-            dp[i][j] = Math.max(dp[i][j], 1 + visit(matrix, dp, i-1, j));
+    private int search(int[][] matrix, int[][] dp, int i, int j) {
+        if (dp[i][j] != 0) {
+            return dp[i][j];
         }
-        if (i + 1 < R && matrix[i+1][j] > matrix[i][j]) {
-            dp[i][j] = Math.max(dp[i][j], 1 + visit(matrix, dp, i+1, j));
+        int val = 0;
+        for (int[] d : dirs) {
+            int ni = i + d[0];
+            int nj = j + d[1];
+            if (ni < 0 || ni >= matrix.length || nj < 0 || nj >= matrix[0].length || matrix[ni][nj] <= matrix[i][j]) {
+                continue;
+            }
+            val = Math.max(val, search(matrix, dp, ni, nj));
         }
-        if (j - 1 >= 0 && matrix[i][j-1] > matrix[i][j]) {
-            dp[i][j] = Math.max(dp[i][j], 1 + visit(matrix, dp, i, j-1));
-        }
-        if (j + 1 < C && matrix[i][j+1] > matrix[i][j]) {
-            dp[i][j] = Math.max(dp[i][j], 1 + visit(matrix, dp, i, j+1));
-        }
-            
-        if (dp[i][j] == 0) dp[i][j] = 1;   // mark as visited
+        dp[i][j] = val + 1;
         return dp[i][j];
     }
 }
