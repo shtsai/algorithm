@@ -31,50 +31,30 @@
  */
 
 // Solution 2: In place
-// Use three pointers:
-//      - parent: points at the parent node
-//      - nextParent: points at the next parent (in next iteration)
-//      - child: points at the current child node, this is where we append to
-// We then scan through the parent level, if we find a child, we append
-// it to the child. 
-// After we are done with the current level, move to next level and repeat.
-//
 // Time: O(n) - n is the number of nodes
 // Space: O(1)
-// 09/18/2018
+// 09/23/2018
 public class Solution {
     public void connect(TreeLinkNode root) {
         if (root == null) {
             return;
         }
-        TreeLinkNode parent = root;
-        TreeLinkNode child = null;
-        TreeLinkNode nextParent = null;
-        while (parent != null) {
-            while (parent != null) {
-                if (parent.left != null) {
-                    if (child == null) {
-                        child = parent.left;
-                        nextParent = child;
-                    } else {
-                        child.next = parent.left;
-                        child = child.next;
-                    }
+        while (root != null) {
+            TreeLinkNode dummy = new TreeLinkNode(-1);
+            TreeLinkNode child = dummy;
+            while (root != null) {
+                if (root.left != null) {
+                    child.next = root.left;
+                    child = child.next;
                 }
-                if (parent.right != null) {
-                    if (child == null) {
-                        child = parent.right;
-                        nextParent = child;
-                    } else {
-                        child.next = parent.right;
-                        child = child.next;
-                    }
+                if (root.right != null) {
+                    child.next = root.right;
+                    child = child.next;
                 }
-                parent = parent.next;
+                root = root.next;
             }
-            parent = nextParent;
-            child = null;
-            nextParent = null;
+            root = dummy.next;
+            dummy.next = null;
         }
     }
 }
