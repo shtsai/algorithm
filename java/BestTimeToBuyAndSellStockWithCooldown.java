@@ -53,7 +53,9 @@ class Solution {
 // reference: https://discuss.leetcode.com/topic/30421/share-my-thinking-process
 class Solution {
     public int maxProfit(int[] prices) {
-        if (prices == null || prices.length <= 1) return 0;
+        if (prices == null || prices.length <= 1) {
+            return 0;
+        }
 
         int len = prices.length;
         int[] buy = new int[len];
@@ -62,7 +64,7 @@ class Solution {
         buy[0] = -prices[0];    // initialize buy[0]
         for (int i = 1; i < len; i++) {
             // need to be careful with index here
-            buy[i] = Math.max(buy[i-1], (i >= 2 ? sell[i-2]:0)-prices[i] );
+            buy[i] = Math.max(buy[i-1], (i >= 2 ? sell[i-2] : 0) - prices[i] );
             sell[i] = Math.max(sell[i-1], buy[i-1] + prices[i]);
         }
         return sell[len-1];
@@ -77,22 +79,26 @@ class Solution {
 // rest[i] = max(sell[i-1], buy[i-1], rest[i-1])
 //
 // reference: https://discuss.leetcode.com/topic/30680/share-my-dp-solution-by-state-machine-thinking
+// Time: O(n)
+// Space: O(n)
+// 09/22/2018
 class Solution {
     public int maxProfit(int[] prices) {
-        if (prices == null || prices.length <= 1) return 0;
-
-        int len = prices.length;
-        int[] buy = new int[len];
-        int[] sell = new int[len];
-        int[] rest = new int[len];
-        
-        buy[0] = -prices[0];
-        
-        for (int i = 1; i < len; i++) {
-            buy[i] = Math.max(buy[i-1], rest[i-1]-prices[i]);
-            sell[i] = Math.max(sell[i-1], buy[i-1]+prices[i]);
-            rest[i] = Math.max(rest[i-1], sell[i-1]);
+        if (prices.length == 0) {
+            return 0;
         }
-        return sell[len-1];
+        int[] buys = new int[prices.length];
+        int[] sells = new int[prices.length];
+        int[] holds = new int[prices.length];
+        Arrays.fill(buys, Integer.MIN_VALUE);
+        
+        buys[0] = -prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            sells[i] = Math.max(sells[i - 1], buys[i - 1] + prices[i]);
+            buys[i] = Math.max(buys[i - 1], holds[i - 1] - prices[i]);
+            holds[i] = Math.max(holds[i - 1], sells[i - 1]);
+        }
+        
+        return sells[prices.length - 1];
     }
 }
