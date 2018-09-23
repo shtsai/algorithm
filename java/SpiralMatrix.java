@@ -64,39 +64,68 @@ class Solution {
 
 // Solution 1
 // traverse the matrix in spiral order and store the elements on the way
-public class Solution {
+// Use four variables to store the states.
+// Time: O(mn)
+// Space: O(1)
+// 09/23/2018
+class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
-        List<Integer> result = new ArrayList<>();
-        if (matrix == null || matrix.length == 0) return result;
-        
-        int row_start = 0, row_end = matrix.length-1, col_start = 0, col_end = matrix[0].length-1;
-        
-        while (row_start <= row_end && col_start <= col_end) {
-            for (int i = col_start; i <= col_end; i++) {
-                result.add(matrix[row_start][i]);
+        List<Integer> res = new ArrayList<>();
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return res;
+        }
+        int rs = 0, re = matrix.length - 1;
+        int cs = 0, ce = matrix[0].length - 1;
+        while (rs <= re && cs <= ce) {
+            addRight(matrix, res, rs, cs, ce);
+            rs++;
+            if (rs > re) {
+                break;
             }
-            row_start++;
-            
-            for (int i = row_start; i <= row_end; i++) {
-                result.add(matrix[i][col_end]);
+            addDown(matrix, res, rs, re, ce);
+            ce--;
+            if (ce < cs) {
+                break;
             }
-            col_end--;
-            
-            if (row_start <= row_end) {  // need this check to prevent duplicates
-                for (int i = col_end; i >= col_start; i--) {
-                    result.add(matrix[row_end][i]);
-                }
-                row_end--;
+            addLeft(matrix, res, re, ce, cs);
+            re--;
+            if (re < rs) {
+                break;
             }
-            
-            if (col_start <= col_end) {  // need this check to prevent duplicates
-                for (int i = row_end; i >= row_start; i--) {
-                    result.add(matrix[i][col_start]);
-                }
-                col_start++;
+            addUp(matrix, res, re, rs, cs);
+            cs++;
+            if (cs > ce) {
+                break;
             }
         }
-        
-        return result;
+        return res;
+    }
+    
+    private void addRight(int[][] matrix, List<Integer> res, int rs, int cs, int ce) {
+        while (cs <= ce) {
+            res.add(matrix[rs][cs]);
+            cs++;
+        }
+    }
+    
+    private void addDown(int[][] matrix, List<Integer> res, int rs, int re, int ce) {
+        while (rs <= re) {
+            res.add(matrix[rs][ce]);
+            rs++;
+        }
+    }
+    
+    private void addLeft(int[][] matrix, List<Integer> res, int re, int ce, int cs) {
+        while (ce >= cs) {
+            res.add(matrix[re][ce]);
+            ce--;
+        }
+    }
+    
+    private void addUp(int[][] matrix, List<Integer> res, int re, int rs, int cs) {
+        while (re >= rs) {
+            res.add(matrix[re][cs]);
+            re--;
+        }
     }
 }
