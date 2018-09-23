@@ -56,35 +56,33 @@ class Solution {
 
 // version 2: two 1D DP array
 // Time: O(nk)
-// Space: O(n)
-// 10/24/2017
-
+// Space: O(k)
+// 09/22/2018
 class Solution {
     public int maxProfit(int k, int[] prices) {
-        if (k > prices.length / 2) {
-            int buy = Integer.MIN_VALUE, sell = 0;
-            for (int price : prices) {
-                int presell = sell;
-                sell = Math.max(sell, buy + price);
-                buy = Math.max(buy, presell - price);
+        if (k == 0) {
+            return 0;
+        } else if (k > prices.length / 2) {
+            int res = 0;
+            for (int i = 1; i < prices.length; i++) {
+                if (prices[i] - prices[i - 1] > 0) {
+                    res += prices[i] - prices[i - 1];
+                }
             }
-            return sell;
+            return res;
         }
+        int[] buys = new int[k + 1];
+        int[] sells = new int[k + 1];
+        Arrays.fill(buys, Integer.MIN_VALUE);
         
-        int[] buy = new int[k+1];
-        int[] sell = new int[k+1];
-        for (int i = 0; i <= k; i++) {
-            buy[i] = -prices[0];
-        }
-        
-        for (int i = 1; i < prices.length; i++) {
-            for (int j = k; j > 0; j--) {
-                sell[j] = Math.max(sell[j], buy[j] + prices[i]);
-                buy[j] = Math.max(buy[j], sell[j-1] - prices[i]);
+        for (int p : prices) {
+            for (int i = k; i > 0; i--) {
+                sells[i] = Math.max(sells[i], buys[i] + p);
+                buys[i] = Math.max(buys[i], sells[i - 1] - p);
             }
         }
         
-        return sell[k];
+        return sells[k];
     }
 }
 
