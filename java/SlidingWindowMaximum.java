@@ -56,21 +56,20 @@ class Solution {
 // use priorityqueue to get max
 // Time: O(kn) - n iterations, remove in queue is O(k)
 // Space: O(k)
+// 09/24/2018
 class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
-        int[] res = new int[nums.length - k+1];
-        if (nums == null || nums.length == 0 || k == 0) return new int[0];
-        PriorityQueue<Integer> q = new PriorityQueue<>(k, Collections.reverseOrder());  // get max
-        
-        for (int i = 0; i < k-1; i++) {    // only keep K-1 elements in priority
-            q.offer(nums[i]);
+        if (nums.length == 0 || k == 0) {
+            return new int[0];
         }
-        
-        // add new element to the queue, get max, then remove oldest element
-        for (int round = 0, i = 0; round < nums.length-k+1; round++) {   // i points to the element that is about to be deleted
-            q.offer(nums[round+k-1]);
-            res[round] = q.peek();      // get the max of current window
-            q.remove(nums[i++]);
+        int[] res = new int[nums.length - k+1];
+        PriorityQueue<Integer> q = new PriorityQueue<>(k, Collections.reverseOrder());  
+        for (int i = 0; i < nums.length; i++) {
+            q.offer(nums[i]);
+            if (i - k + 1 >= 0) {
+                res[i - k + 1] = q.peek();
+                q.remove(nums[i - k + 1]);
+            }
         }
         return res;
     }
