@@ -33,12 +33,37 @@
  * }
  */
 
+// Solution 2: In place
+// Find predecessor of the root node.
+// Point predecessor to the right subtree, and continue.
+// Time: O(n)
+// Space: O(1)
+// 09/24/2018
+class Solution {
+    public void flatten(TreeNode root) {
+        TreeNode p = root;
+        while (p != null) {
+            if (p.left != null) {
+                // find predecessor of root
+                TreeNode predecessor = p.left;
+                while (predecessor.right != null) {
+                    predecessor = predecessor.right;
+                }
+                predecessor.right = p.right;
+                p.right = p.left;
+                p.left = null;
+            }
+            p = p.right;
+        }
+    }
+}
+
 // Solution 1: Recursion
 // Observe that the flatten list is in pre-order traversal order.
 // We can flatten the left subtree and right subtree first,
 // then append left the root, and then append right.
 // Time: O(n) - visit each node at most once
-// Space: O(logn) - call stack
+// Space: O(n) - call stack
 // version 2:
 // 11/15/2017
 class Solution {
